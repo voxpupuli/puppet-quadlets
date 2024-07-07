@@ -1,0 +1,66 @@
+{
+  "name": "puppet-quadlets",
+  "version": "1.0.0-rc0",
+  "author": "Vox Pupuli",
+  "summary": "Puppet Podman Quadlets module",
+  "license": "Apache-2.0",
+  "source": "https://github.com/voxpupuli/puppet-quadlets",
+  "project_page": "https://github.com/voxpupuli/puppet-quadlets",
+  "issues_url": "https://github.com/voxpupuli/puppet-quadlets/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 8.5.0 < 10.0.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "AlmaLinux",
+      "operatingsystemrelease": [
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "Rocky",
+      "operatingsystemrelease": [
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "Archlinux"
+    },
+    {
+      "operatingsystem": "Gentoo"
+    },
+    {
+      "operatingsystem": "Fedora",
+      "operatingsystemrelease": [
+        "40"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 7.9.0 < 9.0.0"
+    }
+  ]
+}
