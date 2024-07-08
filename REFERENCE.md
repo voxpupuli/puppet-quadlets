@@ -24,6 +24,7 @@
 
 * [`Quadlets::Quadlet_name`](#Quadlets--Quadlet_name): custom datatype that validates different filenames for quadlet units
 * [`Quadlets::Unit::Container`](#Quadlets--Unit--Container): custom datatype for container entries of podman container quadlet
+* [`Quadlets::Unit::Kube`](#Quadlets--Unit--Kube): custom datatype for Kube entries of podman kube quadlet
 * [`Quadlets::Unit::Pod`](#Quadlets--Unit--Pod): custom datatype for Volume entries of podman container quadlet
 * [`Quadlets::Unit::Volume`](#Quadlets--Unit--Volume): custom datatype for Volume entries of podman container quadlet
 
@@ -98,6 +99,24 @@ quadlets::quadlet{'centos.container':
 }
 ```
 
+##### Run a Pod using a kubernetes Yaml definition
+
+```puppet
+quadlets::quadlet{'centos.container':
+  ensure          => present,
+  unit_entry     => {
+   'Description' => 'Pod running my application',
+  },
+  kube_entry => {
+    'Yaml' => '/path/to/yaml/file.yaml',
+  },
+  install_entry   => {
+    'WantedBy' => 'default.target'
+  },
+  active          => true,
+}
+```
+
 #### Parameters
 
 The following parameters are available in the `quadlets::quadlet` defined type:
@@ -112,6 +131,7 @@ The following parameters are available in the `quadlets::quadlet` defined type:
 * [`container_entry`](#-quadlets--quadlet--container_entry)
 * [`pod_entry`](#-quadlets--quadlet--pod_entry)
 * [`volume_entry`](#-quadlets--quadlet--volume_entry)
+* [`kube_entry`](#-quadlets--quadlet--kube_entry)
 
 ##### <a name="-quadlets--quadlet--quadlet"></a>`quadlet`
 
@@ -193,6 +213,14 @@ The `[Volume]` section defintion.
 
 Default value: `undef`
 
+##### <a name="-quadlets--quadlet--kube_entry"></a>`kube_entry`
+
+Data type: `Optional[Quadlets::Unit::Kube]`
+
+The `[Kube]` section defintion.
+
+Default value: `undef`
+
 ## Data types
 
 ### <a name="Quadlets--Quadlet_name"></a>`Quadlets::Quadlet_name`
@@ -202,7 +230,7 @@ custom datatype that validates different filenames for quadlet units
 * **See also**
   * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
 
-Alias of `Pattern[/^[a-zA-Z0-9:\-_.\\@%]+\.(container|volume|pod|network)$/]`
+Alias of `Pattern[/^[a-zA-Z0-9:\-_.\\@%]+\.(container|volume|pod|network|kube)$/]`
 
 ### <a name="Quadlets--Unit--Container"></a>`Quadlets::Unit::Container`
 
@@ -274,6 +302,31 @@ Struct[Optional['AddCapability'] => Array[String[1],1],
   Optional['UserNS'] => String[1],
   Optional['Volume'] => Array[String[1],0],
   Optional['WorkingDir'] => Stdlib::Unixpath]
+```
+
+### <a name="Quadlets--Unit--Kube"></a>`Quadlets::Unit::Kube`
+
+custom datatype for Kube entries of podman kube quadlet
+
+* **See also**
+  * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+
+Alias of
+
+```puppet
+Struct[Optional['AutoUpdate'] => Array[String[1], 1],
+  Optional['ConfigMap']  => Array[Stdlib::Unixpath, 1],
+  Optional['ContainersConfModule'] => Array[Stdlib::Unixpath, 1],
+  Optional['ExitCodePropagation'] => Enum['all', 'any', 'none'],
+  Optional['GlobalArgs'] => Array[String[1], 0],
+  Optional['KubeDownForce'] => Boolean,
+  Optional['LogDriver'] => String[1],
+  Optional['Network'] => Array[String[1], 1],
+  Optional['PodmanArgs'] => Array[String[1], 0],
+  Optional['PublishPort'] => Array[Variant[Stdlib::Port,String[1]],1],
+  Optional['SetWorkingDirectory'] => Enum['yaml', 'unit'],
+  Optional['UserNS'] => String[1],
+  Optional['Yaml'] => Stdlib::Unixpath]
 ```
 
 ### <a name="Quadlets--Unit--Pod"></a>`Quadlets::Unit::Pod`
