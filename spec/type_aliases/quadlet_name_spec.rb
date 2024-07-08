@@ -9,6 +9,7 @@ describe 'Quadlets::Quadlet_name' do
       'fast.network',
       'empty.volume',
       'masive.pod',
+      'special.kube',
     ].each do |unit|
       it { is_expected.to allow_value(unit) }
     end

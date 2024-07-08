@@ -12,6 +12,7 @@
 # @param container_entry The `[Container]` section defintion.
 # @param pod_entry The `[Pod]` section defintion.
 # @param volume_entry The `[Volume]` section defintion.
+# @param kube_entry The `[Kube]` section defintion.
 #
 # @example Run a CentOS Container
 #   quadlets::quadlet{'centos.container':
@@ -29,6 +30,9 @@
 #     install_entry   => {
 #       'WantedBy' => 'default.target'
 #     },
+#     kube_entry => {
+#       'Yaml' => '/path/to/yaml/file',
+#     },
 #     active          => true,
 #   }
 #
@@ -43,6 +47,7 @@ define quadlets::quadlet (
   Optional[Quadlets::Unit::Container] $container_entry = undef,
   Optional[Quadlets::Unit::Volume] $volume_entry = undef,
   Optional[Quadlets::Unit::Pod] $pod_entry = undef,
+  Optional[Quadlets::Unit::Kube] $kube_entry = undef,
 ) {
   $_split = $quadlet.split('[.]')
   $_name = $_split[0]
@@ -56,16 +61,22 @@ define quadlets::quadlet (
       $_service = "${_name}.service"
     }
     'volume': {
-      if $container_entry or $pod_entry {
-        fail('A container_entry or pod_entry makes no sense on a volume quadlet')
+      if $container_entry or $pod_entry or $kube_entry {
+        fail('A container_entry, pod_entry or kube_entry makes no sense on a volume quadlet')
       }
       $_service = "${_name}-volume.service"
     }
     'pod': {
-      if $container_entry or $volume_entry {
-        fail('A container_entry or volume_entry makes no sense on a pod quadlet')
+      if $container_entry or $volume_entry or $kube_entry {
+        fail('A container_entry, volume_entry or kube_entry makes no sense on a pod quadlet')
       }
       $_service = "${_name}-pod.service"
+    }
+    'kube': {
+      if $volume_entry or $pod_entry or $container_entry {
+        fail('A container_entry, pod_entry or volume_entry makes no sense on a kube quadlet')
+      }
+      $_service = "${_name}.service"
     }
     default: {
       fail('Should never be here due to typing on quadlet')
@@ -88,6 +99,7 @@ define quadlets::quadlet (
         'container_entry' => $container_entry,
         'volume_entry'    => $volume_entry,
         'pod_entry'       => $pod_entry,
+        'kube_entry'      => $kube_entry,
     }),
   }
 
