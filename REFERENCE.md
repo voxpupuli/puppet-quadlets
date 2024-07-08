@@ -16,6 +16,17 @@
 * `quadlets::install`: Install podman software for quadlet support
 * `quadlets::service`: Manage the podman socket
 
+### Defined types
+
+* [`quadlets::quadlet`](#quadlets--quadlet): Generate and manage podman quadlet definitions (podman > 4.4.0)
+
+### Data types
+
+* [`Quadlets::Quadlet_name`](#Quadlets--Quadlet_name): custom datatype that validates different filenames for quadlet units
+* [`Quadlets::Unit::Container`](#Quadlets--Unit--Container): custom datatype for container entries of podman container quadlet
+* [`Quadlets::Unit::Pod`](#Quadlets--Unit--Pod): custom datatype for Volume entries of podman container quadlet
+* [`Quadlets::Unit::Volume`](#Quadlets--Unit--Volume): custom datatype for Volume entries of podman container quadlet
+
 ## Classes
 
 ### <a name="quadlets"></a>`quadlets`
@@ -52,4 +63,260 @@ Data type: `Boolean`
 Should the directory for storing quadlet files be created.
 
 Default value: `false`
+
+## Defined types
+
+### <a name="quadlets--quadlet"></a>`quadlets::quadlet`
+
+Generate and manage podman quadlet definitions (podman > 4.4.0)
+
+* **See also**
+  * podman-systemd.unit.5
+    * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+
+#### Examples
+
+##### Run a CentOS Container
+
+```puppet
+quadlets::quadlet{'centos.container':
+  ensure          => present,
+  unit_entry     => {
+   'Description' => 'Trivial Container that will be very lazy',
+  },
+  service_entry       => {
+    'TimeoutStartSec' => '900',
+  },
+  container_entry => {
+    'Image' => 'quay.io/centos/centos:latest',
+    'Exec'  => 'sh -c "sleep inf"'
+  },
+  install_entry   => {
+    'WantedBy' => 'default.target'
+  },
+  active          => true,
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `quadlets::quadlet` defined type:
+
+* [`quadlet`](#-quadlets--quadlet--quadlet)
+* [`ensure`](#-quadlets--quadlet--ensure)
+* [`mode`](#-quadlets--quadlet--mode)
+* [`active`](#-quadlets--quadlet--active)
+* [`unit_entry`](#-quadlets--quadlet--unit_entry)
+* [`install_entry`](#-quadlets--quadlet--install_entry)
+* [`service_entry`](#-quadlets--quadlet--service_entry)
+* [`container_entry`](#-quadlets--quadlet--container_entry)
+* [`pod_entry`](#-quadlets--quadlet--pod_entry)
+* [`volume_entry`](#-quadlets--quadlet--volume_entry)
+
+##### <a name="-quadlets--quadlet--quadlet"></a>`quadlet`
+
+Data type: `Quadlets::Quadlet_name`
+
+of the quadlet file this is the namevar.
+
+Default value: `$title`
+
+##### <a name="-quadlets--quadlet--ensure"></a>`ensure`
+
+Data type: `Enum['present', 'absent']`
+
+State of the container definition.
+
+Default value: `'present'`
+
+##### <a name="-quadlets--quadlet--mode"></a>`mode`
+
+Data type: `Stdlib::Filemode`
+
+Filemode of container file.
+
+Default value: `'0444'`
+
+##### <a name="-quadlets--quadlet--active"></a>`active`
+
+Data type: `Optional[Boolean]`
+
+Make sure the container is running.
+
+Default value: `undef`
+
+##### <a name="-quadlets--quadlet--unit_entry"></a>`unit_entry`
+
+Data type: `Optional[Systemd::Unit::Unit]`
+
+The `[Unit]` section definition.
+
+Default value: `undef`
+
+##### <a name="-quadlets--quadlet--install_entry"></a>`install_entry`
+
+Data type: `Optional[Systemd::Unit::Install]`
+
+The `[Install]` section definition.
+
+Default value: `undef`
+
+##### <a name="-quadlets--quadlet--service_entry"></a>`service_entry`
+
+Data type: `Optional[Systemd::Unit::Service]`
+
+The `[Service]` section definition.
+
+Default value: `undef`
+
+##### <a name="-quadlets--quadlet--container_entry"></a>`container_entry`
+
+Data type: `Optional[Quadlets::Unit::Container]`
+
+The `[Container]` section defintion.
+
+Default value: `undef`
+
+##### <a name="-quadlets--quadlet--pod_entry"></a>`pod_entry`
+
+Data type: `Optional[Quadlets::Unit::Pod]`
+
+The `[Pod]` section defintion.
+
+Default value: `undef`
+
+##### <a name="-quadlets--quadlet--volume_entry"></a>`volume_entry`
+
+Data type: `Optional[Quadlets::Unit::Volume]`
+
+The `[Volume]` section defintion.
+
+Default value: `undef`
+
+## Data types
+
+### <a name="Quadlets--Quadlet_name"></a>`Quadlets::Quadlet_name`
+
+custom datatype that validates different filenames for quadlet units
+
+* **See also**
+  * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+
+Alias of `Pattern[/^[a-zA-Z0-9:\-_.\\@%]+\.(container|volume|pod|network)$/]`
+
+### <a name="Quadlets--Unit--Container"></a>`Quadlets::Unit::Container`
+
+custom datatype for container entries of podman container quadlet
+
+* **See also**
+  * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+
+Alias of
+
+```puppet
+Struct[Optional['AddCapability'] => Array[String[1],1],
+  Optional['Annotation'] => Array[String[1],1],
+  Optional['AutoUpdate']  => Enum['registry','local'],
+  Optional['ContainerName'] => String[1],
+  Optional['DNS'] => Array[Stdlib::IP::Address,0],
+  Optional['DNSOption'] => Array[String[1],0],
+  Optional['DNSSearch'] => Array[Stdlib::Fqdn,0],
+  Optional['DropCapability'] => Array[String[1],0],
+  Optional['Environment'] => Array[String[1],0],
+  Optional['EnvironmentFile'] => Array[String[1],0],
+  Optional['Exec'] => String[1],
+  Optional['ExposeHostPort'] => Array[Stdlib::Port,0],
+  Optional['GIDMap'] => Array[String[1],0],
+  Optional['GlobalArgs'] => Array[String[1],0],
+  Optional['Group'] => Integer[0],
+  Optional['HealthCmd'] => String[1],
+  Optional['HealthOnFailure'] => Enum['none','kill','restart','stop'],
+  Optional['HealthStartPeriod'] => String[1],
+  Optional['HealthStartupCmd'] => String[1],
+  Optional['HealthStartupInterval'] => Variant[Enum['disable'],Integer[0]],
+  Optional['HealthStartupTimeout'] => String[1],
+  Optional['HealthTimeout'] => String[1],
+  Optional['Image'] => String[1],
+  Optional['IP'] => Stdlib::IP::Address::V4,
+  Optional['IP6'] => Stdlib::IP::Address::V6,
+  Optional['Label'] => Variant[String[1],Array[String[1],1]],
+  Optional['LogDriver'] => Enum['k8s-file','journald','none','passthrough'],
+  Optional['Mask'] => String[1],
+  Optional['Mount'] => Array[String[1],0],
+  Optional['Network'] => String[1],
+  Optional['NoNewPrivileges'] => Boolean,
+  Optional['Notify'] => Boolean,
+  Optional['PidsLimits'] => Integer[-1],
+  Optional['Pod'] => Pattern[/^[a-zA-Z0-0_-]+\.pod$/],
+  Optional['PodmanArgs'] => Array[String[1],0],
+  Optional['PublishPort'] => Array[Variant[Stdlib::Port,String[1]],1],
+  Optional['Pull'] => Enum['always','missing','never','newer'],
+  Optional['ReadOnly'] => Boolean,
+  Optional['ReadOnlyTmpfs'] => Boolean,
+  Optional['Rootfs'] => String[1],
+  Optional['RunInit'] => Boolean,
+  Optional['SeccompProfile'] => String[1],
+  Optional['Secret'] => Array[String[1],0],
+  Optional['SecurityLabelDisable'] => Boolean,
+  Optional['SecurityLabelFileType'] => String[1],
+  Optional['SecurityLabelNested'] => Boolean,
+  Optional['ShmSize'] => String[1],
+  Optional['StopTimeout'] => Integer[1],
+  Optional['SubGIDMap'] => String[1],
+  Optional['SubUIDMap'] => String[1],
+  Optional['Sysctl'] => Array[String[1],0],
+  Optional['Timezone'] => String[1],
+  Optional['Tmpfs'] => Array[String[1],0],
+  Optional['UIDMap'] => Array[String[1],0],
+  Optional['Ulimit'] => String[1],
+  Optional['Unmask'] => String[1],
+  Optional['User'] => String[1],
+  Optional['UserNS'] => String[1],
+  Optional['Volume'] => Array[String[1],0],
+  Optional['WorkingDir'] => Stdlib::Unixpath]
+```
+
+### <a name="Quadlets--Unit--Pod"></a>`Quadlets::Unit::Pod`
+
+custom datatype for Volume entries of podman container quadlet
+
+* **See also**
+  * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+
+Alias of
+
+```puppet
+Struct[Optional['ContainersConfModule'] => Variant[Stdlib::Unixpath,Array[Stdlib::Unixpath,1]],
+  Optional['GlobalArgs']           => Variant[String[1],Array[String[1],1]],
+  Optional['Network']              => String[1],
+  Optional['PodmanArgs']           => Variant[String[1],Array[String[1]]],
+  Optional['PodName']              => String[1],
+  Optional['PublishPort']          => Array[Stdlib::Port,1],
+  Optional['Volume']               => Variant[String[1],Array[String[1],]]]
+```
+
+### <a name="Quadlets--Unit--Volume"></a>`Quadlets::Unit::Volume`
+
+custom datatype for Volume entries of podman container quadlet
+
+* **See also**
+  * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+
+Alias of
+
+```puppet
+Struct[Optional['ContainersConfModule'] => Variant[Stdlib::Unixpath,Array[Stdlib::Unixpath,1]],
+  Optional['Copy']                 => Boolean,
+  Optional['Device']               => String[1],
+  Optional['Driver']               => String[1],
+  Optional['GlobalArgs']           => Variant[String[1],Array[String[1],1]],
+  Optional['Group']                => String[1],
+  Optional['Image']                => String[1],
+  Optional['Label']                => Variant[String[1],Array[String[1],1]],
+  Optional['Options']              => String[1],
+  Optional['PodmanArgs']           => Variant[String[1],Array[String[1]]],
+  Optional['Type']                 => String[1],
+  Optional['User']                 => String[1],
+  Optional['VolumeName']           => String[1]]
+```
 
