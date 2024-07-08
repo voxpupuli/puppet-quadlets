@@ -12,6 +12,7 @@
 
 #### Private Classes
 
+* `quadlets::config`: Configure podman for quadlets
 * `quadlets::install`: Install podman software for quadlet support
 * `quadlets::service`: Manage the podman socket
 
@@ -34,6 +35,7 @@ include quadlets
 The following parameters are available in the `quadlets` class:
 
 * [`socket_enable`](#-quadlets--socket_enable)
+* [`create_quadlet_dir`](#-quadlets--create_quadlet_dir)
 
 ##### <a name="-quadlets--socket_enable"></a>`socket_enable`
 
@@ -42,4 +44,12 @@ Data type: `Boolean`
 Should podman.socket be started and enabled
 
 Default value: `true`
+
+##### <a name="-quadlets--create_quadlet_dir"></a>`create_quadlet_dir`
+
+Data type: `Boolean`
+
+Should the directory for storing quadlet files be created.
+
+Default value: `false`
 
