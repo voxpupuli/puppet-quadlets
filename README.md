@@ -1,5 +1,14 @@
 # Quadlets
 
+[![Build Status](https://github.com/voxpupuli/puppet-quadlets/workflows/CI/badge.svg)](https://github.com/voxpupuli/puppet-quadlets/actions?query=workflow%3ACI)
+[![Release](https://github.com/voxpupuli/puppet-quadlets/actions/workflows/release.yml/badge.svg)](https://github.com/voxpupuli/puppet-quadlets/actions/workflows/release.yml)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/quadlets.svg)](https://forge.puppetlabs.com/puppet/quadlets)
+[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/puppet/quadlets.svg)](https://forge.puppetlabs.com/puppet/quadlets)
+[![Puppet Forge - endorsement](https://img.shields.io/puppetforge/e/puppet/quadlets.svg)](https://forge.puppetlabs.com/puppet/quadlets)
+[![Puppet Forge - scores](https://img.shields.io/puppetforge/f/puppet/quadlets.svg)](https://forge.puppetlabs.com/puppet/quadlets)
+[![puppetmodule.info docs](http://www.puppetmodule.info/images/badge.png)](http://www.puppetmodule.info/m/puppet-quadlets)
+[![Apache-2 License](https://img.shields.io/github/license/voxpupuli/puppet-quadlets.svg)](LICENSE)
+
 ## Overview
 
 Manages Podman and Podman Quadlets in particular
@@ -31,5 +40,3 @@ quadlets::quadlet{'centos.container':
 ## Reference
 
 The reference of the quadlet module see [REFERENCE.md](REFERENCE.md)
-
-
