@@ -6,7 +6,7 @@
 [![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/puppet/quadlets.svg)](https://forge.puppetlabs.com/puppet/quadlets)
 [![Puppet Forge - endorsement](https://img.shields.io/puppetforge/e/puppet/quadlets.svg)](https://forge.puppetlabs.com/puppet/quadlets)
 [![Puppet Forge - scores](https://img.shields.io/puppetforge/f/puppet/quadlets.svg)](https://forge.puppetlabs.com/puppet/quadlets)
-[![puppetmodule.info docs](http://www.puppetmodule.info/images/badge.png)](http://www.puppetmodule.info/m/puppet-quadlets)
+[![puppetmodule.info docs](https://www.puppetmodule.info/images/badge.svg)](https://www.puppetmodule.info/m/puppet-quadlets)
 [![Apache-2 License](https://img.shields.io/github/license/voxpupuli/puppet-quadlets.svg)](LICENSE)
 
 ## Overview
@@ -40,3 +40,5 @@ quadlets::quadlet{'centos.container':
 ## Reference
 
 The reference of the quadlet module see [REFERENCE.md](REFERENCE.md)
+=======
+>>>>>>> dacda79 (Add puppet-quadlets badges to README.md)
