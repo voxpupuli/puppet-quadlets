@@ -40,5 +40,3 @@ quadlets::quadlet{'centos.container':
 ## Reference
 
 The reference of the quadlet module see [REFERENCE.md](REFERENCE.md)
-=======
->>>>>>> dacda79 (Add puppet-quadlets badges to README.md)
