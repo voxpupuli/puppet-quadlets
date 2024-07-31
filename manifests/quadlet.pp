@@ -1,0 +1,110 @@
+# @summary Generate and manage podman quadlet definitions (podman > 4.4.0)
+#
+# @see podman-systemd.unit.5 https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+#
+# @param quadlet of the quadlet file this is the namevar.
+# @param ensure State of the container definition.
+# @param mode Filemode of container file.
+# @param active Make sure the container is running.
+# @param unit_entry The `[Unit]` section definition.
+# @param install_entry The `[Install]` section definition.
+# @param service_entry The `[Service]` section definition.
+# @param container_entry The `[Container]` section defintion.
+# @param pod_entry The `[Pod]` section defintion.
+# @param volume_entry The `[Volume]` section defintion.
+#
+# @example Run a CentOS Container
+#   quadlets::quadlet{'centos.container':
+#     ensure          => present,
+#     unit_entry     => {
+#      'Description' => 'Trivial Container that will be very lazy',
+#     },
+#     service_entry       => {
+#       'TimeoutStartSec' => '900',
+#     },
+#     container_entry => {
+#       'Image' => 'quay.io/centos/centos:latest',
+#       'Exec'  => 'sh -c "sleep inf"'
+#     },
+#     install_entry   => {
+#       'WantedBy' => 'default.target'
+#     },
+#     active          => true,
+#   }
+#
+define quadlets::quadlet (
+  Enum['present', 'absent'] $ensure = 'present',
+  Quadlets::Quadlet_name $quadlet = $title,
+  Stdlib::Filemode $mode = '0444',
+  Optional[Boolean] $active = undef,
+  Optional[Systemd::Unit::Install] $install_entry = undef,
+  Optional[Systemd::Unit::Unit] $unit_entry = undef,
+  Optional[Systemd::Unit::Service] $service_entry = undef,
+  Optional[Quadlets::Unit::Container] $container_entry = undef,
+  Optional[Quadlets::Unit::Volume] $volume_entry = undef,
+  Optional[Quadlets::Unit::Pod] $pod_entry = undef,
+) {
+  $_split = $quadlet.split('[.]')
+  $_name = $_split[0]
+  $_type = $_split[1]
+  # Validate the input and find the service name.
+  case $_type {
+    'container': {
+      if $volume_entry or $pod_entry {
+        fail('A volume_entry or pod_entry makes no sense on a container quadlet')
+      }
+      $_service = "${_name}.service"
+    }
+    'volume': {
+      if $container_entry or $pod_entry {
+        fail('A container_entry or pod_entry makes no sense on a volume quadlet')
+      }
+      $_service = "${_name}-volume.service"
+    }
+    'pod': {
+      if $container_entry or $volume_entry {
+        fail('A container_entry or volume_entry makes no sense on a pod quadlet')
+      }
+      $_service = "${_name}-pod.service"
+    }
+    default: {
+      fail('Should never be here due to typing on quadlet')
+    }
+  }
+
+  include quadlets
+
+  $_path = '/etc/containers/systemd'
+
+  file { "${_path}/${quadlet}":
+    ensure  => $ensure,
+    owner   => 'root',
+    group   => 'root',
+    mode    => $mode,
+    content => epp('quadlets/quadlet_file.epp', {
+        'unit_entry'      => $unit_entry,
+        'service_entry'   => $service_entry,
+        'install_entry'   => $install_entry,
+        'container_entry' => $container_entry,
+        'volume_entry'    => $volume_entry,
+        'pod_entry'       => $pod_entry,
+    }),
+  }
+
+  ensure_resource('systemd::daemon_reload', $quadlet)
+  File["${_path}/${quadlet}"] ~> Systemd::Daemon_reload[$quadlet]
+
+  if $active != undef {
+    service { $_service:
+      ensure => $active,
+    }
+
+    if $ensure == 'absent' {
+      Service[$_service] -> File["${_path}/${quadlet}"]
+      File["${_path}/${quadlet}"] ~> Systemd::Daemon_reload[$quadlet]
+    } else {
+      File["${_path}/${quadlet}"] ~> Service[$_service]
+      Systemd::Daemon_reload[$quadlet] ~> Service[$_service]
+    }
+  }
+}
