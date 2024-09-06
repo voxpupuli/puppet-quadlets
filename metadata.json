@@ -7,6 +7,13 @@
   "source": "https://github.com/voxpupuli/puppet-quadlets",
   "project_page": "https://github.com/voxpupuli/puppet-quadlets",
   "issues_url": "https://github.com/voxpupuli/puppet-quadlets/issues",
+  "tags": [
+    "container",
+    "containers",
+    "podman",
+    "quadlet",
+    "systemd"
+  ],
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
