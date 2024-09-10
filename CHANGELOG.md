@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v1.0.1](https://github.com/voxpupuli/puppet-quadlets/tree/v1.0.1) (2024-09-10)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v1.0.0...v1.0.1)
+
+**Fixed bugs:**
+
+- allow container\_entry.{User,Group} to be String or Integer [\#12](https://github.com/voxpupuli/puppet-quadlets/pull/12) ([jhoblitt](https://github.com/jhoblitt))
+
+**Merged pull requests:**
+
+- FacterDB: Switch to stringified keys [\#13](https://github.com/voxpupuli/puppet-quadlets/pull/13) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v1.0.0](https://github.com/voxpupuli/puppet-quadlets/tree/v1.0.0) (2024-09-06)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/ad5ca32eb9895a23bfe21095ae92e6f876a816d2...v1.0.0)
