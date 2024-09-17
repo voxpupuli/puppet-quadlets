@@ -36,6 +36,36 @@ describe 'quadlets' do
 
           it { is_expected.to contain_service('podman.socket').with_ensure(false).with_enable(false) }
         end
+
+        context 'with purge_quadlet_dir param' do
+          context 'with true' do
+            let(:params) do
+              { create_quadlet_dir: true, purge_quadlet_dir: true }
+            end
+
+            it do
+              is_expected.to contain_file('/etc/containers/systemd').with(
+                purge: true,
+                force: true,
+                recurse: true
+              )
+            end
+          end
+
+          context 'with false' do
+            let(:params) do
+              { create_quadlet_dir: true, purge_quadlet_dir: false }
+            end
+
+            it do
+              is_expected.to contain_file('/etc/containers/systemd').with(
+                purge: false,
+                force: false,
+                recurse: false
+              )
+            end
+          end
+        end
       end
     end
   end
