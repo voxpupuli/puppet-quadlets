@@ -10,6 +10,8 @@ class quadlets (
   Boolean $socket_enable = true,
   Boolean $create_quadlet_dir = false,
 ) {
+  $quadlet_dir = '/etc/containers/systemd'
+
   contain quadlets::install
   contain quadlets::config
   contain quadlets::service
