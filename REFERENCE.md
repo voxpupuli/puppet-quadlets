@@ -48,6 +48,7 @@ The following parameters are available in the `quadlets` class:
 
 * [`socket_enable`](#-quadlets--socket_enable)
 * [`create_quadlet_dir`](#-quadlets--create_quadlet_dir)
+* [`purge_quadlet_dir`](#-quadlets--purge_quadlet_dir)
 
 ##### <a name="-quadlets--socket_enable"></a>`socket_enable`
 
@@ -62,6 +63,15 @@ Default value: `true`
 Data type: `Boolean`
 
 Should the directory for storing quadlet files be created.
+
+Default value: `false`
+
+##### <a name="-quadlets--purge_quadlet_dir"></a>`purge_quadlet_dir`
+
+Data type: `Boolean`
+
+Should the directory for storing quadlet files be purged. This has no effect
+unless create_quadlet_dir is set to true.
 
 Default value: `false`
 

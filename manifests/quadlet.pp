@@ -97,9 +97,7 @@ define quadlets::quadlet (
 
   include quadlets
 
-  $_path = '/etc/containers/systemd'
-
-  file { "${_path}/${quadlet}":
+  file { "${quadlets::quadlet_dir}/${quadlet}":
     ensure  => $ensure,
     owner   => 'root',
     group   => 'root',
@@ -116,7 +114,7 @@ define quadlets::quadlet (
   }
 
   ensure_resource('systemd::daemon_reload', $quadlet)
-  File["${_path}/${quadlet}"] ~> Systemd::Daemon_reload[$quadlet]
+  File["${quadlets::quadlet_dir}/${quadlet}"] ~> Systemd::Daemon_reload[$quadlet]
 
   if $active != undef {
     service { $_service:
@@ -124,10 +122,10 @@ define quadlets::quadlet (
     }
 
     if $ensure == 'absent' {
-      Service[$_service] -> File["${_path}/${quadlet}"]
-      File["${_path}/${quadlet}"] ~> Systemd::Daemon_reload[$quadlet]
+      Service[$_service] -> File["${quadlets::quadlet_dir}/${quadlet}"]
+      File["${quadlets::quadlet_dir}/${quadlet}"] ~> Systemd::Daemon_reload[$quadlet]
     } else {
-      File["${_path}/${quadlet}"] ~> Service[$_service]
+      File["${quadlets::quadlet_dir}/${quadlet}"] ~> Service[$_service]
       Systemd::Daemon_reload[$quadlet] ~> Service[$_service]
     }
   }
