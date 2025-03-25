@@ -17,12 +17,10 @@ class quadlets::config (
       recurse => $purge_quadlet_dir,
     }
   }
-  if $facts['os']['selinux']['enabled'] {
-    if $selinux_container_manage_cgroup {
-      selboolean { 'container_manage_group':
-        persistent => true,
-        value      => on,
-      }
+  if $facts['os']['selinux']['enabled'] and $selinux_container_manage_cgroup {
+    selboolean { 'container_manage_group':
+      persistent => true,
+      value      => on,
     }
   }
 }
