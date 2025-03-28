@@ -34,6 +34,10 @@
 
 Main class for setting quadlet support
 
+* **See also**
+  * https://github.com/containers/podman/blob/main/docs/source/markdown/options/systemd.md
+    * container_manage_cgroup
+
 #### Examples
 
 ##### Set up Podman for quadlets
@@ -48,6 +52,7 @@ The following parameters are available in the `quadlets` class:
 
 * [`socket_enable`](#-quadlets--socket_enable)
 * [`create_quadlet_dir`](#-quadlets--create_quadlet_dir)
+* [`selinux_container_manage_cgroup`](#-quadlets--selinux_container_manage_cgroup)
 * [`purge_quadlet_dir`](#-quadlets--purge_quadlet_dir)
 
 ##### <a name="-quadlets--socket_enable"></a>`socket_enable`
@@ -63,6 +68,17 @@ Default value: `true`
 Data type: `Boolean`
 
 Should the directory for storing quadlet files be created.
+
+Default value: `false`
+
+##### <a name="-quadlets--selinux_container_manage_cgroup"></a>`selinux_container_manage_cgroup`
+
+Data type: `Boolean`
+
+If SELinux is enabled and this is true, set SELinux boolean
+'container_manage_cgroup' to true. Required if you want to run containers in
+systemd mode
+If SELinux is not enabled on system this does nothing.
 
 Default value: `false`
 
