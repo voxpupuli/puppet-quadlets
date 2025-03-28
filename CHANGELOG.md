@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v1.2.0](https://github.com/voxpupuli/puppet-quadlets/tree/v1.2.0) (2025-03-28)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v1.1.0...v1.2.0)
+
+**Implemented enhancements:**
+
+- add management of container\_manage\_cgroup selboolean [\#25](https://github.com/voxpupuli/puppet-quadlets/pull/25) ([edrude](https://github.com/edrude))
+- metadata.json: Add OpenVox [\#24](https://github.com/voxpupuli/puppet-quadlets/pull/24) ([jstraw](https://github.com/jstraw))
+
+**Merged pull requests:**
+
+- puppet/systemd: allow 8.x [\#20](https://github.com/voxpupuli/puppet-quadlets/pull/20) ([jay7x](https://github.com/jay7x))
+
 ## [v1.1.0](https://github.com/voxpupuli/puppet-quadlets/tree/v1.1.0) (2024-09-20)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v1.0.1...v1.1.0)
