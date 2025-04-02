@@ -18,20 +18,20 @@ Manages Podman and Podman Quadlets in particular
 Create a simple `centos.service` running a container from a CentOS image.
 
 ```puppet
-quadlets::quadlet{'centos.container':
+quadlets::quadlet { 'centos.container':
   ensure          => present,
-  unit_entry     => {
-   'Description' => 'Trivial Container that will be very lazy',
+  unit_entry      => {
+    'Description' => 'Trivial Container that will be very lazy',
   },
-  service_entry       => {
+  service_entry   => {
     'TimeoutStartSec' => '900',
   },
   container_entry => {
     'Image' => 'quay.io/centos/centos:latest',
-    'Exec'  => 'sh -c "sleep inf"'
+    'Exec'  => 'sh -c "sleep inf"',
   },
   install_entry   => {
-    'WantedBy' => 'default.target'
+    'WantedBy' => 'default.target',
   },
   active          => true,
 }
