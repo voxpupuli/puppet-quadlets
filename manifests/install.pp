@@ -2,7 +2,5 @@
 # @api private
 #
 class quadlets::install {
-  package { 'podman':
-    ensure => installed,
-  }
+  stdlib::ensure_packages(['podman'])
 }

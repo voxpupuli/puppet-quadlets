@@ -25,6 +25,7 @@
 * [`Quadlets::Quadlet_name`](#Quadlets--Quadlet_name): custom datatype that validates different filenames for quadlet units
 * [`Quadlets::Unit::Container`](#Quadlets--Unit--Container): custom datatype for container entries of podman container quadlet
 * [`Quadlets::Unit::Kube`](#Quadlets--Unit--Kube): custom datatype for Kube entries of podman kube quadlet
+* [`Quadlets::Unit::Network`](#Quadlets--Unit--Network): custom datatype for Network entries of podman container quadlet
 * [`Quadlets::Unit::Pod`](#Quadlets--Unit--Pod): custom datatype for Volume entries of podman container quadlet
 * [`Quadlets::Unit::Volume`](#Quadlets--Unit--Volume): custom datatype for Volume entries of podman container quadlet
 
@@ -50,10 +51,19 @@ include quadlets
 
 The following parameters are available in the `quadlets` class:
 
+* [`manage_package`](#-quadlets--manage_package)
 * [`socket_enable`](#-quadlets--socket_enable)
 * [`create_quadlet_dir`](#-quadlets--create_quadlet_dir)
 * [`selinux_container_manage_cgroup`](#-quadlets--selinux_container_manage_cgroup)
 * [`purge_quadlet_dir`](#-quadlets--purge_quadlet_dir)
+
+##### <a name="-quadlets--manage_package"></a>`manage_package`
+
+Data type: `Boolean`
+
+Should podman package be installed by this module?
+
+Default value: `true`
 
 ##### <a name="-quadlets--socket_enable"></a>`socket_enable`
 
@@ -353,6 +363,35 @@ Struct[Optional['AutoUpdate'] => Array[String[1], 1],
   Optional['SetWorkingDirectory'] => Enum['yaml', 'unit'],
   Optional['UserNS'] => String[1],
   Optional['Yaml'] => Stdlib::Unixpath]
+```
+
+### <a name="Quadlets--Unit--Network"></a>`Quadlets::Unit::Network`
+
+custom datatype for Network entries of podman container quadlet
+
+* **See also**
+  * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+
+Alias of
+
+```puppet
+Struct[Optional['ContainersConfModule'] => Variant[Stdlib::Unixpath,Array[Stdlib::Unixpath,1]],
+  Optional['DisableDNS']           => Boolean,
+  Optional['DNS']                  => String[1],
+  Optional['Driver']               => Enum['bridge','ipvlan','macvlan'],
+  Optional['Gateway']              => String[1],
+  Optional['GlobalArgs']           => Variant[String[1],Array[String[1],1]],
+  Optional['Internal']             => Boolean,
+  Optional['IPAMDriver']           => Enum['host-local','dchp','none'],
+  Optional['IPRange']              => String[1],
+  Optional['IPv6']                 => Boolean,
+  Optional['Label']                => Variant[String[1],Array[String[1],1]],
+  Optional['NetworkName']          => String[1],
+  Optional['Options']              => String[1],
+  Optional['PodmanArgs']           => Variant[String[1],Array[String[1]]],
+  Optional['Type']                 => String[1],
+  Optional['User']                 => String[1],
+  Optional['VolumeName']           => String[1]]
 ```
 
 ### <a name="Quadlets--Unit--Pod"></a>`Quadlets::Unit::Pod`
