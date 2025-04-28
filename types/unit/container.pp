@@ -23,6 +23,7 @@ type Quadlets::Unit::Container = Struct[
   Optional['HealthStartupInterval'] => Variant[Enum['disable'],Integer[0]],
   Optional['HealthStartupTimeout'] => String[1],
   Optional['HealthTimeout'] => String[1],
+  Optional['HostName'] => String[1],
   Optional['Image'] => String[1],
   Optional['IP'] => Stdlib::IP::Address::V4,
   Optional['IP6'] => Stdlib::IP::Address::V6,
