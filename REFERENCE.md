@@ -50,10 +50,19 @@ include quadlets
 
 The following parameters are available in the `quadlets` class:
 
+* [`manage_package`](#-quadlets--manage_package)
 * [`socket_enable`](#-quadlets--socket_enable)
 * [`create_quadlet_dir`](#-quadlets--create_quadlet_dir)
 * [`selinux_container_manage_cgroup`](#-quadlets--selinux_container_manage_cgroup)
 * [`purge_quadlet_dir`](#-quadlets--purge_quadlet_dir)
+
+##### <a name="-quadlets--manage_package"></a>`manage_package`
+
+Data type: `Boolean`
+
+Should podman package be installed by this module?
+
+Default value: `true`
 
 ##### <a name="-quadlets--socket_enable"></a>`socket_enable`
 
