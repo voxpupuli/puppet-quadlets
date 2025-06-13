@@ -14,7 +14,7 @@
 
 * `quadlets::config`: Configure podman for quadlets
 * `quadlets::install`: Install podman software for quadlet support
-* `quadlets::service`: Manage the podman socket
+* `quadlets::service`: Manage the podman socket service
 
 ### Defined types
 
@@ -50,10 +50,19 @@ include quadlets
 
 The following parameters are available in the `quadlets` class:
 
+* [`manage_service`](#-quadlets--manage_service)
 * [`socket_enable`](#-quadlets--socket_enable)
 * [`create_quadlet_dir`](#-quadlets--create_quadlet_dir)
 * [`selinux_container_manage_cgroup`](#-quadlets--selinux_container_manage_cgroup)
 * [`purge_quadlet_dir`](#-quadlets--purge_quadlet_dir)
+
+##### <a name="-quadlets--manage_service"></a>`manage_service`
+
+Data type: `Boolean`
+
+Should podman.socket service be managed by this module?
+
+Default value: `true`
 
 ##### <a name="-quadlets--socket_enable"></a>`socket_enable`
 

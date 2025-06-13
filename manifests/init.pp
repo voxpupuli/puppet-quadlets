@@ -1,5 +1,6 @@
 # @summary Main class for setting quadlet support
 #
+# @param manage_service Should podman.socket service be managed by this module?
 # @param socket_enable Should podman.socket be started and enabled
 # @param create_quadlet_dir Should the directory for storing quadlet files be created.
 #
@@ -19,6 +20,7 @@
 # @see https://github.com/containers/podman/blob/main/docs/source/markdown/options/systemd.md container_manage_cgroup
 class quadlets (
   Boolean $selinux_container_manage_cgroup = false,
+  Boolean $manage_service = true,
   Boolean $socket_enable = true,
   Boolean $create_quadlet_dir = false,
   Boolean $purge_quadlet_dir = false,

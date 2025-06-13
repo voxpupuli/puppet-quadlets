@@ -21,17 +21,25 @@ describe 'quadlets' do
           it { is_expected.not_to contain_file('/etc/containers/systemd') }
         end
 
-        context 'with service enabled' do
+        context 'with manage service enabled and socket enabled' do
           let(:params) do
-            { socket_enable: true }
+            { manage_service: true, socket_enable: true }
           end
 
           it { is_expected.to contain_service('podman.socket').with_ensure(true).with_enable(true) }
         end
 
-        context 'with service disabled' do
+        context 'with manage service disabled' do
           let(:params) do
-            { socket_enable: false }
+            { manage_service: false }
+          end
+
+          it { is_expected.not_to contain_service('podman.socket') }
+        end
+
+        context 'with manage service enabled, socket disabled' do
+          let(:params) do
+            { manage_service: true, socket_enable: false }
           end
 
           it { is_expected.to contain_service('podman.socket').with_ensure(false).with_enable(false) }
