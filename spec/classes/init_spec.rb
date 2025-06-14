@@ -10,8 +10,6 @@ describe 'quadlets' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to create_class('quadlets') }
-        it { is_expected.to contain_class('quadlets::install') }
-        it { is_expected.to contain_package('podman').with_ensure('installed') }
         it { is_expected.to contain_service('podman.socket').with_ensure(true).with_enable(true) }
 
         case os_facts['os']['family']
@@ -19,6 +17,24 @@ describe 'quadlets' do
           it { is_expected.to contain_file('/etc/containers/systemd').with_ensure('directory') }
         else
           it { is_expected.not_to contain_file('/etc/containers/systemd') }
+        end
+
+        context 'with manage_package enabled' do
+          let(:params) do
+            { manage_package: true }
+          end
+
+          it { is_expected.to contain_class('quadlets::install') }
+          it { is_expected.to contain_package('podman').with_ensure('installed') }
+        end
+
+        context 'with manage_package disabled' do
+          let(:params) do
+            { manage_package: false }
+          end
+
+          it { is_expected.to contain_class('quadlets::install') }
+          it { is_expected.not_to contain_package('podman').with_ensure('installed') }
         end
 
         context 'with manage service enabled and socket enabled' do
