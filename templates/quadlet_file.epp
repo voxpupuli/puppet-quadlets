@@ -4,6 +4,7 @@
  Optional[Hash] $install_entry,
  Optional[Hash] $container_entry,
  Optional[Hash] $volume_entry,
+ Optional[Hash] $network_entry,
  Optional[Hash] $pod_entry,
  Optional[Hash] $kube_entry,
 | -%>
@@ -18,6 +19,7 @@
    'Container',
    'Pod',
    'Volume',
+   'Network',
    'Install',
    'Kube',
 ]
