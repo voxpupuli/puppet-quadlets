@@ -1,6 +1,6 @@
 ---
 fixtures:
   repositories:
+    selinux_core: https://github.com/puppetlabs/puppetlabs-selinux_core
     stdlib: https://github.com/puppetlabs/puppetlabs-stdlib
     systemd: https://github.com/voxpupuli/puppet-systemd
-    selinux_core: https://github.com/puppetlabs/puppetlabs-selinux_core
