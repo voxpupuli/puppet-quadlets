@@ -269,6 +269,7 @@ Alias of
 
 ```puppet
 Struct[Optional['AddCapability'] => Array[String[1],1],
+  Optional['AddDevice'] => Array[String[1],1],
   Optional['Annotation'] => Array[String[1],1],
   Optional['AutoUpdate']  => Enum['registry','local'],
   Optional['ContainerName'] => String[1],
