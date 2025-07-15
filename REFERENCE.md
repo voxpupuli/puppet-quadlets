@@ -14,7 +14,7 @@
 
 * `quadlets::config`: Configure podman for quadlets
 * `quadlets::install`: Install podman software for quadlet support
-* `quadlets::service`: Manage the podman socket service
+* `quadlets::service`: Manage the podman socket and update service
 
 ### Defined types
 
@@ -53,6 +53,10 @@ The following parameters are available in the `quadlets` class:
 * [`manage_package`](#-quadlets--manage_package)
 * [`manage_service`](#-quadlets--manage_service)
 * [`socket_enable`](#-quadlets--socket_enable)
+* [`manage_autoupdate_timer`](#-quadlets--manage_autoupdate_timer)
+* [`autoupdate_timer_ensure`](#-quadlets--autoupdate_timer_ensure)
+* [`autoupdate_timer_enable`](#-quadlets--autoupdate_timer_enable)
+* [`autoupdate_timer_name`](#-quadlets--autoupdate_timer_name)
 * [`create_quadlet_dir`](#-quadlets--create_quadlet_dir)
 * [`selinux_container_manage_cgroup`](#-quadlets--selinux_container_manage_cgroup)
 * [`purge_quadlet_dir`](#-quadlets--purge_quadlet_dir)
@@ -77,9 +81,41 @@ Default value: `true`
 
 Data type: `Boolean`
 
-Should podman.socket be started and enabled
+Should podman.socket be started and enabled?
 
 Default value: `true`
+
+##### <a name="-quadlets--manage_autoupdate_timer"></a>`manage_autoupdate_timer`
+
+Data type: `Boolean`
+
+Should podman-auto-update.timer be managed by this module?
+
+Default value: `false`
+
+##### <a name="-quadlets--autoupdate_timer_ensure"></a>`autoupdate_timer_ensure`
+
+Data type: `String`
+
+Should podman-auto-update.timer be active?
+
+Default value: `'running'`
+
+##### <a name="-quadlets--autoupdate_timer_enable"></a>`autoupdate_timer_enable`
+
+Data type: `Boolean`
+
+Should podman-auto-update.timer be enabled?
+
+Default value: `true`
+
+##### <a name="-quadlets--autoupdate_timer_name"></a>`autoupdate_timer_name`
+
+Data type: `String`
+
+Name of the auto update timer. This is usually podman-auto-update.timer.
+
+Default value: `'podman-auto-update.timer'`
 
 ##### <a name="-quadlets--create_quadlet_dir"></a>`create_quadlet_dir`
 
