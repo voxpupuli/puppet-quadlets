@@ -28,6 +28,17 @@ describe 'quadlets' do
           it { is_expected.to contain_package('podman').with_ensure('installed') }
         end
 
+        context 'with manage_package enabled, package_ensure latest, and package_names=test,test2' do
+          let(:params) do
+            { manage_package: true, package_ensure: 'latest', package_names: %w[test test2] }
+          end
+
+          it { is_expected.to contain_class('quadlets::install') }
+          it { is_expected.not_to contain_package('podman') }
+          it { is_expected.to contain_package('test').with_ensure('latest') }
+          it { is_expected.to contain_package('test2').with_ensure('latest') }
+        end
+
         context 'with manage_package disabled' do
           let(:params) do
             { manage_package: false }

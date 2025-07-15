@@ -51,6 +51,8 @@ include quadlets
 The following parameters are available in the `quadlets` class:
 
 * [`manage_package`](#-quadlets--manage_package)
+* [`package_names`](#-quadlets--package_names)
+* [`package_ensure`](#-quadlets--package_ensure)
 * [`manage_service`](#-quadlets--manage_service)
 * [`socket_enable`](#-quadlets--socket_enable)
 * [`create_quadlet_dir`](#-quadlets--create_quadlet_dir)
@@ -64,6 +66,22 @@ Data type: `Boolean`
 Should podman package be installed by this module?
 
 Default value: `true`
+
+##### <a name="-quadlets--package_names"></a>`package_names`
+
+Data type: `Array[String[1,]]`
+
+What packages are tracked by this module?
+
+Default value: `['podman']`
+
+##### <a name="-quadlets--package_ensure"></a>`package_ensure`
+
+Data type: `Stdlib::Ensure::Package`
+
+What state should the packages be in (installed/latests/other?)?
+
+Default value: `'installed'`
 
 ##### <a name="-quadlets--manage_service"></a>`manage_service`
 
