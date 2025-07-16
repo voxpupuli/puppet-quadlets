@@ -1,6 +1,8 @@
 # @summary Main class for setting quadlet support
 #
 # @param manage_package Should podman package be installed by this module?
+# @param package_names What packages are tracked by this module?
+# @param package_ensure What state should the packages be in (installed/latests/other?)?
 # @param manage_service Should podman.socket service be managed by this module?
 # @param socket_enable Should podman.socket be started and enabled
 # @param create_quadlet_dir Should the directory for storing quadlet files be created.
@@ -22,6 +24,8 @@
 class quadlets (
   Boolean $selinux_container_manage_cgroup = false,
   Boolean $manage_package = true,
+  Array[String[1,]] $package_names = ['podman'],
+  Stdlib::Ensure::Package $package_ensure = 'installed',
   Boolean $manage_service = true,
   Boolean $socket_enable = true,
   Boolean $create_quadlet_dir = false,
