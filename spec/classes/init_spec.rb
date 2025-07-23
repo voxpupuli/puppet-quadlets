@@ -11,6 +11,7 @@ describe 'quadlets' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to create_class('quadlets') }
         it { is_expected.to contain_service('podman.socket').with_ensure(true).with_enable(true) }
+        it { is_expected.not_to contain_service('podman-auto-update.timer') }
 
         case os_facts['os']['family']
         when 'Archlinux'
@@ -70,6 +71,38 @@ describe 'quadlets' do
           end
 
           it { is_expected.to contain_service('podman.socket').with_ensure(false).with_enable(false) }
+        end
+
+        context 'with manage update timer enabled and timer enabled' do
+          let(:params) do
+            { manage_autoupdate_timer: true, autoupdate_timer_enable: true }
+          end
+
+          it { is_expected.to contain_service('podman-auto-update.timer').with_ensure('running').with_enable(true) }
+        end
+
+        context 'with manage update timer enabled, timer enabled, and a custom name' do
+          let(:params) do
+            { manage_autoupdate_timer: true, autoupdate_timer_ensure: 'stopped', autoupdate_timer_enable: true, autoupdate_timer_name: 'test.unit' }
+          end
+
+          it { is_expected.to contain_service('test.unit').with_ensure('stopped').with_enable(true) }
+        end
+
+        context 'with manage update timer disabled' do
+          let(:params) do
+            { manage_autoupdate_timer: false }
+          end
+
+          it { is_expected.not_to contain_service('podman-auto-update.timer') }
+        end
+
+        context 'with manage update timer enabled, update timer disabled' do
+          let(:params) do
+            { manage_autoupdate_timer: true, autoupdate_timer_enable: false }
+          end
+
+          it { is_expected.to contain_service('podman-auto-update.timer').with_enable(false) }
         end
 
         context 'with purge_quadlet_dir param' do
