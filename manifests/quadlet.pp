@@ -7,6 +7,7 @@
 # @param validate_quadlet Validate quadlet with `podman-system-generator --dryrun`
 # @param mode Filemode of container file.
 # @param active Make sure the container is running.
+# @param user Specify which user to run as
 # @param unit_entry The `[Unit]` section definition.
 # @param install_entry The `[Install]` section definition.
 # @param service_entry The `[Service]` section definition.
@@ -51,12 +52,61 @@
 #     active          => true,
 #   }
 #
+# @example Run a CentOS user Container specifying home dir
+#   quadlets::quadlet{'centos.container':
+#     ensure          => present,
+#     user            => {
+#      'name'    => 'containers',
+#      'homedir' => '/nfs/home/containers',
+#     },
+#     unit_entry     => {
+#      'Description' => 'Trivial Container that will be very lazy',
+#     },
+#     service_entry       => {
+#       'TimeoutStartSec' => '900',
+#     },
+#     container_entry => {
+#       'Image' => 'quay.io/centos/centos:latest',
+#       'Exec'  => 'sh -c "sleep inf"'
+#     },
+#     install_entry   => {
+#       'WantedBy' => 'default.target'
+#     },
+#     active          => true,
+#   }
+#
+# @example Run a CentOS user Container without managing the aspects of the user
+#   quadlets::quadlet{'centos.container':
+#     ensure          => present,
+#     user            =>
+#      'name'          => 'containers',
+#      'create_dir'    => false,
+#      'manage_user'   => false,
+#      'manage_linger' => false,
+#     },
+#     unit_entry     => {
+#      'Description' => 'Trivial Container that will be very lazy',
+#     },
+#     service_entry       => {
+#       'TimeoutStartSec' => '900',
+#     },
+#     container_entry => {
+#       'Image' => 'quay.io/centos/centos:latest',
+#       'Exec'  => 'sh -c "sleep inf"'
+#     },
+#     install_entry   => {
+#       'WantedBy' => 'default.target'
+#     },
+#     active          => true,
+#   }
+#
 define quadlets::quadlet (
   Enum['present', 'absent'] $ensure = 'present',
   Quadlets::Quadlet_name $quadlet = $title,
   Boolean $validate_quadlet = true,
   Stdlib::Filemode $mode = '0444',
   Optional[Boolean] $active = undef,
+  Optional[Quadlets::Quadlet_user] $user = undef,
   Optional[Systemd::Unit::Install] $install_entry = undef,
   Optional[Quadlets::Unit::Unit] $unit_entry = undef,
   Optional[Systemd::Unit::Service] $service_entry = undef,
@@ -119,14 +169,28 @@ define quadlets::quadlet (
   # correct so we cannot test % directly :-(
   # Create a new tmp directory and copy the quadlet there to validate.
   $_validate_cmd = $validate_quadlet ? {
-    true    => epp('quadlets/validate_cmd.epp', { 'quadlet' => $quadlet }),
+    true    => epp('quadlets/validate_cmd.epp', {
+      'quadlet' => $quadlet,
+      'is_user' => $user ? { undef => false, default => true },
+    }),
     default => undef,
   }
 
-  file { "${quadlets::quadlet_dir}/${quadlet}":
+  if $user {
+    $username = $user['name']
+    $file_group = pick($user['group'], $user['name'])
+    $user_homedir = pick($user['homedir'], "/home/${user['name']}")
+    $quadlet_file = "${user_homedir}/${quadlets::quadlet_user_dir}/${quadlet}"
+  } else {
+    $quadlet_file = "${quadlets::quadlet_dir}/${quadlet}"
+    $username = 'root'
+    $file_group = 'root'
+  }
+
+  file { $quadlet_file:
     ensure       => $ensure,
-    owner        => 'root',
-    group        => 'root',
+    owner        => $username,
+    group        => $file_group,
     mode         => $mode,
     validate_cmd => $_validate_cmd,
     content      => epp('quadlets/quadlet_file.epp', {
@@ -142,20 +206,36 @@ define quadlets::quadlet (
     }),
   }
 
-  ensure_resource('systemd::daemon_reload', $quadlet)
-  File["${quadlets::quadlet_dir}/${quadlet}"] ~> Systemd::Daemon_reload[$quadlet]
+  ensure_resource('systemd::daemon_reload', $quadlet, { 'user' => $user.dig('name') })
+  File[$quadlet_file] ~> Systemd::Daemon_reload[$quadlet]
 
   if $active != undef {
-    service { $_service:
-      ensure => $active,
-    }
+    if $user {
+      systemd::user_service { $_service:
+        ensure => $active,
+        enable => $active,
+        user   => $user['name'],
+      }
 
-    if $ensure == 'absent' {
-      Service[$_service] -> File["${quadlets::quadlet_dir}/${quadlet}"]
-      File["${quadlets::quadlet_dir}/${quadlet}"] ~> Systemd::Daemon_reload[$quadlet]
+      if $ensure == 'absent' {
+        Systemd::User_service[$_service] -> File[$quadlet_file]
+        File[$quadlet_file] ~> Systemd::Daemon_reload[$quadlet]
+      } else {
+        File[$quadlet_file] ~> Systemd::User_service[$_service]
+        Systemd::Daemon_reload[$quadlet] ~> Systemd::User_service[$_service]
+      }
     } else {
-      File["${quadlets::quadlet_dir}/${quadlet}"] ~> Service[$_service]
-      Systemd::Daemon_reload[$quadlet] ~> Service[$_service]
+      service { $_service:
+        ensure => $active,
+      }
+
+      if $ensure == 'absent' {
+        Service[$_service] -> File[$quadlet_file]
+        File[$quadlet_file] ~> Systemd::Daemon_reload[$quadlet]
+      } else {
+        File[$quadlet_file] ~> Service[$_service]
+        Systemd::Daemon_reload[$quadlet] ~> Service[$_service]
+      }
     }
   }
 }

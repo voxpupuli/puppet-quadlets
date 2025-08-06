@@ -44,6 +44,7 @@ class quadlets (
   Stdlib::CreateResources $quadlets_hash = {},
 ) {
   $quadlet_dir = '/etc/containers/systemd'
+  $quadlet_user_dir = '.config/containers/systemd'
 
   contain quadlets::install
   contain quadlets::config
