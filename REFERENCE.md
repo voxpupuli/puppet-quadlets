@@ -223,6 +223,8 @@ The following parameters are available in the `quadlets::quadlet` defined type:
 * [`ensure`](#-quadlets--quadlet--ensure)
 * [`mode`](#-quadlets--quadlet--mode)
 * [`active`](#-quadlets--quadlet--active)
+* [`user`](#-quadlets--quadlet--user)
+* [`user_homedir`](#-quadlets--quadlet--user_homedir)
 * [`unit_entry`](#-quadlets--quadlet--unit_entry)
 * [`install_entry`](#-quadlets--quadlet--install_entry)
 * [`service_entry`](#-quadlets--quadlet--service_entry)
@@ -260,6 +262,22 @@ Default value: `'0444'`
 Data type: `Optional[Boolean]`
 
 Make sure the container is running.
+
+Default value: `undef`
+
+##### <a name="-quadlets--quadlet--user"></a>`user`
+
+Data type: `Optional[String]`
+
+Specify which user to run as
+
+Default value: `undef`
+
+##### <a name="-quadlets--quadlet--user_homedir"></a>`user_homedir`
+
+Data type: `Optional[String]`
+
+Specify users homedir
 
 Default value: `undef`
 
