@@ -23,6 +23,7 @@
 ### Data types
 
 * [`Quadlets::Quadlet_name`](#Quadlets--Quadlet_name): custom datatype that validates different filenames for quadlet units
+* [`Quadlets::Quadlet_user`](#Quadlets--Quadlet_user): custom datatype for container entries of podman container quadlet
 * [`Quadlets::Unit::Container`](#Quadlets--Unit--Container): custom datatype for container entries of podman container quadlet
 * [`Quadlets::Unit::Kube`](#Quadlets--Unit--Kube): custom datatype for Kube entries of podman kube quadlet
 * [`Quadlets::Unit::Pod`](#Quadlets--Unit--Pod): custom datatype for Volume entries of podman container quadlet
@@ -224,7 +225,6 @@ The following parameters are available in the `quadlets::quadlet` defined type:
 * [`mode`](#-quadlets--quadlet--mode)
 * [`active`](#-quadlets--quadlet--active)
 * [`user`](#-quadlets--quadlet--user)
-* [`user_homedir`](#-quadlets--quadlet--user_homedir)
 * [`unit_entry`](#-quadlets--quadlet--unit_entry)
 * [`install_entry`](#-quadlets--quadlet--install_entry)
 * [`service_entry`](#-quadlets--quadlet--service_entry)
@@ -267,17 +267,9 @@ Default value: `undef`
 
 ##### <a name="-quadlets--quadlet--user"></a>`user`
 
-Data type: `Optional[String]`
+Data type: `Optional[Quadlets::Quadlet_user]`
 
 Specify which user to run as
-
-Default value: `undef`
-
-##### <a name="-quadlets--quadlet--user_homedir"></a>`user_homedir`
-
-Data type: `Optional[String]`
-
-Specify users homedir
 
 Default value: `undef`
 
@@ -347,6 +339,21 @@ custom datatype that validates different filenames for quadlet units
   * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
 
 Alias of `Pattern[/^[a-zA-Z0-9:\-_.\\@%]+\.(container|volume|pod|network|kube)$/]`
+
+### <a name="Quadlets--Quadlet_user"></a>`Quadlets::Quadlet_user`
+
+custom datatype for container entries of podman container quadlet
+
+* **See also**
+  * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+
+Alias of
+
+```puppet
+Struct[name => String[1],
+  Optional['group'] => String[1],
+  Optional['homedir'] => String[1]]
+```
 
 ### <a name="Quadlets--Unit--Container"></a>`Quadlets::Unit::Container`
 

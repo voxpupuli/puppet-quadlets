@@ -7,7 +7,6 @@
 # @param mode Filemode of container file.
 # @param active Make sure the container is running.
 # @param user Specify which user to run as
-# @param user_homedir Specify users homedir
 # @param unit_entry The `[Unit]` section definition.
 # @param install_entry The `[Install]` section definition.
 # @param service_entry The `[Service]` section definition.
@@ -55,8 +54,7 @@ define quadlets::quadlet (
   Quadlets::Quadlet_name $quadlet = $title,
   Stdlib::Filemode $mode = '0444',
   Optional[Boolean] $active = undef,
-  Optional[String] $user = undef,
-  Optional[String] $user_homedir = undef,
+  Optional[Quadlets::Quadlet_user] $user = undef,
   Optional[Systemd::Unit::Install] $install_entry = undef,
   Optional[Systemd::Unit::Unit] $unit_entry = undef,
   Optional[Systemd::Unit::Service] $service_entry = undef,
@@ -102,19 +100,20 @@ define quadlets::quadlet (
   include quadlets
 
   if $user {
-    if $user_homedir {
-      $quadlet_file = "${user_homedir}/${quadlets::quadlet_user_dir}/${quadlet}"
-    } else {
-      $quadlet_file = "/home/${user}/${quadlets::quadlet_user_dir}/${quadlet}"
-    }
+    $file_owner = $user['name']
+    $file_group = pick($user['group'], $user['name'])
+    $user_homedir = pick($user['homedir'], "/home/${user['name']}")
+    $quadlet_file = "${user_homedir}/${quadlets::quadlet_user_dir}/${quadlet}"
   } else {
     $quadlet_file = "${quadlets::quadlet_dir}/${quadlet}"
+    $file_owner = 'root'
+    $file_group = 'root'
   }
 
   file { $quadlet_file:
     ensure  => $ensure,
-    owner   => 'root',
-    group   => 'root',
+    owner   => $file_owner,
+    group   => $file_group,
     mode    => $mode,
     content => epp('quadlets/quadlet_file.epp', {
         'unit_entry'      => $unit_entry,
@@ -127,7 +126,7 @@ define quadlets::quadlet (
     }),
   }
 
-  ensure_resource('systemd::daemon_reload', $quadlet, { 'user' => $user })
+  ensure_resource('systemd::daemon_reload', $quadlet, { 'user' => $user.dig('name') })
   File[$quadlet_file] ~> Systemd::Daemon_reload[$quadlet]
 
   if $active != undef {
@@ -135,7 +134,7 @@ define quadlets::quadlet (
       systemd::user_service { $_service:
         ensure => $active,
         enable => $active,
-        user   => $user,
+        user   => $user['name'],
       }
 
       if $ensure == 'absent' {

@@ -15,6 +15,34 @@ describe 'quadlets::quadlet' do
           ensure => present,
           before => Quadlets::Quadlet['centos-user.container'],
         }
+        # systemd-logind is masked on almalinux, enable it because it is needed
+        # for user containers
+        service{'systemd-logind.service':
+          ensure => true,
+          enable => true,
+        }
+        # begin hacks to make it work on rootless in rootless container
+        file_line{'contoiners_subgid':
+          path   => '/etc/subgid',
+          line   => 'containers:10000:5000',
+          before => User['containers'],
+        }
+        file_line{'contoiners_subuid':
+          path   => '/etc/subuid',
+          line   => 'containers:10000:5000',
+          before => User['containers'],
+        }
+        exec{'setcap_newgidmap':
+          command => '/usr/sbin/setcap cap_setgid=ep /usr/bin/newgidmap',
+          unless  => '/usr/sbin/getcap /usr/bin/newgidmap | grep -q cap_setgid=ep',
+          before  => User['containers'],
+        }
+        exec{'setcap_newuidmap':
+          command => '/usr/sbin/setcap cap_setuid=ep /usr/bin/newuidmap',
+          unless  => '/usr/sbin/getcap /usr/bin/newuidmap | grep -q cap_setuid=ep',
+          before  => User['containers'],
+        }
+        # end hacks to make it work on rootless in rootless container
         user{'containers':
           ensure     => present,
           managehome => true,
@@ -29,11 +57,13 @@ describe 'quadlets::quadlet' do
         }
         quadlets::quadlet{'centos-user.container':
           ensure          => present,
-          user            => 'containers',
-          unit_entry     => {
+          user            => {
+            'name' => 'containers',
+          },
+          unit_entry      => {
            'Description' => 'Trivial Container that will be very lazy',
           },
-          service_entry       => {
+          service_entry   => {
             'TimeoutStartSec' => '900',
           },
           container_entry => {
@@ -57,7 +87,7 @@ describe 'quadlets::quadlet' do
 
       it 'is enabled' do
         result = command('systemctl --user --machine containers@ is-enabled centos-user.service')
-        expect(result.stdout.strip).to eq('enabled')
+        expect(result.stdout.strip).to eq('generated')
       end
     end
   end
