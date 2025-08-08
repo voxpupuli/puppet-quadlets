@@ -6,6 +6,7 @@
  Optional[Hash] $volume_entry,
  Optional[Hash] $pod_entry,
  Optional[Hash] $kube_entry,
+ Optional[Hash] $image_entry,
 | -%>
 <%-
 
@@ -20,6 +21,7 @@
    'Volume',
    'Install',
    'Kube',
+   'Image',
 ]
 
 -%>
