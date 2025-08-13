@@ -13,6 +13,7 @@ type Quadlets::Unit::Container = Struct[
   Optional['DNSOption'] => Array[String[1],0],
   Optional['DNSSearch'] => Array[Stdlib::Fqdn,0],
   Optional['DropCapability'] => Array[String[1],0],
+  Optional['Entrypoint'] => String,
   Optional['Environment'] => Array[String[1],0],
   Optional['EnvironmentFile'] => Array[String[1],0],
   Optional['EnvironmentHost'] => Array[String[1],0],
