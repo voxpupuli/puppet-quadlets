@@ -24,6 +24,7 @@
 
 * [`Quadlets::Quadlet_name`](#Quadlets--Quadlet_name): custom datatype that validates different filenames for quadlet units
 * [`Quadlets::Unit::Container`](#Quadlets--Unit--Container): custom datatype for container entries of podman container quadlet
+* [`Quadlets::Unit::Image`](#Quadlets--Unit--Image): custom datatype for Image entries of podman image quadlet
 * [`Quadlets::Unit::Kube`](#Quadlets--Unit--Kube): custom datatype for Kube entries of podman kube quadlet
 * [`Quadlets::Unit::Pod`](#Quadlets--Unit--Pod): custom datatype for Volume entries of podman container quadlet
 * [`Quadlets::Unit::Volume`](#Quadlets--Unit--Volume): custom datatype for Volume entries of podman container quadlet
@@ -230,6 +231,7 @@ The following parameters are available in the `quadlets::quadlet` defined type:
 * [`pod_entry`](#-quadlets--quadlet--pod_entry)
 * [`volume_entry`](#-quadlets--quadlet--volume_entry)
 * [`kube_entry`](#-quadlets--quadlet--kube_entry)
+* [`image_entry`](#-quadlets--quadlet--image_entry)
 
 ##### <a name="-quadlets--quadlet--quadlet"></a>`quadlet`
 
@@ -319,6 +321,14 @@ The `[Kube]` section defintion.
 
 Default value: `undef`
 
+##### <a name="-quadlets--quadlet--image_entry"></a>`image_entry`
+
+Data type: `Optional[Quadlets::Unit::Image]`
+
+The `[Image]` section defintion.
+
+Default value: `undef`
+
 ## Data types
 
 ### <a name="Quadlets--Quadlet_name"></a>`Quadlets::Quadlet_name`
@@ -328,7 +338,7 @@ custom datatype that validates different filenames for quadlet units
 * **See also**
   * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
 
-Alias of `Pattern[/^[a-zA-Z0-9:\-_.\\@%]+\.(container|volume|pod|network|kube)$/]`
+Alias of `Pattern[/^[a-zA-Z0-9:\-_.\\@%]+\.(container|volume|pod|network|kube|image)$/]`
 
 ### <a name="Quadlets--Unit--Container"></a>`Quadlets::Unit::Container`
 
@@ -415,6 +425,35 @@ Struct[Optional['AddCapability'] => Array[String[1],1],
   Optional['UserNS'] => String[1],
   Optional['Volume'] => Array[String[1],0],
   Optional['WorkingDir'] => Stdlib::Unixpath]
+```
+
+### <a name="Quadlets--Unit--Image"></a>`Quadlets::Unit::Image`
+
+custom datatype for Image entries of podman image quadlet
+
+* **See also**
+  * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+
+Alias of
+
+```puppet
+Struct[Optional['AllTags'] => Boolean,
+  Optional['Arch'] => String[1],
+  Optional['AuthFile'] => Stdlib::Unixpath,
+  Optional['CertDir'] => Stdlib::Unixpath,
+  Optional['ContainersConfModule'] => Array[Stdlib::Unixpath, 1],
+  Optional['Creds'] => String[1],
+  Optional['DecryptionKey'] => String[1],
+  Optional['GlobalArgs'] => Array[String[1], 0],
+  Optional['Image'] => String[1],
+  Optional['ImageTag'] => String[1],
+  Optional['OS'] => String[1],
+  Optional['PodmanArgs'] => Array[String[1], 0],
+  Optional['Policy'] => Enum['always','missing','never','newer'],
+  Optional['Retry'] => Integer[1],
+  Optional['RetryDelay'] => String[1],
+  Optional['TLSVerify'] => Boolean,
+  Optional['Variant'] => String[1]]
 ```
 
 ### <a name="Quadlets--Unit--Kube"></a>`Quadlets::Unit::Kube`
