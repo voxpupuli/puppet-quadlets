@@ -4,54 +4,30 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.0.0](https://github.com/voxpupuli/puppet-quadlets/tree/v2.0.0) (2025-08-18)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v1.2.0...v2.0.0)
+
+**Closed issues:**
+
+- Add support for multiple networks for one container [\#47](https://github.com/voxpupuli/puppet-quadlets/issues/47)
+- SELinux "container\_manage\_cgroup" [\#22](https://github.com/voxpupuli/puppet-quadlets/issues/22)
+
 ## [v1.2.0](https://github.com/voxpupuli/puppet-quadlets/tree/v1.2.0) (2025-03-28)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v1.1.0...v1.2.0)
-
-**Implemented enhancements:**
-
-- add management of container\_manage\_cgroup selboolean [\#25](https://github.com/voxpupuli/puppet-quadlets/pull/25) ([edrude](https://github.com/edrude))
-- metadata.json: Add OpenVox [\#24](https://github.com/voxpupuli/puppet-quadlets/pull/24) ([jstraw](https://github.com/jstraw))
-
-**Merged pull requests:**
-
-- puppet/systemd: allow 8.x [\#20](https://github.com/voxpupuli/puppet-quadlets/pull/20) ([jay7x](https://github.com/jay7x))
 
 ## [v1.1.0](https://github.com/voxpupuli/puppet-quadlets/tree/v1.1.0) (2024-09-20)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v1.0.1...v1.1.0)
 
-**Implemented enhancements:**
-
-- add purge\_quadlet\_dir param [\#17](https://github.com/voxpupuli/puppet-quadlets/pull/17) ([jhoblitt](https://github.com/jhoblitt))
-
 ## [v1.0.1](https://github.com/voxpupuli/puppet-quadlets/tree/v1.0.1) (2024-09-10)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v1.0.0...v1.0.1)
 
-**Fixed bugs:**
-
-- allow container\_entry.{User,Group} to be String or Integer [\#12](https://github.com/voxpupuli/puppet-quadlets/pull/12) ([jhoblitt](https://github.com/jhoblitt))
-
-**Merged pull requests:**
-
-- FacterDB: Switch to stringified keys [\#13](https://github.com/voxpupuli/puppet-quadlets/pull/13) ([bastelfreak](https://github.com/bastelfreak))
-
 ## [v1.0.0](https://github.com/voxpupuli/puppet-quadlets/tree/v1.0.0) (2024-09-06)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/ad5ca32eb9895a23bfe21095ae92e6f876a816d2...v1.0.0)
-
-**Implemented enhancements:**
-
-- add metadata.json tags [\#10](https://github.com/voxpupuli/puppet-quadlets/pull/10) ([jhoblitt](https://github.com/jhoblitt))
-- New parameter for quadlet directory creation. [\#6](https://github.com/voxpupuli/puppet-quadlets/pull/6) ([traylenator](https://github.com/traylenator))
-- Add Kube type quadlet support [\#5](https://github.com/voxpupuli/puppet-quadlets/pull/5) ([dabelenda](https://github.com/dabelenda))
-- Add `quadlets::quadlet` type to manage quadlet files [\#4](https://github.com/voxpupuli/puppet-quadlets/pull/4) ([traylenator](https://github.com/traylenator))
-- Install and Manage Podman Socket [\#3](https://github.com/voxpupuli/puppet-quadlets/pull/3) ([traylenator](https://github.com/traylenator))
-
-**Merged pull requests:**
-
-- Add puppet-quadlets badges to README.md [\#7](https://github.com/voxpupuli/puppet-quadlets/pull/7) ([traylenator](https://github.com/traylenator))
 
 
 
