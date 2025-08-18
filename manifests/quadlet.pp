@@ -12,6 +12,7 @@
 # @param container_entry The `[Container]` section defintion.
 # @param pod_entry The `[Pod]` section defintion.
 # @param volume_entry The `[Volume]` section defintion.
+# @param network_entry The `[Network]` section defintion.
 # @param kube_entry The `[Kube]` section defintion.
 # @param image_entry The `[Image]` section defintion.
 #
@@ -59,6 +60,7 @@ define quadlets::quadlet (
   Optional[Systemd::Unit::Service] $service_entry = undef,
   Optional[Quadlets::Unit::Container] $container_entry = undef,
   Optional[Quadlets::Unit::Volume] $volume_entry = undef,
+  Optional[Quadlets::Unit::Network] $network_entry = undef,
   Optional[Quadlets::Unit::Pod] $pod_entry = undef,
   Optional[Quadlets::Unit::Kube] $kube_entry = undef,
   Optional[Quadlets::Unit::Image] $image_entry = undef,
@@ -69,32 +71,38 @@ define quadlets::quadlet (
   # Validate the input and find the service name.
   case $_type {
     'container': {
-      if $volume_entry or $pod_entry or $image_entry {
-        fail('A volume_entry, pod_entry or image_entry makes no sense on a container quadlet')
+      if $volume_entry or $pod_entry or $image_entry or $network_entry {
+        fail('A volume_entry, pod_entry, image_entry or network_entry makes no sense on a container quadlet')
       }
       $_service = "${_name}.service"
     }
     'volume': {
-      if $container_entry or $pod_entry or $kube_entry or $image_entry {
-        fail('A container_entry, pod_entry, kube_entry or image_entry makes no sense on a volume quadlet')
+      if $container_entry or $pod_entry or $kube_entry or $image_entry or $network_entry {
+        fail('A container_entry, pod_entry, kube_entry, network_entry or image_entry makes no sense on a volume quadlet')
       }
       $_service = "${_name}-volume.service"
     }
+    'network': {
+      if $container_entry or $pod_entry or $kube_entry or $image_entry or $volume_entry {
+        fail('A container_entry, pod_entry, volume_entry, image_entry or kube_entry makes no sense on a network quadlet')
+      }
+      $_service = "${_name}-network.service"
+    }
     'pod': {
-      if $container_entry or $volume_entry or $kube_entry or $image_entry {
-        fail('A container_entry, volume_entry, kube_entry or image_entry makes no sense on a pod quadlet')
+      if $container_entry or $volume_entry or $kube_entry or $image_entry or $network_entry {
+        fail('A container_entry, volume_entry, kube_entry, network_entry or image_entry makes no sense on a pod quadlet')
       }
       $_service = "${_name}-pod.service"
     }
     'kube': {
-      if $volume_entry or $pod_entry or $container_entry or $image_entry {
-        fail('A container_entry, pod_entry, volume_entry or image_entry makes no sense on a kube quadlet')
+      if $volume_entry or $pod_entry or $container_entry or $image_entry or $network_entry {
+        fail('A container_entry, pod_entry, volume_entry, network_entry  or image_entry makes no sense on a kube quadlet')
       }
       $_service = "${_name}.service"
     }
     'image': {
-      if $volume_entry or $pod_entry or $container_entry or $kube_entry {
-        fail('A container_entry, pod_entry, volume_entry or kube_entry makes no sense on an image quadlet')
+      if $volume_entry or $pod_entry or $container_entry or $kube_entry or $network_entry {
+        fail('A container_entry, pod_entry, volume_entry, network_entry or kube_entry makes no sense on an image quadlet')
       }
       $_service = "${_name}.service"
     }
@@ -116,6 +124,7 @@ define quadlets::quadlet (
         'install_entry'   => $install_entry,
         'container_entry' => $container_entry,
         'volume_entry'    => $volume_entry,
+        'network_entry'   => $network_entry,
         'pod_entry'       => $pod_entry,
         'kube_entry'      => $kube_entry,
         'image_entry'     => $image_entry,
