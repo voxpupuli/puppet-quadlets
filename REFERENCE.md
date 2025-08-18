@@ -26,6 +26,7 @@
 * [`Quadlets::Unit::Container`](#Quadlets--Unit--Container): custom datatype for container entries of podman container quadlet
 * [`Quadlets::Unit::Image`](#Quadlets--Unit--Image): custom datatype for Image entries of podman image quadlet
 * [`Quadlets::Unit::Kube`](#Quadlets--Unit--Kube): custom datatype for Kube entries of podman kube quadlet
+* [`Quadlets::Unit::Network`](#Quadlets--Unit--Network): custom datatype for Network entries of podman container quadlet
 * [`Quadlets::Unit::Pod`](#Quadlets--Unit--Pod): custom datatype for Volume entries of podman container quadlet
 * [`Quadlets::Unit::Volume`](#Quadlets--Unit--Volume): custom datatype for Volume entries of podman container quadlet
 
@@ -230,6 +231,7 @@ The following parameters are available in the `quadlets::quadlet` defined type:
 * [`container_entry`](#-quadlets--quadlet--container_entry)
 * [`pod_entry`](#-quadlets--quadlet--pod_entry)
 * [`volume_entry`](#-quadlets--quadlet--volume_entry)
+* [`network_entry`](#-quadlets--quadlet--network_entry)
 * [`kube_entry`](#-quadlets--quadlet--kube_entry)
 * [`image_entry`](#-quadlets--quadlet--image_entry)
 
@@ -310,6 +312,14 @@ Default value: `undef`
 Data type: `Optional[Quadlets::Unit::Volume]`
 
 The `[Volume]` section defintion.
+
+Default value: `undef`
+
+##### <a name="-quadlets--quadlet--network_entry"></a>`network_entry`
+
+Data type: `Optional[Quadlets::Unit::Network]`
+
+The `[Network]` section defintion.
 
 Default value: `undef`
 
@@ -480,6 +490,34 @@ Struct[Optional['AutoUpdate'] => Array[String[1], 1],
   Optional['SetWorkingDirectory'] => Enum['yaml', 'unit'],
   Optional['UserNS'] => String[1],
   Optional['Yaml'] => Stdlib::Unixpath]
+```
+
+### <a name="Quadlets--Unit--Network"></a>`Quadlets::Unit::Network`
+
+custom datatype for Network entries of podman container quadlet
+
+* **See also**
+  * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+
+Alias of
+
+```puppet
+Struct[Optional['ContainersConfModule'] => Variant[Stdlib::Unixpath,Array[Stdlib::Unixpath,1]],
+  Optional['DisableDNS']           => Boolean,
+  Optional['DNS']                  => String[1],
+  Optional['Driver']               => String[1],
+  Optional['Gateway']              => String[1],
+  Optional['GlobalArgs']           => Variant[String[1],Array[String[1],1]],
+  Optional['Internal']             => Boolean,
+  Optional['IPAMDriver']           => String[1],
+  Optional['IPRange']              => String[1],
+  Optional['IPv6']                 => Boolean,
+  Optional['Label']                => Variant[String[1],Array[String[1],1]],
+  Optional['NetworkDeleteOnStop']  => Boolean,
+  Optional['NetworkName']          => String[1],
+  Optional['Options']              => String[1],
+  Optional['PodmanArgs']           => Variant[String[1],Array[String[1]]],
+  Optional['Subnet']               => String[1]]
 ```
 
 ### <a name="Quadlets--Unit--Pod"></a>`Quadlets::Unit::Pod`
