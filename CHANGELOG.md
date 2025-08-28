@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.0.0](https://github.com/voxpupuli/puppet-quadlets/tree/v2.0.0) (2025-08-27)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v1.2.0...v2.0.0)
+
+**Breaking changes:**
+
+- Drop puppet, update openvox minimum version to 8.19 [\#39](https://github.com/voxpupuli/puppet-quadlets/pull/39) ([TheMeier](https://github.com/TheMeier))
+
+**Implemented enhancements:**
+
+- Add support for multiple networks for one container  [\#48](https://github.com/voxpupuli/puppet-quadlets/pull/48) ([LukasSchulte1](https://github.com/LukasSchulte1))
+- Add network units [\#46](https://github.com/voxpupuli/puppet-quadlets/pull/46) ([saimonn](https://github.com/saimonn))
+- Add option to specify entrypoint [\#45](https://github.com/voxpupuli/puppet-quadlets/pull/45) ([tjikkun](https://github.com/tjikkun))
+- Add support for image quadlet type [\#43](https://github.com/voxpupuli/puppet-quadlets/pull/43) ([tjikkun](https://github.com/tjikkun))
+- Add missing options for container units [\#38](https://github.com/voxpupuli/puppet-quadlets/pull/38) ([jcpunk](https://github.com/jcpunk))
+- Permit custom name/state for podman packages [\#37](https://github.com/voxpupuli/puppet-quadlets/pull/37) ([jcpunk](https://github.com/jcpunk))
+- Add management of the autoupdate timer [\#36](https://github.com/voxpupuli/puppet-quadlets/pull/36) ([jcpunk](https://github.com/jcpunk))
+- Add manage\_service option to disable service management [\#32](https://github.com/voxpupuli/puppet-quadlets/pull/32) ([jorhett](https://github.com/jorhett))
+- Add support for .network quadlets [\#29](https://github.com/voxpupuli/puppet-quadlets/pull/29) ([night199uk](https://github.com/night199uk))
+- Make podman package management optional [\#28](https://github.com/voxpupuli/puppet-quadlets/pull/28) ([jorhett](https://github.com/jorhett))
+
+**Fixed bugs:**
+
+- test: explicitly configure fuse-overlayfs for archlinux [\#35](https://github.com/voxpupuli/puppet-quadlets/pull/35) ([TheMeier](https://github.com/TheMeier))
+
+**Merged pull requests:**
+
+- README.md: please puppet-lint for code examples [\#27](https://github.com/voxpupuli/puppet-quadlets/pull/27) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v1.2.0](https://github.com/voxpupuli/puppet-quadlets/tree/v1.2.0) (2025-03-28)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v1.1.0...v1.2.0)
