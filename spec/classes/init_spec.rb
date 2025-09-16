@@ -134,6 +134,55 @@ describe 'quadlets' do
             end
           end
         end
+
+        context 'with quadlets_hash param' do
+          context 'with quadlets_hash as default' do
+            it { is_expected.to have_quadlets__quadlet_resource_count(0) }
+          end
+
+          context 'with quadlets_hash defined' do
+            let(:params) do
+              { quadlets_hash: {
+                'centos.container': {
+                  'ensure' => 'present',
+                  'unit_entry' => {
+                    'Description' => 'Trivial Container that will be very lazy',
+                  },
+                  'service_entry' => {
+                    'TimeoutStartSec' => '900',
+                  },
+                  'container_entry' => {
+                    'Image' => 'quay.io/centos/centos:latest',
+                    'Exec' => 'sh -c "sleep inf"',
+                  },
+                  'install_entry' => {
+                    'WantedBy' => 'default.target',
+                  },
+                  'active' => true,
+                },
+                'almalinux.container': {
+                  'ensure' => 'present',
+                  'unit_entry' => {
+                    'Description' => 'Second Trivial Container',
+                  },
+                  'service_entry' => {
+                    'TimeoutStartSec' => '900',
+                  },
+                  'container_entry' => {
+                    'Image' => 'quay.io/almalinux/almalinux:latest',
+                    'Exec' => 'sh -c "sleep inf"',
+                  },
+                  'install_entry' => {
+                    'WantedBy' => 'default.target',
+                  },
+                  'active' => false,
+                },
+              } }
+            end
+
+            it { is_expected.to have_quadlets__quadlet_resource_count(2) }
+          end
+        end
       end
     end
   end

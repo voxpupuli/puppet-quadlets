@@ -64,6 +64,7 @@ The following parameters are available in the `quadlets` class:
 * [`create_quadlet_dir`](#-quadlets--create_quadlet_dir)
 * [`selinux_container_manage_cgroup`](#-quadlets--selinux_container_manage_cgroup)
 * [`purge_quadlet_dir`](#-quadlets--purge_quadlet_dir)
+* [`quadlets_hash`](#-quadlets--quadlets_hash)
 
 ##### <a name="-quadlets--manage_package"></a>`manage_package`
 
@@ -164,6 +165,14 @@ Should the directory for storing quadlet files be purged. This has no effect
 unless create_quadlet_dir is set to true.
 
 Default value: `false`
+
+##### <a name="-quadlets--quadlets_hash"></a>`quadlets_hash`
+
+Data type: `Stdlib::CreateResources`
+
+a `Hash` of quadlets to deploy
+
+Default value: `{}`
 
 ## Defined types
 
