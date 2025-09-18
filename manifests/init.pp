@@ -21,6 +21,9 @@
 #   Should the directory for storing quadlet files be purged. This has no effect
 #   unless create_quadlet_dir is set to true.
 #
+# @param quadlets_hash a `Hash` of quadlets to deploy
+#
+#
 # @example Set up Podman for quadlets
 #   include quadlets
 #
@@ -38,6 +41,7 @@ class quadlets (
   String  $autoupdate_timer_name = 'podman-auto-update.timer',
   Boolean $create_quadlet_dir = false,
   Boolean $purge_quadlet_dir = false,
+  Stdlib::CreateResources $quadlets_hash = {},
 ) {
   $quadlet_dir = '/etc/containers/systemd'
 
@@ -46,4 +50,10 @@ class quadlets (
   contain quadlets::service
 
   Class['quadlets::install'] -> Class['quadlets::config'] -> Class['quadlets::service']
+
+  $quadlets_hash.each |$_n, $_v| {
+    quadlets::quadlet { $_n:
+      * => $_v,
+    }
+  }
 }
