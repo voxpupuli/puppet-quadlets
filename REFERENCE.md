@@ -23,6 +23,7 @@
 ### Data types
 
 * [`Quadlets::Quadlet_name`](#Quadlets--Quadlet_name): custom datatype that validates different filenames for quadlet units
+* [`Quadlets::Quadlet_user`](#Quadlets--Quadlet_user): custom datatype for container entries of podman container quadlet
 * [`Quadlets::Unit::Container`](#Quadlets--Unit--Container): custom datatype for container entries of podman container quadlet
 * [`Quadlets::Unit::Image`](#Quadlets--Unit--Image): custom datatype for Image entries of podman image quadlet
 * [`Quadlets::Unit::Kube`](#Quadlets--Unit--Kube): custom datatype for Kube entries of podman kube quadlet
@@ -226,6 +227,60 @@ quadlets::quadlet{'centos.container':
 }
 ```
 
+##### Run a CentOS user Container specifying home dir
+
+```puppet
+quadlets::quadlet{'centos.container':
+  ensure          => present,
+  user            =>
+   'name'    => 'containers',
+   'homedir' => '/nfs/home/containers',
+  },
+  unit_entry     => {
+   'Description' => 'Trivial Container that will be very lazy',
+  },
+  service_entry       => {
+    'TimeoutStartSec' => '900',
+  },
+  container_entry => {
+    'Image' => 'quay.io/centos/centos:latest',
+    'Exec'  => 'sh -c "sleep inf"'
+  },
+  install_entry   => {
+    'WantedBy' => 'default.target'
+  },
+  active          => true,
+}
+```
+
+##### Run a CentOS user Container without managing the aspects of the user
+
+```puppet
+quadlets::quadlet{'centos.container':
+  ensure          => present,
+  user            =>
+   'name'          => 'containers',
+   'create_dir'    => false,
+   'manage_user'   => false,
+   'manage_linger' => false,
+  },
+  unit_entry     => {
+   'Description' => 'Trivial Container that will be very lazy',
+  },
+  service_entry       => {
+    'TimeoutStartSec' => '900',
+  },
+  container_entry => {
+    'Image' => 'quay.io/centos/centos:latest',
+    'Exec'  => 'sh -c "sleep inf"'
+  },
+  install_entry   => {
+    'WantedBy' => 'default.target'
+  },
+  active          => true,
+}
+```
+
 #### Parameters
 
 The following parameters are available in the `quadlets::quadlet` defined type:
@@ -234,6 +289,7 @@ The following parameters are available in the `quadlets::quadlet` defined type:
 * [`ensure`](#-quadlets--quadlet--ensure)
 * [`mode`](#-quadlets--quadlet--mode)
 * [`active`](#-quadlets--quadlet--active)
+* [`user`](#-quadlets--quadlet--user)
 * [`unit_entry`](#-quadlets--quadlet--unit_entry)
 * [`install_entry`](#-quadlets--quadlet--install_entry)
 * [`service_entry`](#-quadlets--quadlet--service_entry)
@@ -273,6 +329,14 @@ Default value: `'0444'`
 Data type: `Optional[Boolean]`
 
 Make sure the container is running.
+
+Default value: `undef`
+
+##### <a name="-quadlets--quadlet--user"></a>`user`
+
+Data type: `Optional[Quadlets::Quadlet_user]`
+
+Specify which user to run as
 
 Default value: `undef`
 
@@ -358,6 +422,24 @@ custom datatype that validates different filenames for quadlet units
   * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
 
 Alias of `Pattern[/^[a-zA-Z0-9:\-_.\\@%]+\.(container|volume|pod|network|kube|image)$/]`
+
+### <a name="Quadlets--Quadlet_user"></a>`Quadlets::Quadlet_user`
+
+custom datatype for container entries of podman container quadlet
+
+* **See also**
+  * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+
+Alias of
+
+```puppet
+Struct[name => String[1],
+  Optional['group'] => String[1],
+  Optional['homedir'] => String[1],
+  Optional['create_dir'] => Boolean,
+  Optional['manage_user'] => Boolean,
+  Optional['manage_linger'] => Boolean]
+```
 
 ### <a name="Quadlets--Unit--Container"></a>`Quadlets::Unit::Container`
 
