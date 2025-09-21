@@ -1,0 +1,11 @@
+<%|
+  String[1] $quadlet,
+|%>
+/bin/bash -c '
+    set -euo pipefail;
+    d=$(mktemp -d);
+    quad=$d/<%= $quadlet %>;
+    trap "rm $quad ; rmdir $d" EXIT;
+    cp % $quad;
+    env QUADLET_UNIT_DIRS=$d /usr/lib/systemd/system-generators/podman-system-generator --dryrun
+'

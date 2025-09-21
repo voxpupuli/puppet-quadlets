@@ -4,6 +4,7 @@
 #
 # @param quadlet of the quadlet file this is the namevar.
 # @param ensure State of the container definition.
+# @param validate_quadlet Validate quadlet with `podman-system-generator --dryrun`
 # @param mode Filemode of container file.
 # @param active Make sure the container is running.
 # @param unit_entry The `[Unit]` section definition.
@@ -53,6 +54,7 @@
 define quadlets::quadlet (
   Enum['present', 'absent'] $ensure = 'present',
   Quadlets::Quadlet_name $quadlet = $title,
+  Boolean $validate_quadlet = true,
   Stdlib::Filemode $mode = '0444',
   Optional[Boolean] $active = undef,
   Optional[Systemd::Unit::Install] $install_entry = undef,
@@ -113,12 +115,21 @@ define quadlets::quadlet (
 
   include quadlets
 
+  # We can only validate a directory of quadlet files and the file extension of quadlet must be
+  # correct so we cannot test % directly :-(
+  # Create a new tmp directory and copy the quadlet there to validate.
+  $_validate_cmd = $validate_quadlet ? {
+    true    => epp('quadlets/validate_cmd.epp', { 'quadlet' => $quadlet }),
+    default => undef,
+  }
+
   file { "${quadlets::quadlet_dir}/${quadlet}":
-    ensure  => $ensure,
-    owner   => 'root',
-    group   => 'root',
-    mode    => $mode,
-    content => epp('quadlets/quadlet_file.epp', {
+    ensure       => $ensure,
+    owner        => 'root',
+    group        => 'root',
+    mode         => $mode,
+    validate_cmd => $_validate_cmd,
+    content      => epp('quadlets/quadlet_file.epp', {
       'unit_entry'      => $unit_entry,
       'service_entry'   => $service_entry,
       'install_entry'   => $install_entry,

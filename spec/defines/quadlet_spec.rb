@@ -43,7 +43,8 @@ describe 'quadlets::quadlet' do
             with_content(%r{^Image=quay.io/centos/centos:latest$}).
             with_content(%r{^PublishPort=1234$}).
             with_content(%r{^PublishPort=123.1.1.1:100:102$}).
-            with_content(%r{^Exec=sh -c "sleep inf"$})
+            with_content(%r{^Exec=sh -c "sleep inf"$}).
+            with_validate_cmd(%r{quad=\$d/centos.container})
         }
 
         it { is_expected.to contain_systemd__daemon_reload('centos.container') }
@@ -65,6 +66,14 @@ describe 'quadlets::quadlet' do
 
           it { is_expected.to contain_file('/etc/containers/systemd/centos.container').with_ensure('absent') }
           it { is_expected.to contain_systemd__daemon_reload('centos.container') }
+        end
+
+        context 'with the validate_quadlet false' do
+          let(:params) do
+            super().merge({ validate_quadlet: false })
+          end
+
+          it { is_expected.to contain_file('/etc/containers/systemd/centos.container').without_validate_cmd }
         end
       end
     end
