@@ -19,6 +19,7 @@
 ### Defined types
 
 * [`quadlets::quadlet`](#quadlets--quadlet): Generate and manage podman quadlet definitions (podman > 4.4.0)
+* [`quadlets::user`](#quadlets--user): Generate and manage podman quadlet user
 
 ### Data types
 
@@ -223,7 +224,7 @@ quadlets::quadlet{'centos.container':
 ```puppet
 quadlets::quadlet{'centos.container':
   ensure          => present,
-  user            =>
+  user            => {
    'name'    => 'containers',
    'homedir' => '/nfs/home/containers',
   },
@@ -402,6 +403,57 @@ Data type: `Optional[Quadlets::Unit::Image]`
 The `[Image]` section defintion.
 
 Default value: `undef`
+
+### <a name="quadlets--user"></a>`quadlets::user`
+
+Generate and manage podman quadlet user
+
+#### Examples
+
+##### Run a CentOS user Container maning user, specifying home dir
+
+```puppet
+$_steve = {
+  'name'          => 'steve',
+  'create_dir'    => true,
+  'manage_user'   => true,
+  'manage_linger' => true,
+  'homedir'       => '/nfs/home/steve',
+}
+quadlets::user { 'steve':
+  user => $_steve,
+}
+quadlets::quadlet{ 'centos.container':
+  ensure          => present,
+  user            => $_steve,
+  unit_entry     => {
+   'Description' => 'Trivial Container that will be very lazy',
+  },
+  service_entry       => {
+    'TimeoutStartSec' => '900',
+  },
+  container_entry => {
+    'Image' => 'quay.io/centos/centos:latest',
+    'Exec'  => 'sh -c "sleep inf"'
+  },
+  install_entry   => {
+    'WantedBy' => 'default.target'
+  },
+  active          => true,
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `quadlets::user` defined type:
+
+* [`user`](#-quadlets--user--user)
+
+##### <a name="-quadlets--user--user"></a>`user`
+
+Data type: `Quadlets::Quadlet_user`
+
+Specify user with options
 
 ## Data types
 

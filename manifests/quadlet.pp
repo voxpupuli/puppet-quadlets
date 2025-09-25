@@ -54,7 +54,7 @@
 # @example Run a CentOS user Container specifying home dir
 #   quadlets::quadlet{'centos.container':
 #     ensure          => present,
-#     user            =>
+#     user            => {
 #      'name'    => 'containers',
 #      'homedir' => '/nfs/home/containers',
 #     },
@@ -168,39 +168,6 @@ define quadlets::quadlet (
     $file_group = pick($user['group'], $user['name'])
     $user_homedir = pick($user['homedir'], "/home/${user['name']}")
     $quadlet_file = "${user_homedir}/${quadlets::quadlet_user_dir}/${quadlet}"
-    $create_dir = pick($user['create_dir'], true)
-    $manage_user = pick($user['manage_user'], true)
-    $manage_linger = pick($user['manage_linger'], true)
-
-    if $create_dir {
-      $components = split($quadlets::quadlet_user_dir, '/')
-      $dirs = $components.reduce([]) |$accum, $part| {
-        $accum + [$accum ? {
-            []      => "${user_homedir}/${part}",
-            default => "${accum[-1]}/${part}"
-          }
-        ]
-      }
-      ensure_resource('file', $dirs, {
-          ensure => directory,
-          owner  => $username,
-          group  => $file_group,
-        }
-      )
-    }
-    if $manage_user {
-      ensure_resource('user', $username, {
-          ensure     => present,
-          managehome => true,
-        }
-      )
-    }
-    if $manage_linger {
-      ensure_resource('loginctl_user', $username, {
-          linger => enabled,
-        }
-      )
-    }
   } else {
     $quadlet_file = "${quadlets::quadlet_dir}/${quadlet}"
     $username = 'root'
