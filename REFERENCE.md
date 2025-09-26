@@ -232,6 +232,7 @@ The following parameters are available in the `quadlets::quadlet` defined type:
 
 * [`quadlet`](#-quadlets--quadlet--quadlet)
 * [`ensure`](#-quadlets--quadlet--ensure)
+* [`validate_quadlet`](#-quadlets--quadlet--validate_quadlet)
 * [`mode`](#-quadlets--quadlet--mode)
 * [`active`](#-quadlets--quadlet--active)
 * [`unit_entry`](#-quadlets--quadlet--unit_entry)
@@ -259,6 +260,14 @@ Data type: `Enum['present', 'absent']`
 State of the container definition.
 
 Default value: `'present'`
+
+##### <a name="-quadlets--quadlet--validate_quadlet"></a>`validate_quadlet`
+
+Data type: `Boolean`
+
+Validate quadlet with `podman-system-generator --dryrun`
+
+Default value: `true`
 
 ##### <a name="-quadlets--quadlet--mode"></a>`mode`
 
