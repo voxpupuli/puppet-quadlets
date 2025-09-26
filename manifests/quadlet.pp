@@ -58,7 +58,7 @@ define quadlets::quadlet (
   Stdlib::Filemode $mode = '0444',
   Optional[Boolean] $active = undef,
   Optional[Systemd::Unit::Install] $install_entry = undef,
-  Optional[Systemd::Unit::Unit] $unit_entry = undef,
+  Optional[Quadlets::Unit::Unit] $unit_entry = undef,
   Optional[Systemd::Unit::Service] $service_entry = undef,
   Optional[Quadlets::Unit::Container] $container_entry = undef,
   Optional[Quadlets::Unit::Volume] $volume_entry = undef,
