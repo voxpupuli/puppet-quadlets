@@ -28,31 +28,37 @@
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "9"
+        "9",
+        "10"
       ]
     },
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "9"
+        "9",
+        "10"
       ]
     },
     {
       "operatingsystem": "AlmaLinux",
       "operatingsystemrelease": [
-        "9"
+        "9",
+        "10"
       ]
     },
     {
       "operatingsystem": "Rocky",
       "operatingsystemrelease": [
-        "9"
+        "9",
+        "10"
       ]
     },
     {
       "operatingsystem": "OracleLinux",
       "operatingsystemrelease": [
-        "9"
+        "9",
+        "10"
+
       ]
     },
     {
@@ -64,7 +70,8 @@
     {
       "operatingsystem": "Fedora",
       "operatingsystemrelease": [
-        "40"
+        "40",
+        "42"
       ]
     }
   ],
