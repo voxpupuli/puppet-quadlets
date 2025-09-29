@@ -14,6 +14,7 @@ describe 'quadlets::quadlet' do
             ensure: 'present',
             unit_entry: {
               'Description' => 'Simple centos container',
+              'Requires'    => 'another.container',
             },
             service_entry: {
               'TimeoutStartSec' => '900',
@@ -37,6 +38,7 @@ describe 'quadlets::quadlet' do
             with_mode('0444').
             with_content(%r{^\[Unit\]$}).
             with_content(%r{^Description=Simple centos container$}).
+            with_content(%r{^Requires=another.container$}).
             with_content(%r{^\[Service\]$}).
             with_content(%r{^TimeoutStartSec=900}).
             with_content(%r{^\[Container\]$}).
