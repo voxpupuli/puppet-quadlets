@@ -1,6 +1,6 @@
 {
   "name": "puppet-quadlets",
-  "version": "2.1.0",
+  "version": "2.1.1-rc0",
   "author": "Vox Pupuli",
   "summary": "Puppet Podman Quadlets module",
   "license": "Apache-2.0",
@@ -58,7 +58,6 @@
       "operatingsystemrelease": [
         "9",
         "10"
-
       ]
     },
     {
