@@ -4,7 +4,23 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v2.0.0](https://github.com/voxpupuli/puppet-quadlets/tree/v2.0.0) (2025-08-27)
+## [v2.1.0](https://github.com/voxpupuli/puppet-quadlets/tree/v2.1.0) (2025-10-06)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v2.0.0...v2.1.0)
+
+**Implemented enhancements:**
+
+- Validate quadlet files before they are written [\#53](https://github.com/voxpupuli/puppet-quadlets/pull/53) ([traylenator](https://github.com/traylenator))
+- Support dependencies between quadlets [\#52](https://github.com/voxpupuli/puppet-quadlets/pull/52) ([traylenator](https://github.com/traylenator))
+- Added location to drop ENC defined quadlets [\#51](https://github.com/voxpupuli/puppet-quadlets/pull/51) ([jcpunk](https://github.com/jcpunk))
+- Support CentOS, Rocky, Alma, Oracle 10 and Fedora 42 [\#42](https://github.com/voxpupuli/puppet-quadlets/pull/42) ([traylenator](https://github.com/traylenator))
+- Support rootless quadlets, add user option to quadlet [\#41](https://github.com/voxpupuli/puppet-quadlets/pull/41) ([tjikkun](https://github.com/tjikkun))
+
+**Closed issues:**
+
+- Would You Consider Support for Rootless/User Containers? [\#19](https://github.com/voxpupuli/puppet-quadlets/issues/19)
+
+## [v2.0.0](https://github.com/voxpupuli/puppet-quadlets/tree/v2.0.0) (2025-08-28)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v1.2.0...v2.0.0)
 
