@@ -1,5 +1,6 @@
 <%|
   String[1] $quadlet,
+  Boolean $is_user,
 |%>
 /bin/bash -c '
     set -euo pipefail;
@@ -7,5 +8,5 @@
     quad=$d/<%= $quadlet %>;
     trap "rm $quad ; rmdir $d" EXIT;
     cp % $quad;
-    env QUADLET_UNIT_DIRS=$d /usr/lib/systemd/system-generators/podman-system-generator --dryrun
+    env QUADLET_UNIT_DIRS=$d <%= $is_user ? { true => '/usr/lib/systemd/user-generators/podman-user-generator', default => '/usr/lib/systemd/system-generators/podman-system-generator' } %> --dryrun
 '
