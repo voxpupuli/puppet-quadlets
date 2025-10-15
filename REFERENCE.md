@@ -589,7 +589,7 @@ Struct[Optional['AddCapability'] => Array[String[1],1],
   Optional['UserNS'] => String[1],
   Optional['Volume'] => Array[String[1],0],
   Optional['WorkingDir'] => Stdlib::Unixpath,
-  Optional['Hostname']             => Variant[Stdlib::Fqdn,Array[Stdlib::Fqdn,1]]]
+  Optional['Hostname'] => Variant[Stdlib::Fqdn,Array[Stdlib::Fqdn,1]]]
 ```
 
 ### <a name="Quadlets--Unit--Image"></a>`Quadlets::Unit::Image`
