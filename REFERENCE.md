@@ -688,7 +688,7 @@ Struct[Optional['ContainersConfModule'] => Variant[Stdlib::Unixpath,Array[Stdlib
   Optional['Network']              => String[1],
   Optional['PodmanArgs']           => Variant[String[1],Array[String[1]]],
   Optional['PodName']              => String[1],
-  Optional['PublishPort']          => Array[Stdlib::Port,1],
+  Optional['PublishPort']          => Array[Variant[Stdlib::Port,String[1]],1],
   Optional['Volume']               => Variant[String[1],Array[String[1],]]]
 ```
 
