@@ -588,7 +588,8 @@ Struct[Optional['AddCapability'] => Array[String[1],1],
   Optional['User'] => Variant[String[1],Integer[0]],
   Optional['UserNS'] => String[1],
   Optional['Volume'] => Array[String[1],0],
-  Optional['WorkingDir'] => Stdlib::Unixpath]
+  Optional['WorkingDir'] => Stdlib::Unixpath,
+  Optional['Hostname']             => Variant[Stdlib::Fqdn,Array[Stdlib::Fqdn,1]]]
 ```
 
 ### <a name="Quadlets--Unit--Image"></a>`Quadlets::Unit::Image`
@@ -690,7 +691,8 @@ Struct[Optional['ContainersConfModule'] => Variant[Stdlib::Unixpath,Array[Stdlib
   Optional['PodName']              => String[1],
   Optional['PublishPort']          => Array[Stdlib::Port,1],
   Optional['Volume']               => Variant[String[1],Array[String[1],]],
-  Optional['Hostname']             => Variant[Stdlib::Fqdn,Array[Stdlib::Fqdn,1]]]
+  Optional['Hostname']             => Variant[Stdlib::Fqdn,Array[Stdlib::Fqdn,1]],
+  Optional['Label']                => Variant[String[1],Array[String[1],1]]]
 ```
 
 ### <a name="Quadlets--Unit--Unit"></a>`Quadlets::Unit::Unit`
