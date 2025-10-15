@@ -4,4 +4,6 @@ require 'spec_helper'
 
 describe 'Quadlets::Unit::Pod' do
   it { is_expected.to allow_value({ 'PodName' => 'special' }) }
+  it { is_expected.to allow_value({ 'Label' => ['abc','xyz'] }) }
+  it { is_expected.to allow_value({ 'Label' => 'xyz' }) }
 end
