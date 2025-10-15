@@ -77,4 +77,5 @@ type Quadlets::Unit::Container = Struct[
   Optional['UserNS'] => String[1],
   Optional['Volume'] => Array[String[1],0],
   Optional['WorkingDir'] => Stdlib::Unixpath,
+  Optional['Hostname'] => Variant[Stdlib::Fqdn,Array[Stdlib::Fqdn,1]],
 ]
