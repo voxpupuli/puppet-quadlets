@@ -31,7 +31,7 @@ type Quadlets::Unit::Container = Struct[
   Optional['HealthStartupInterval'] => Variant[Enum['disable'],Integer[0]],
   Optional['HealthStartupTimeout'] => String[1],
   Optional['HealthTimeout'] => String[1],
-  Optional['HostName'] => String[1],
+  Optional['HostName'] => Variant[String[1],Array[String[1],1]],
   Optional['Image'] => String[1],
   Optional['IP'] => Stdlib::IP::Address::V4,
   Optional['IP6'] => Stdlib::IP::Address::V6,
@@ -77,5 +77,4 @@ type Quadlets::Unit::Container = Struct[
   Optional['UserNS'] => String[1],
   Optional['Volume'] => Array[String[1],0],
   Optional['WorkingDir'] => Stdlib::Unixpath,
-  Optional['Hostname'] => Variant[Stdlib::Fqdn,Array[Stdlib::Fqdn,1]],
 ]

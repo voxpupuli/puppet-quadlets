@@ -8,6 +8,6 @@ type Quadlets::Unit::Pod = Struct[
   Optional['PodName']              => String[1],
   Optional['PublishPort']          => Array[Variant[Stdlib::Port,String[1]],1],
   Optional['Volume']               => Variant[String[1],Array[String[1],]],
-  Optional['Hostname']             => Variant[Stdlib::Fqdn,Array[Stdlib::Fqdn,1]],
+  Optional['HostName']             => Variant[String[1],Array[String[1],1]],
   Optional['Label']                => Variant[String[1],Array[String[1],1]],
 ]
