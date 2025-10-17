@@ -13,6 +13,6 @@ describe 'Quadlets::Unit::Container' do
   it { is_expected.to allow_value({ 'Entrypoint' => '["/usr/bin/sleep", "inf"]' }) }
   it { is_expected.to allow_value({ 'Exec'  => '/bin/bash' }) }
   it { is_expected.to allow_value({ 'Exec'  => './entrypoint.sh' }) }
-  it { is_expected.to allow_value({ 'Hostname' => ['foo.example.net'] }) }
-  it { is_expected.to allow_value({ 'Hostname' => 'foo.example.net' }) }
+  it { is_expected.to allow_value({ 'HostName' => ['foo.example.net'] }) }
+  it { is_expected.to allow_value({ 'HostName' => 'foo.example.net' }) }
 end
