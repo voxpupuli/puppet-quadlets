@@ -39,9 +39,9 @@ describe 'quadlets::quadlet' do
         }
         package{'fuse-overlayfs':
           ensure => present,
-          before => Quadlets::Quadlet['centos.kube'],
+          before => Quadlets::Quadlet['kubeycentos.kube'],
         }
-        quadlets::quadlet{'centos.kube':
+        quadlets::quadlet{'kubeycentos.kube':
           ensure          => present,
           kube_entry     => {
            'Yaml' => '/etc/containers/yaml/pod.yaml',
@@ -58,7 +58,7 @@ describe 'quadlets::quadlet' do
       end
     end
 
-    describe service('centos.service') do
+    describe service('kubeycentos.service') do
       it { is_expected.to be_running }
       it { is_expected.to be_enabled }
     end

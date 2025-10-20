@@ -120,47 +120,46 @@ define quadlets::quadlet (
   $_split = $quadlet.split('[.]')
   $_name = $_split[0]
   $_type = $_split[1]
-  # Validate the input and find the service name.
+  # Validate the input
   case $_type {
     'container': {
       if $volume_entry or $pod_entry or $image_entry or $network_entry {
         fail('A volume_entry, pod_entry, image_entry or network_entry makes no sense on a container quadlet')
       }
-      $_service = "${_name}.service"
     }
     'volume': {
       if $container_entry or $pod_entry or $kube_entry or $image_entry or $network_entry {
         fail('A container_entry, pod_entry, kube_entry, network_entry or image_entry makes no sense on a volume quadlet')
       }
-      $_service = "${_name}-volume.service"
     }
     'network': {
       if $container_entry or $pod_entry or $kube_entry or $image_entry or $volume_entry {
         fail('A container_entry, pod_entry, volume_entry, image_entry or kube_entry makes no sense on a network quadlet')
       }
-      $_service = "${_name}-network.service"
     }
     'pod': {
       if $container_entry or $volume_entry or $kube_entry or $image_entry or $network_entry {
         fail('A container_entry, volume_entry, kube_entry, network_entry or image_entry makes no sense on a pod quadlet')
       }
-      $_service = "${_name}-pod.service"
     }
     'kube': {
       if $volume_entry or $pod_entry or $container_entry or $image_entry or $network_entry {
         fail('A container_entry, pod_entry, volume_entry, network_entry  or image_entry makes no sense on a kube quadlet')
       }
-      $_service = "${_name}.service"
     }
     'image': {
       if $volume_entry or $pod_entry or $container_entry or $kube_entry or $network_entry {
         fail('A container_entry, pod_entry, volume_entry, network_entry or kube_entry makes no sense on an image quadlet')
       }
-      $_service = "${_name}.service"
     }
     default: {
       fail('Should never be here due to typing on quadlet')
     }
+  }
+
+  $_service = $_type in ['container','kube'] ? {
+    true    => "${_name}.service",
+    default => "${_name}-${_type}.service",
   }
 
   include quadlets

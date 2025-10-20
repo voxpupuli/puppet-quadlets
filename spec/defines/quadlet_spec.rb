@@ -78,6 +78,38 @@ describe 'quadlets::quadlet' do
           it { is_expected.to contain_file('/etc/containers/systemd/centos.container').without_validate_cmd }
         end
       end
+
+      context 'with a kube quadlet' do
+        let(:title) { 'magic.kube' }
+        let(:params) do
+          {
+            ensure: 'present',
+            unit_entry: {
+              'Description' => 'Simple magic kube',
+            },
+            active: true,
+          }
+        end
+
+        it { is_expected.to contain_file('/etc/containers/systemd/magic.kube') }
+        it { is_expected.to contain_service('magic.service').with_ensure(true) }
+      end
+
+      context 'with an image quadlet' do
+        let(:title) { 'busybox.image' }
+        let(:params) do
+          {
+            ensure: 'present',
+            unit_entry: {
+              'Description' => 'Simple busybox image',
+            },
+            active: true,
+          }
+        end
+
+        it { is_expected.to contain_file('/etc/containers/systemd/busybox.image') }
+        it { is_expected.to contain_service('busybox-image.service').with_ensure(true) }
+      end
     end
   end
 end
