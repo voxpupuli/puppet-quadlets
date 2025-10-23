@@ -10,4 +10,5 @@ describe 'Quadlets::Unit::Pod' do
   it { is_expected.to allow_value({ 'Label' => 'xyz' }) }
   it { is_expected.to allow_value({ 'PublishPort' => ['1234:5678'] }) }
   it { is_expected.not_to allow_value({ 'PublishPort' => '1234:5678' }) }
+  it { is_expected.to allow_value({ 'UserNS' => 'auto' }) }
 end
