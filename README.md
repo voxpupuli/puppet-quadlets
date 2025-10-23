@@ -15,7 +15,7 @@ Manages Podman and Podman Quadlets in particular
 
 ## Example
 
-Create a simple `centos.service` running a container from a CentOS image.
+### Simple `rootful` `centos.service` Running a Container
 
 ```puppet
 quadlets::quadlet { 'centos.container':
@@ -35,6 +35,39 @@ quadlets::quadlet { 'centos.container':
   },
   active          => true,
 }
+```
+
+### Simple `rootless` `centos.service` Running a Container
+
+
+```puppet
+$_user_hash = {
+   name          => 'santa',
+   create_dir    => true,
+   manage_user   => true,
+   manage_linger => true,
+   homedir       => "/home/santa",
+}
+
+quadlets::user { 'santa':
+  user => $_user_hash,
+}
+quadlets::quadlet { "centos.container":
+   ensure          => present,
+   user            => $_user_hash,
+   unit_entry      => {
+     'Description' => 'Trivial Container that will be very lazy',
+   },
+   container_entry => {
+     'Image' => 'quay.io/centos/centos:latest',
+     'Exec'  => 'sh -c "sleep inf"',
+   },
+   install_entry   => {
+     'WantedBy' => 'default.target',
+   },
+   active          => true,
+   require         => Quadlets::User['santa'],
+ }
 ```
 
 ## Reference
