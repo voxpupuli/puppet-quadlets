@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.2.0](https://github.com/voxpupuli/puppet-quadlets/tree/v2.2.0) (2025-10-23)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v2.1.0...v2.2.0)
+
+**Implemented enhancements:**
+
+- Allow to configure UserNS mode on Pods [\#65](https://github.com/voxpupuli/puppet-quadlets/pull/65) ([stdietrich](https://github.com/stdietrich))
+- Correct PublishPort and add Label and Hostname to Pods [\#59](https://github.com/voxpupuli/puppet-quadlets/pull/59) ([traylenator](https://github.com/traylenator))
+
+**Fixed bugs:**
+
+- Correct Hostname to HostName [\#60](https://github.com/voxpupuli/puppet-quadlets/pull/60) ([traylenator](https://github.com/traylenator))
+
 ## [v2.1.0](https://github.com/voxpupuli/puppet-quadlets/tree/v2.1.0) (2025-10-06)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v2.0.0...v2.1.0)
