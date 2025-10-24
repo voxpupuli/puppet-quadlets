@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
+
 describe 'Quadlets::Unit::Network' do
   it { is_expected.to allow_value({ 'ContainersConfModule' => '/etc/container/1.conf' }) }
   it { is_expected.to allow_value({ 'DisableDNS'           => true }) }
