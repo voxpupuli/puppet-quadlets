@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.2.1](https://github.com/voxpupuli/puppet-quadlets/tree/v2.2.1) (2025-10-24)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v2.2.0...v2.2.1)
+
+**Fixed bugs:**
+
+- Correct name of image services [\#63](https://github.com/voxpupuli/puppet-quadlets/pull/63) ([traylenator](https://github.com/traylenator))
+
+**Merged pull requests:**
+
+- Addition of rootless example to README [\#64](https://github.com/voxpupuli/puppet-quadlets/pull/64) ([traylenator](https://github.com/traylenator))
+
 ## [v2.2.0](https://github.com/voxpupuli/puppet-quadlets/tree/v2.2.0) (2025-10-23)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v2.1.0...v2.2.0)
