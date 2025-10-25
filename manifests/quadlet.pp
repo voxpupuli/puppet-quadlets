@@ -164,29 +164,32 @@ define quadlets::quadlet (
 
   include quadlets
 
-  # We can only validate a directory of quadlet files and the file extension of quadlet must be
-  # correct so we cannot test % directly :-(
-  # Create a new tmp directory and copy the quadlet there to validate.
-  $_validate_cmd = $validate_quadlet ? {
-    true    => epp('quadlets/validate_cmd.epp', {
-      'quadlet' => $quadlet,
-      'is_user' => $user ? { undef => false, default => true },
-    }),
-    default => undef,
-  }
-
   if $user {
     $username = $user['name']
     $file_group = pick($user['group'], $user['name'])
     $user_homedir = pick($user['homedir'], "/home/${user['name']}")
-    $quadlet_file = "${user_homedir}/${quadlets::quadlet_user_dir}/${quadlet}"
+    $_quadlet_dir = "${user_homedir}/${quadlets::quadlet_user_dir}"
   } else {
-    $quadlet_file = "${quadlets::quadlet_dir}/${quadlet}"
+    $_quadlet_dir = $quadlets::quadlet_dir
     $username = 'root'
     $file_group = 'root'
   }
+  $_quadlet_file = "${_quadlet_dir}/${quadlet}"
 
-  file { $quadlet_file:
+  # We can only validate a directory of quadlet files and the file extension of the new
+  # quadlet must be correct so we cannot test % directly :-(
+  #
+  # Create a new tmp directory and copy the new quadlet and existing quadlet there to validate.
+  $_validate_cmd = $validate_quadlet ? {
+    true    => epp('quadlets/validate_cmd.epp', {
+      'quadlet' => $quadlet,
+      'is_user' => $user ? { undef => false, default => true },
+      'dest'    => $_quadlet_dir,
+    }),
+    default => undef,
+  }
+
+  file { $_quadlet_file:
     ensure       => $ensure,
     owner        => $username,
     group        => $file_group,
@@ -206,7 +209,7 @@ define quadlets::quadlet (
   }
 
   ensure_resource('systemd::daemon_reload', $quadlet, { 'user' => $user.dig('name') })
-  File[$quadlet_file] ~> Systemd::Daemon_reload[$quadlet]
+  File[$_quadlet_file] ~> Systemd::Daemon_reload[$quadlet]
 
   if $active != undef {
     if $user {
@@ -217,10 +220,10 @@ define quadlets::quadlet (
       }
 
       if $ensure == 'absent' {
-        Systemd::User_service[$_service] -> File[$quadlet_file]
-        File[$quadlet_file] ~> Systemd::Daemon_reload[$quadlet]
+        Systemd::User_service[$_service] -> File[$_quadlet_file]
+        File[$_quadlet_file] ~> Systemd::Daemon_reload[$quadlet]
       } else {
-        File[$quadlet_file] ~> Systemd::User_service[$_service]
+        File[$_quadlet_file] ~> Systemd::User_service[$_service]
         Systemd::Daemon_reload[$quadlet] ~> Systemd::User_service[$_service]
       }
     } else {
@@ -229,10 +232,10 @@ define quadlets::quadlet (
       }
 
       if $ensure == 'absent' {
-        Service[$_service] -> File[$quadlet_file]
-        File[$quadlet_file] ~> Systemd::Daemon_reload[$quadlet]
+        Service[$_service] -> File[$_quadlet_file]
+        File[$_quadlet_file] ~> Systemd::Daemon_reload[$quadlet]
       } else {
-        File[$quadlet_file] ~> Service[$_service]
+        File[$_quadlet_file] ~> Service[$_service]
         Systemd::Daemon_reload[$quadlet] ~> Service[$_service]
       }
     }
