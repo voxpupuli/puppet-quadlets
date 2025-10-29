@@ -11,12 +11,14 @@ describe 'quadlets::user' do
           manage_linger => false,
         }
 
+        quadlets::user{'grpuser':
+          group         => 'grpgrp',
+          manage_linger => false,
+        }
+
         user{ 'nomanage':
           home       => '/opt/nomanage',
           managehome => true,
-        }
-        $_nomanage = {
-          name          => 'nomanage',
         }
         quadlets::user{ 'nomanage':
           manage_user   => false,
@@ -35,6 +37,18 @@ describe 'quadlets::user' do
     describe file('/home/simple/.config/containers/systemd') do
       it { is_expected.to be_directory }
       it { is_expected.to be_owned_by 'simple' }
+      it { is_expected.to be_grouped_into 'simple' }
+    end
+
+    describe user('grpuser') do
+      it { is_expected.to exist }
+      it { is_expected.to belong_to_primary_group 'grpgrp' }
+    end
+
+    describe file('/home/grpuser/.config/containers/systemd') do
+      it { is_expected.to be_directory }
+      it { is_expected.to be_owned_by 'grpuser' }
+      it { is_expected.to be_grouped_into 'grpgrp' }
     end
 
     describe file('/opt/nomanage/.config/containers/systemd') do

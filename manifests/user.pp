@@ -4,7 +4,7 @@
 # @param group Specify group ownership of quadlet directories, if `undef` it will be set equal to the username.
 # @param homedir Home directory, if `undef` `/home/$user` will be used.
 # @param create_dir If true the directory for containers will be created at `$homedir/.config/contaners/systemd`.
-# @param manage_user If true the user will be created.
+# @param manage_user If true the user and group will be created.
 # @param manage_linger If true `systemd --user` will be started for user.
 #
 # @example Run a CentOS user Container maning user, specifying home dir
@@ -64,8 +64,11 @@ define quadlets::user (
     }
   }
   if $manage_user {
+    group { $_file_group: }
+
     user { $user:
       ensure     => present,
+      gid        => $_file_group,
       home       => $_user_homedir,
       managehome => true,
     }
