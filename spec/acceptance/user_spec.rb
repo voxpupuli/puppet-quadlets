@@ -14,6 +14,14 @@ describe 'quadlets::user' do
         quadlets::user{'simple':
           user => $_simple
         }
+        $_grp = {
+          name          => 'grpuser',
+          group         => 'grpgrp',
+          manage_linger => false,
+        }
+        quadlets::user{'grpuser':
+          user => $_grp
+        }
 
         user{ 'nomanage':
           home       => '/opt/nomanage',
@@ -35,6 +43,11 @@ describe 'quadlets::user' do
     describe user('simple') do
       it { is_expected.to exist }
       it { is_expected.to belong_to_primary_group 'simple' }
+    end
+
+    describe user('grpuser') do
+      it { is_expected.to exist }
+      it { is_expected.to belong_to_primary_group 'grpgrp' }
     end
 
     describe file('/home/simple/.config/containers/systemd') do

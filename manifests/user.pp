@@ -60,8 +60,11 @@ define quadlets::user (
     }
   }
   if $_manage_user {
+    group { $_file_group: }
+
     user { $_username:
       ensure     => present,
+      gid        => $_file_group,
       home       => $_user_homedir,
       managehome => true,
     }
