@@ -7,9 +7,11 @@
     set -euo pipefail;
     d=$(mktemp -d);
     quad=$d/<%= $quadlet %>;
-    existing=(<%= $dest %>/*)
-    ((${#existing[@]})) && cp -- "${existing[@]}" $d/.
-    trap "rm $d/* ; rmdir $d" EXIT;
     cp % $quad;
-    env QUADLET_UNIT_DIRS=$d <%= $is_user ? { true => '/usr/lib/systemd/user-generators/podman-user-generator', default => '/usr/lib/systemd/system-generators/podman-system-generator' } %> --dryrun
+    trap "rm $quad ; rmdir $d" EXIT;
+    <%- if $is_user { -%>
+    env QUADLET_UNIT_DIRS=$d:<%= $dest %> /usr/lib/systemd/user-generators/podman-user-generator --dryrun
+    <%- } else  { -%>
+    env QUADLET_UNIT_DIRS=$d:<%= $dest %> /usr/lib/systemd/system-generators/podman-system-generator --dryrun
+    <%- } -%>
 '

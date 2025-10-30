@@ -179,7 +179,7 @@ define quadlets::quadlet (
   # We can only validate a directory of quadlet files and the file extension of the new
   # quadlet must be correct so we cannot test % directly :-(
   #
-  # Create a new tmp directory and copy the new quadlet and existing quadlet there to validate.
+  # Create a new tmp directory and copy the new quadlet to validate it.
   $_validate_cmd = $validate_quadlet ? {
     true    => epp('quadlets/validate_cmd.epp', {
       'quadlet' => $quadlet,
