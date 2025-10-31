@@ -32,15 +32,17 @@ describe 'quadlets::quadlet' do
           line   => 'containers:10000:5000',
           before => User['containers'],
         }
-        exec{'setcap_newgidmap':
-          command => '/usr/sbin/setcap cap_setgid=ep /usr/bin/newgidmap',
-          unless  => '/usr/sbin/getcap /usr/bin/newgidmap | grep -q cap_setgid=ep',
-          before  => User['containers'],
-        }
-        exec{'setcap_newuidmap':
-          command => '/usr/sbin/setcap cap_setuid=ep /usr/bin/newuidmap',
-          unless  => '/usr/sbin/getcap /usr/bin/newuidmap | grep -q cap_setuid=ep',
-          before  => User['containers'],
+        if $facts['os']['family'] != 'Debian' {
+          exec{'setcap_newgidmap':
+            command => '/usr/sbin/setcap cap_setgid=ep /usr/bin/newgidmap',
+            unless  => '/usr/sbin/getcap /usr/bin/newgidmap | grep -q cap_setgid=ep',
+            before  => User['containers'],
+          }
+          exec{'setcap_newuidmap':
+            command => '/usr/sbin/setcap cap_setuid=ep /usr/bin/newuidmap',
+            unless  => '/usr/sbin/getcap /usr/bin/newuidmap | grep -q cap_setuid=ep',
+            before  => User['containers'],
+          }
         }
         # end hacks to make it work on rootless in rootless container
         $_containers = {
@@ -48,6 +50,13 @@ describe 'quadlets::quadlet' do
         }
         quadlets::user{'containers':
           user => $_containers,
+        }
+        # https://github.com/voxpupuli/puppet-systemd/issues/578
+        exec{'allow_systemd_user_to_start':
+          command => '/usr/bin/sleep 10 && touch /tmp/run-only-once',
+          creates => '/tmp/run-only-once',
+          require => Quadlets::User['containers'],
+          before  => Quadlets::Quadlet['centos-user.container'],
         }
         quadlets::quadlet{'centos-user.container':
           ensure          => present,
@@ -123,15 +132,17 @@ describe 'quadlets::quadlet' do
           line   => 'steve:15000:5000',
           before => User['steve'],
         }
-        exec{'setcap_newgidmap':
-          command => '/usr/sbin/setcap cap_setgid=ep /usr/bin/newgidmap',
-          unless  => '/usr/sbin/getcap /usr/bin/newgidmap | grep -q cap_setgid=ep',
-          before  => [User['containers'],User['steve']],
-        }
-        exec{'setcap_newuidmap':
-          command => '/usr/sbin/setcap cap_setuid=ep /usr/bin/newuidmap',
-          unless  => '/usr/sbin/getcap /usr/bin/newuidmap | grep -q cap_setuid=ep',
-          before  => [User['containers'],User['steve']],
+        if $facts['os']['family'] != 'Debian' {
+          exec{'setcap_newgidmap':
+            command => '/usr/sbin/setcap cap_setgid=ep /usr/bin/newgidmap',
+            unless  => '/usr/sbin/getcap /usr/bin/newgidmap | grep -q cap_setgid=ep',
+            before  => [User['containers'],User['steve']],
+          }
+          exec{'setcap_newuidmap':
+            command => '/usr/sbin/setcap cap_setuid=ep /usr/bin/newuidmap',
+            unless  => '/usr/sbin/getcap /usr/bin/newuidmap | grep -q cap_setuid=ep',
+            before  => [User['containers'],User['steve']],
+          }
         }
         # end hacks to make it work on rootless in rootless container
         user{'containers':
