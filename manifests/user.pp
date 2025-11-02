@@ -1,50 +1,54 @@
 # @summary Generate and manage podman quadlet user
 #
-# @param user Specify user with options
+# @param user Specify username
+# @param group Specify group ownership of quadlet directories, if `undef` it will be set equal to the username.
+# @param homedir Home directory, if `undef` `/home/$user` will be used.
+# @param create_dir If true the directory for containers will be created at `$homedir/.config/contaners/systemd`.
+# @param manage_user If true the user will be created.
+# @param manage_linger If true `systemd --user` will be started for user.
 #
 # @example Run a CentOS user Container maning user, specifying home dir
-#   $_steve = {
-#     'name'          => 'steve',
-#     'create_dir'    => true,
-#     'manage_user'   => true,
-#     'manage_linger' => true,
-#     'homedir'       => '/nfs/home/steve',
-#   }
 #   quadlets::user { 'steve':
-#     user => $_steve,
+#     user                => 'steve'
+#     create_dir          => true,
+#     manage_user         => true,
+#     manage_linger       => true,
+#     homedir             => '/nfs/home/steve',
 #   }
 #   quadlets::quadlet{ 'centos.container':
-#     ensure          => present,
-#     user            => $_steve,
-#     unit_entry     => {
-#      'Description' => 'Trivial Container that will be very lazy',
+#     ensure              => present,
+#     user                => 'steve',
+#     homedir             => '/nfs/home/steve',
+#     unit_entry          => {
+#      'Description'      => 'Trivial Container that will be very lazy',
 #     },
 #     service_entry       => {
 #       'TimeoutStartSec' => '900',
 #     },
-#     container_entry => {
-#       'Image' => 'quay.io/centos/centos:latest',
-#       'Exec'  => 'sh -c "sleep inf"'
+#     container_entry     => {
+#       'Image'           => 'quay.io/centos/centos:latest',
+#       'Exec'            => 'sh -c "sleep inf"'
 #     },
-#     install_entry   => {
-#       'WantedBy' => 'default.target'
+#     install_entry       => {
+#       'WantedBy'        => 'default.target'
 #     },
-#     active          => true,
+#     active              => true,
 #   }
 #
 define quadlets::user (
-  Quadlets::Quadlet_user $user,
+  Optional[String[1]] $user = $name,
+  Optional[String[1]] $group = undef,
+  Optional[Stdlib::Unixpath] $homedir = undef,
+  Boolean $create_dir = true,
+  Boolean $manage_user = true,
+  Boolean $manage_linger = true,
 ) {
   include quadlets
 
-  $_username = $user['name']
-  $_file_group = pick($user['group'], $user['name'])
-  $_user_homedir = pick($user['homedir'], "/home/${user['name']}")
-  $_create_dir = pick($user['create_dir'], true)
-  $_manage_user = pick($user['manage_user'], true)
-  $_manage_linger = pick($user['manage_linger'], true)
+  $_file_group = pick($group, $user)
+  $_user_homedir = pick($homedir, "/home/${user}")
 
-  if $_create_dir {
+  if $create_dir {
     $components = split($quadlets::quadlet_user_dir, '/')
     $dirs = $components.reduce([]) |$accum, $part| {
       $accum + [$accum ? {
@@ -55,19 +59,19 @@ define quadlets::user (
     }
     file { $dirs:
       ensure => directory,
-      owner  => $_username,
+      owner  => $user,
       group  => $_file_group,
     }
   }
-  if $_manage_user {
-    user { $_username:
+  if $manage_user {
+    user { $user:
       ensure     => present,
       home       => $_user_homedir,
       managehome => true,
     }
   }
-  if $_manage_linger {
-    loginctl_user { $_username:
+  if $manage_linger {
+    loginctl_user { $user:
       linger => enabled,
     }
   }
