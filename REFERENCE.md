@@ -470,6 +470,16 @@ quadlets::quadlet{ 'centos.container':
 }
 ```
 
+##### Specify subordinate start and size
+
+```puppet
+quadlets::user { 'quark':
+   name   => 'quark',
+   subuid => [10000, 15000],
+   subgid => [10000, 15000],
+}
+```
+
 #### Parameters
 
 The following parameters are available in the `quadlets::user` defined type:
@@ -480,6 +490,8 @@ The following parameters are available in the `quadlets::user` defined type:
 * [`create_dir`](#-quadlets--user--create_dir)
 * [`manage_user`](#-quadlets--user--manage_user)
 * [`manage_linger`](#-quadlets--user--manage_linger)
+* [`subuid`](#-quadlets--user--subuid)
+* [`subgid`](#-quadlets--user--subgid)
 
 ##### <a name="-quadlets--user--user"></a>`user`
 
@@ -509,7 +521,7 @@ Default value: `undef`
 
 Data type: `Boolean`
 
-If true the directory for containers will be created at `$homedir/.config/contaners/systemd`.
+If true the directory for containers will be created at `$homedir/.config/containers/systemd`.
 
 Default value: `true`
 
@@ -528,6 +540,22 @@ Data type: `Boolean`
 If true `systemd --user` will be started for user.
 
 Default value: `true`
+
+##### <a name="-quadlets--user--subuid"></a>`subuid`
+
+Data type: `Optional[Tuple[Integer[1],Integer[1]]]`
+
+If defined as a pair of integers the user will have a subordintate user ID and a subordinate user ID count specified in `/etc/subuid`. Only one range per user is supported,
+
+Default value: `undef`
+
+##### <a name="-quadlets--user--subgid"></a>`subgid`
+
+Data type: `Optional[Tuple[Integer[1],Integer[1]]]`
+
+If defined as a pair of integers the user's group will have a subordintate group ID and a subordinate group ID count specified in `/etc/subgid`. Only one range per group is supported,
+
+Default value: `undef`
 
 ## Data types
 

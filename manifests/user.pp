@@ -3,9 +3,11 @@
 # @param user Specify username
 # @param group Specify group ownership of quadlet directories, if `undef` it will be set equal to the username.
 # @param homedir Home directory, if `undef` `/home/$user` will be used.
-# @param create_dir If true the directory for containers will be created at `$homedir/.config/contaners/systemd`.
+# @param create_dir If true the directory for containers will be created at `$homedir/.config/containers/systemd`.
 # @param manage_user If true the user and group will be created.
 # @param manage_linger If true `systemd --user` will be started for user.
+# @param subuid If defined as a pair of integers the user will have a subordintate user ID and a subordinate user ID count specified in `/etc/subuid`. Only one range per user is supported,
+# @param subgid If defined as a pair of integers the user's group will have a subordintate group ID and a subordinate group ID count specified in `/etc/subgid`. Only one range per group is supported,
 #
 # @example Run a CentOS user Container maning user, specifying home dir
 #   quadlets::user { 'steve':
@@ -35,6 +37,13 @@
 #     active              => true,
 #   }
 #
+# @example Specify subordinate start and size
+#   quadlets::user { 'quark':
+#      name   => 'quark',
+#      subuid => [10000, 15000],
+#      subgid => [10000, 15000],
+#   }
+#
 define quadlets::user (
   Optional[String[1]] $user = $name,
   Optional[String[1]] $group = undef,
@@ -42,10 +51,12 @@ define quadlets::user (
   Boolean $create_dir = true,
   Boolean $manage_user = true,
   Boolean $manage_linger = true,
+  Optional[Tuple[Integer[1],Integer[1]]] $subuid = undef,
+  Optional[Tuple[Integer[1],Integer[1]]] $subgid = undef,
 ) {
   include quadlets
 
-  $_file_group = pick($group, $user)
+  $_group = pick($group, $user)
   $_user_homedir = pick($homedir, "/home/${user}")
 
   if $create_dir {
@@ -60,15 +71,15 @@ define quadlets::user (
     file { $dirs:
       ensure => directory,
       owner  => $user,
-      group  => $_file_group,
+      group  => $_group,
     }
   }
   if $manage_user {
-    group { $_file_group: }
+    group { $_group: }
 
     user { $user:
       ensure     => present,
-      gid        => $_file_group,
+      gid        => $_group,
       home       => $_user_homedir,
       managehome => true,
     }
@@ -76,6 +87,44 @@ define quadlets::user (
   if $manage_linger {
     loginctl_user { $user:
       linger => enabled,
+    }
+  }
+
+  #
+  # Manage subordinate users
+  #
+  if $subuid {
+    augeas { "subuid_${user}":
+      incl    => '/etc/subuid',
+      lens    => 'Subids.lns',
+      context => '/files/etc/subuid',
+      changes => [
+        "set ${user}/start ${subuid[0]}",
+        "set ${user}/count ${subuid[1]}",
+        "rm ${user}[2]",
+        "rm ${user}[2]",
+        "rm ${user}[2]",
+      ],
+    }
+    if $manage_user {
+      User[$user] -> Augeas["subuid_${user}"]
+    }
+  }
+  if $subgid {
+    augeas { "subgid_${_group}":
+      incl    => '/etc/subgid',
+      lens    => 'Subids.lns',
+      context => '/files/etc/subgid',
+      changes => [
+        "set ${_group}/start ${subgid[0]}",
+        "set ${_group}/count ${subgid[1]}",
+        "rm ${_group}[2]",
+        "rm ${_group}[2]",
+        "rm ${_group}[2]",
+      ],
+    }
+    if $manage_user {
+      Group[$_group] -> Augeas["subgid_${_group}"]
     }
   }
 }

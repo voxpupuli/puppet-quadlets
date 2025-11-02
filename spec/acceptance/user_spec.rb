@@ -3,7 +3,7 @@
 require 'spec_helper_acceptance'
 
 describe 'quadlets::user' do
-  context 'with a simple user' do
+  context 'with a selection of users' do
     it_behaves_like 'an idempotent resource' do
       let(:manifest) do
         <<-PUPPET
@@ -25,6 +25,31 @@ describe 'quadlets::user' do
           homedir       => '/opt/nomanage',
           manage_linger => false,
         }
+
+        quadlets::user{ 'strange':
+          name          => 'strange',
+          manage_linger => false,
+          subuid        => [1000,2000],
+          subgid        => [3000,4000],
+        }
+
+        quadlets::user{ 'top':
+          name          => 'top',
+          group         => 'bottom',
+          manage_linger => false,
+          subuid        => [1010,1011],
+          subgid        => [1012,1013],
+        }
+
+        quadlets::user{ 'charm':
+          name          => 'charm',
+          manage_linger => false,
+          manage_user   => false,
+          create_dir    => false,
+          subuid        => [5000,6000],
+          subgid        => [7000,8000],
+        }
+
         PUPPET
       end
     end
@@ -54,6 +79,52 @@ describe 'quadlets::user' do
     describe file('/opt/nomanage/.config/containers/systemd') do
       it { is_expected.to be_directory }
       it { is_expected.to be_owned_by 'nomanage' }
+    end
+
+    describe file('/etc/subuid') do
+      it { is_expected.to be_file }
+      its(:content) { is_expected.to match %r{^strange:1000:2000$} }
+      its(:content) { is_expected.to match %r{^charm:5000:6000$} }
+      its(:content) { is_expected.to match %r{^top:1010:1011$} }
+    end
+
+    describe file('/etc/subgid') do
+      it { is_expected.to be_file }
+      its(:content) { is_expected.to match %r{^strange:3000:4000} }
+      its(:content) { is_expected.to match %r{^charm:7000:8000$} }
+      its(:content) { is_expected.to match %r{^bottom:1012:1013$} }
+    end
+  end
+
+  context 'updating an existing subuid, subgid' do
+    it_behaves_like 'an idempotent resource' do
+      let(:manifest) do
+        <<-PUPPET
+        quadlets::user{ 'top':
+          name          => 'top',
+          group         => 'bottom',
+          manage_linger => false,
+          subuid        => [2010,2011],
+          subgid        => [2012,2013],
+        }
+        PUPPET
+      end
+    end
+
+    describe file('/etc/subuid') do
+      it { is_expected.to be_file }
+      its(:content) { is_expected.to match %r{^strange:1000:2000$} }
+      its(:content) { is_expected.to match %r{^charm:5000:6000$} }
+      its(:content) { is_expected.not_to match %r{^top:1010:1011$} }
+      its(:content) { is_expected.to match %r{^top:2010:2011$} }
+    end
+
+    describe file('/etc/subgid') do
+      it { is_expected.to be_file }
+      its(:content) { is_expected.to match %r{^strange:3000:4000} }
+      its(:content) { is_expected.to match %r{^charm:7000:8000$} }
+      its(:content) { is_expected.not_to match %r{^bottom:1012:1013$} }
+      its(:content) { is_expected.to match %r{^bottom:2012:2013$} }
     end
   end
 end

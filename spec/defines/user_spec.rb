@@ -46,6 +46,9 @@ describe 'quadlets::user' do
             }
           )
         }
+
+        it { is_expected.not_to contain_augeas('subuid_nano') }
+        it { is_expected.not_to contain_augeas('subgid_nano') }
       end
 
       context 'with a simple user actions disabled' do
@@ -63,6 +66,85 @@ describe 'quadlets::user' do
         it { is_expected.not_to contain_user('micro') }
         it { is_expected.not_to contain_loginctl_user('micro') }
         it { is_expected.not_to contain_file('/home/mirco/.config/containers/systemd') }
+      end
+
+      context 'with a subuid and subgid set' do
+        let(:title) { 'quark' }
+        let(:params) do
+          {
+            'subuid' => [700, 1000],
+            'subgid' => [1000, 2000],
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+
+        it {
+          is_expected.to contain_augeas('subuid_quark').with(
+            {
+              changes: [
+                'set quark/start 700', 'set quark/count 1000',
+                'rm quark[2]', 'rm quark[2]', 'rm quark[2]',
+              ],
+              lens: 'Subids.lns',
+              incl: '/etc/subuid',
+              context: '/files/etc/subuid',
+            }
+          )
+        }
+
+        it {
+          is_expected.to contain_augeas('subgid_quark').with(
+            {
+              changes: [
+                'set quark/start 1000', 'set quark/count 2000',
+                'rm quark[2]', 'rm quark[2]', 'rm quark[2]'
+              ],
+              lens: 'Subids.lns',
+              incl: '/etc/subgid',
+              context: '/files/etc/subgid',
+            }
+          )
+        }
+
+        context 'with a specified group' do
+          let(:params) do
+            super().merge(group: 'top')
+          end
+
+          it { is_expected.to contain_augeas('subuid_quark') }
+
+          it {
+            is_expected.to contain_augeas('subgid_top').with(
+              {
+                changes: [
+                  'set top/start 1000', 'set top/count 2000',
+                  'rm top[2]', 'rm top[2]', 'rm top[2]'
+                ],
+                lens: 'Subids.lns',
+                incl: '/etc/subgid',
+                context: '/files/etc/subgid',
+              }
+            )
+          }
+        end
+      end
+
+      context 'with manage_user false subuid and subgid set' do
+        let(:title) { 'charm' }
+        let(:params) do
+          {
+            'name'        => 'charm',
+            'manage_user' => false,
+            'subuid'      => [900, 1000],
+            'subgid'      => [900, 1000],
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.not_to contain_user('charm') }
+        it { is_expected.to contain_augeas('subuid_charm') }
+        it { is_expected.to contain_augeas('subgid_charm') }
       end
     end
   end
