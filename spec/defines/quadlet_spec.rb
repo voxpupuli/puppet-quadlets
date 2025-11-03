@@ -5,7 +5,7 @@ require 'spec_helper'
 describe 'quadlets::quadlet' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:facts) { os_facts }
+      let(:facts) { os_facts.merge(systemd_version: '260') }
 
       context 'with a simple centos container image' do
         let(:title) { 'centos.container' }
@@ -109,6 +109,25 @@ describe 'quadlets::quadlet' do
 
         it { is_expected.to contain_file('/etc/containers/systemd/busybox.image') }
         it { is_expected.to contain_service('busybox-image.service').with_ensure(true) }
+      end
+
+      context 'with a rootless quadlet' do
+        let(:title) { 'centos.container' }
+        let(:params) do
+          {
+            ensure: 'present',
+            user: 'mouse',
+            container_entry: {
+              'Image' => 'quay.io/centos/centos:latest',
+              'Exec' => 'sh -c "sleep inf"',
+            },
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('quadlets') }
+        it { is_expected.to have_quadlet__user_resource_count(0) }
+        it { is_expected.to contain_file('/home/mouse/.config/containers/systemd/centos.container') }
       end
     end
   end

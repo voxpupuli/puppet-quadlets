@@ -43,15 +43,19 @@ describe 'quadlets::quadlet' do
           before  => User['containers'],
         }
         # end hacks to make it work on rootless in rootless container
-        $_containers = {
-          name => 'containers',
+        quadlets::user{'containers': }
+
+        # https://github.com/voxpupuli/puppet-systemd/issues/578
+        exec{'allow_systemd --user_to_start':
+          command => '/usr/bin/sleep 10 && touch /tmp/run-only-once',
+          creates => '/tmp/run-only-once',
+          require => Quadlets::User['containers'],
+          before  => Quadlets::Quadlet['centos-user.container'],
         }
-        quadlets::user{'containers':
-          user => $_containers,
-        }
+
         quadlets::quadlet{'centos-user.container':
           ensure          => present,
-          user            => $_containers,
+          user            => 'containers',
           unit_entry      => {
            'Description' => 'Trivial Container that will be very lazy',
           },
@@ -151,7 +155,7 @@ describe 'quadlets::quadlet' do
         }
         quadlets::quadlet{'centos-user1.container':
           ensure          => present,
-          user            => $_containers,
+          user            => 'containers',
           unit_entry      => {
            'Description' => 'Trivial First Container that will be very lazy',
           },
@@ -169,7 +173,7 @@ describe 'quadlets::quadlet' do
         }
         quadlets::quadlet{'centos-user2.container':
           ensure          => present,
-          user            => $_containers,
+          user            => 'containers',
           unit_entry      => {
            'Description' => 'Trivial Second Container that will be very lazy',
           },
@@ -188,19 +192,18 @@ describe 'quadlets::quadlet' do
         file { ['/nfs', '/nfs/home']:
           ensure => 'directory',
         }
-        $_steve = {
-          'name'          => 'steve',
-          'create_dir'    => true,
-          'manage_user'   => true,
-          'manage_linger' => true,
-          'homedir'       => '/nfs/home/steve',
-        }
         quadlets::user{'steve':
-          user => $_steve,
+          user          => 'steve',
+          create_dir    => true,
+          manage_user   => true,
+          manage_linger => true,
+          homedir       => '/nfs/home/steve',
+
         }
         quadlets::quadlet{'centos-user3.container':
           ensure          => present,
-          user            => $_steve,
+          user            => 'steve',
+          homedir         => '/nfs/home/steve',
           unit_entry      => {
            'Description' => 'Trivial Third Container that will be very lazy',
           },

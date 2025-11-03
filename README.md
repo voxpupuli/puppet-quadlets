@@ -41,20 +41,16 @@ quadlets::quadlet { 'centos.container':
 
 
 ```puppet
-$_user_hash = {
-   name          => 'santa',
-   create_dir    => true,
-   manage_user   => true,
-   manage_linger => true,
-   homedir       => "/home/santa",
-}
-
 quadlets::user { 'santa':
-  user => $_user_hash,
+  create_dir    => true,
+  manage_user   => true,
+  manage_linger => true,
+  homedir       => "/home/santa",
+
 }
 quadlets::quadlet { "centos.container":
    ensure          => present,
-   user            => $_user_hash,
+   user            => 'santa',
    unit_entry      => {
      'Description' => 'Trivial Container that will be very lazy',
    },
@@ -69,6 +65,63 @@ quadlets::quadlet { "centos.container":
    require         => Quadlets::User['santa'],
  }
 ```
+
+## Migrating from version 2 to version 3
+
+With version 3 the method for defining rootless containers has changed in a completely backwards incompatible way.
+For rootful containers the situation is unchanged.
+
+* The type `Quadlets::Quadlet_user` is completely removed.
+* The `quadlets::user` definition is as above.
+* The `qaudlets::quadlet` parameters now expects the `user` parameter as a user name and can have the `group` and `homedir` provided if something is required beyond the default behaviour.
+
+The motivation for migration was to make the module more obvious and easier to document.
+
+By example:
+
+```puppet
+# Old v2 configuration
+$_user = {
+  name          => 'container',
+  homedir       => '/nfs/home/cont'
+  manage_linger => true,
+}
+
+quadlets::user{'container':
+  user => $_user,
+}
+
+quadlets::quadlet{ 'my.pod':
+  ensure  => 'present',
+  user    => $_user,
+  unit    => {
+    'Description' => 'Simple Pod',
+  }
+  require => Quadlet::Quadlet['container'],
+}
+```
+
+now becomes
+
+```puppet
+# New v3 configuration
+quadlets::user{'container':
+  homedir       => '/nfs/home/cont',
+  manage_linger => true,
+}
+
+quadlets::quadlet{ 'my.pod':
+  ensure  => 'present',
+  user    => 'container',
+  homedir => '/nfs/home/cont',
+  unit    => {
+    'Description' => 'Simple Pod',
+  },
+  require => Quadlet::Quadlet['container'],
+}
+```
+
+The end result is identical.
 
 ## Reference
 

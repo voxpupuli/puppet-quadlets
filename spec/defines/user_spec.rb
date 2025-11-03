@@ -9,13 +9,6 @@ describe 'quadlets::user' do
 
       context 'with a simple user image' do
         let(:title) { 'nano' }
-        let(:params) do
-          {
-            user: {
-              'name' => 'nano',
-            }
-          }
-        end
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_user('nano') }
@@ -27,12 +20,10 @@ describe 'quadlets::user' do
         let(:title) { 'micro' }
         let(:params) do
           {
-            user: {
-              'name'          => 'micro',
-              'manage_linger' => false,
-              'manage_user'   => false,
-              'create_dir'    => false,
-            }
+            user: 'micro',
+            manage_linger: false,
+            manage_user: false,
+            create_dir: false,
           }
         end
 

@@ -7,12 +7,8 @@ describe 'quadlets::user' do
     it_behaves_like 'an idempotent resource' do
       let(:manifest) do
         <<-PUPPET
-        $_simple = {
-          name          => 'simple',
-          manage_linger => false,
-        }
         quadlets::user{'simple':
-          user => $_simple
+          manage_linger => false,
         }
 
         user{ 'nomanage':
@@ -21,12 +17,11 @@ describe 'quadlets::user' do
         }
         $_nomanage = {
           name          => 'nomanage',
+        }
+        quadlets::user{ 'nomanage':
           manage_user   => false,
           homedir       => '/opt/nomanage',
           manage_linger => false,
-        }
-        quadlets::user{ 'nomanage':
-          user => $_nomanage
         }
         PUPPET
       end

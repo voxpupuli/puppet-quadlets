@@ -24,7 +24,6 @@
 ### Data types
 
 * [`Quadlets::Quadlet_name`](#Quadlets--Quadlet_name): custom datatype that validates different filenames for quadlet units
-* [`Quadlets::Quadlet_user`](#Quadlets--Quadlet_user): custom datatype for container entries of podman container quadlet
 * [`Quadlets::Unit::Container`](#Quadlets--Unit--Container): custom datatype for container entries of podman container quadlet
 * [`Quadlets::Unit::Image`](#Quadlets--Unit--Image): custom datatype for Image entries of podman image quadlet
 * [`Quadlets::Unit::Kube`](#Quadlets--Unit--Kube): custom datatype for Kube entries of podman kube quadlet
@@ -192,17 +191,17 @@ Generate and manage podman quadlet definitions (podman > 4.4.0)
 ##### Run a CentOS Container
 
 ```puppet
-quadlets::quadlet{'centos.container':
+quadlets::quadlet{ 'centos.container':
   ensure          => present,
-  unit_entry     => {
-   'Description' => 'Trivial Container that will be very lazy',
+  unit_entry      => {
+    'Description' => 'Trivial Container that will be very lazy',
   },
-  service_entry       => {
+  service_entry   => {
     'TimeoutStartSec' => '900',
   },
   container_entry => {
     'Image' => 'quay.io/centos/centos:latest',
-    'Exec'  => 'sh -c "sleep inf"'
+    'Exec'  => 'sh -c "sleep inf"',
   },
   install_entry   => {
     'WantedBy' => 'default.target'
@@ -214,42 +213,40 @@ quadlets::quadlet{'centos.container':
 ##### Run a Pod using a kubernetes Yaml definition
 
 ```puppet
-quadlets::quadlet{'centos.container':
-  ensure          => present,
-  unit_entry     => {
+quadlets::quadlet{ 'centos.container':
+  ensure        => present,
+  unit_entry => {
    'Description' => 'Pod running my application',
   },
-  kube_entry => {
-    'Yaml' => '/path/to/yaml/file.yaml',
+  kube_entry    => {
+   'Yaml' => '/path/to/yaml/file.yaml',
   },
-  install_entry   => {
+  install_entry => {
     'WantedBy' => 'default.target'
   },
-  active          => true,
+  active        => true,
 }
 ```
 
 ##### Run a CentOS user Container specifying home dir
 
 ```puppet
-quadlets::quadlet{'centos.container':
+quadlets::quadlet{ 'centos.container':
   ensure          => present,
-  user            => {
-   'name'    => 'containers',
-   'homedir' => '/nfs/home/containers',
+  user            => 'containers',
+  homedir         => '/nfs/home/containers',
+  unit_entry      => {
+    'Description' => 'Trivial Container that will be very lazy',
   },
-  unit_entry     => {
-   'Description' => 'Trivial Container that will be very lazy',
-  },
-  service_entry       => {
+  service_entry   => {
     'TimeoutStartSec' => '900',
   },
   container_entry => {
-    'Image' => 'quay.io/centos/centos:latest',
-    'Exec'  => 'sh -c "sleep inf"'
+   'Image' => 'quay.io/centos/centos:latest',
+   'Exec'  => 'sh -c "sleep inf"'
   },
   install_entry   => {
-    'WantedBy' => 'default.target'
+    'WantedBy' => 'default.target',
   },
   active          => true,
 }
@@ -260,16 +257,11 @@ quadlets::quadlet{'centos.container':
 ```puppet
 quadlets::quadlet{'centos.container':
   ensure          => present,
-  user            =>
-   'name'          => 'containers',
-   'create_dir'    => false,
-   'manage_user'   => false,
-   'manage_linger' => false,
+  user            => 'containers',
+  unit_entry      => {
+    'Description' => 'Trivial Container that will be very lazy',
   },
-  unit_entry     => {
-   'Description' => 'Trivial Container that will be very lazy',
-  },
-  service_entry       => {
+  service_entry   => {
     'TimeoutStartSec' => '900',
   },
   container_entry => {
@@ -293,6 +285,8 @@ The following parameters are available in the `quadlets::quadlet` defined type:
 * [`mode`](#-quadlets--quadlet--mode)
 * [`active`](#-quadlets--quadlet--active)
 * [`user`](#-quadlets--quadlet--user)
+* [`group`](#-quadlets--quadlet--group)
+* [`homedir`](#-quadlets--quadlet--homedir)
 * [`unit_entry`](#-quadlets--quadlet--unit_entry)
 * [`install_entry`](#-quadlets--quadlet--install_entry)
 * [`service_entry`](#-quadlets--quadlet--service_entry)
@@ -345,9 +339,25 @@ Default value: `undef`
 
 ##### <a name="-quadlets--quadlet--user"></a>`user`
 
-Data type: `Optional[Quadlets::Quadlet_user]`
+Data type: `Optional[String[1]]`
 
-Specify which user to run as
+Specify which user to run as. If `undef` the quadlet will run rootful.
+
+Default value: `undef`
+
+##### <a name="-quadlets--quadlet--group"></a>`group`
+
+Data type: `Optional[String[1]]`
+
+Specify which group should own the quadlets. If it is `undef` the `$user` parameter will be used.
+
+Default value: `undef`
+
+##### <a name="-quadlets--quadlet--homedir"></a>`homedir`
+
+Data type: `Optional[Stdlib::Unixpath]`
+
+Specify home directory. If it `undef` then `/home/$user` will be used.
 
 Default value: `undef`
 
@@ -432,33 +442,31 @@ Generate and manage podman quadlet user
 ##### Run a CentOS user Container maning user, specifying home dir
 
 ```puppet
-$_steve = {
-  'name'          => 'steve',
-  'create_dir'    => true,
-  'manage_user'   => true,
-  'manage_linger' => true,
-  'homedir'       => '/nfs/home/steve',
-}
 quadlets::user { 'steve':
-  user => $_steve,
+  user                => 'steve'
+  create_dir          => true,
+  manage_user         => true,
+  manage_linger       => true,
+  homedir             => '/nfs/home/steve',
 }
 quadlets::quadlet{ 'centos.container':
-  ensure          => present,
-  user            => $_steve,
-  unit_entry     => {
-   'Description' => 'Trivial Container that will be very lazy',
+  ensure              => present,
+  user                => 'steve',
+  homedir             => '/nfs/home/steve',
+  unit_entry          => {
+   'Description'      => 'Trivial Container that will be very lazy',
   },
   service_entry       => {
     'TimeoutStartSec' => '900',
   },
-  container_entry => {
-    'Image' => 'quay.io/centos/centos:latest',
-    'Exec'  => 'sh -c "sleep inf"'
+  container_entry     => {
+    'Image'           => 'quay.io/centos/centos:latest',
+    'Exec'            => 'sh -c "sleep inf"'
   },
-  install_entry   => {
-    'WantedBy' => 'default.target'
+  install_entry       => {
+    'WantedBy'        => 'default.target'
   },
-  active          => true,
+  active              => true,
 }
 ```
 
@@ -467,12 +475,59 @@ quadlets::quadlet{ 'centos.container':
 The following parameters are available in the `quadlets::user` defined type:
 
 * [`user`](#-quadlets--user--user)
+* [`group`](#-quadlets--user--group)
+* [`homedir`](#-quadlets--user--homedir)
+* [`create_dir`](#-quadlets--user--create_dir)
+* [`manage_user`](#-quadlets--user--manage_user)
+* [`manage_linger`](#-quadlets--user--manage_linger)
 
 ##### <a name="-quadlets--user--user"></a>`user`
 
-Data type: `Quadlets::Quadlet_user`
+Data type: `Optional[String[1]]`
 
-Specify user with options
+Specify username
+
+Default value: `$name`
+
+##### <a name="-quadlets--user--group"></a>`group`
+
+Data type: `Optional[String[1]]`
+
+Specify group ownership of quadlet directories, if `undef` it will be set equal to the username.
+
+Default value: `undef`
+
+##### <a name="-quadlets--user--homedir"></a>`homedir`
+
+Data type: `Optional[Stdlib::Unixpath]`
+
+Home directory, if `undef` `/home/$user` will be used.
+
+Default value: `undef`
+
+##### <a name="-quadlets--user--create_dir"></a>`create_dir`
+
+Data type: `Boolean`
+
+If true the directory for containers will be created at `$homedir/.config/contaners/systemd`.
+
+Default value: `true`
+
+##### <a name="-quadlets--user--manage_user"></a>`manage_user`
+
+Data type: `Boolean`
+
+If true the user will be created.
+
+Default value: `true`
+
+##### <a name="-quadlets--user--manage_linger"></a>`manage_linger`
+
+Data type: `Boolean`
+
+If true `systemd --user` will be started for user.
+
+Default value: `true`
 
 ## Data types
 
@@ -484,24 +539,6 @@ custom datatype that validates different filenames for quadlet units
   * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
 
 Alias of `Pattern[/^[a-zA-Z0-9:\-_.\\@%]+\.(container|volume|pod|network|kube|image)$/]`
-
-### <a name="Quadlets--Quadlet_user"></a>`Quadlets::Quadlet_user`
-
-custom datatype for container entries of podman container quadlet
-
-* **See also**
-  * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
-
-Alias of
-
-```puppet
-Struct[name => String[1],
-  Optional['group'] => String[1],
-  Optional['homedir'] => Stdlib::Unixpath,
-  Optional['create_dir'] => Boolean,
-  Optional['manage_user'] => Boolean,
-  Optional['manage_linger'] => Boolean]
-```
 
 ### <a name="Quadlets--Unit--Container"></a>`Quadlets::Unit::Container`
 

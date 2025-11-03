@@ -7,7 +7,9 @@
 # @param validate_quadlet Validate quadlet with `podman-system-generator --dryrun`
 # @param mode Filemode of container file.
 # @param active Make sure the container is running.
-# @param user Specify which user to run as
+# @param user Specify which user to run as. If `undef` the quadlet will run rootful.
+# @param group Specify which group should own the quadlets. If it is `undef` the `$user` parameter will be used.
+# @param homedir Specify home directory. If it `undef` then `/home/$user` will be used.
 # @param unit_entry The `[Unit]` section definition.
 # @param install_entry The `[Install]` section definition.
 # @param service_entry The `[Service]` section definition.
@@ -19,17 +21,17 @@
 # @param image_entry The `[Image]` section defintion.
 #
 # @example Run a CentOS Container
-#   quadlets::quadlet{'centos.container':
+#   quadlets::quadlet{ 'centos.container':
 #     ensure          => present,
-#     unit_entry     => {
-#      'Description' => 'Trivial Container that will be very lazy',
+#     unit_entry      => {
+#       'Description' => 'Trivial Container that will be very lazy',
 #     },
-#     service_entry       => {
+#     service_entry   => {
 #       'TimeoutStartSec' => '900',
 #     },
 #     container_entry => {
 #       'Image' => 'quay.io/centos/centos:latest',
-#       'Exec'  => 'sh -c "sleep inf"'
+#       'Exec'  => 'sh -c "sleep inf"',
 #     },
 #     install_entry   => {
 #       'WantedBy' => 'default.target'
@@ -38,39 +40,37 @@
 #   }
 #
 # @example Run a Pod using a kubernetes Yaml definition
-#   quadlets::quadlet{'centos.container':
-#     ensure          => present,
-#     unit_entry     => {
+#   quadlets::quadlet{ 'centos.container':
+#     ensure        => present,
+#     unit_entry => {
 #      'Description' => 'Pod running my application',
 #     },
-#     kube_entry => {
-#       'Yaml' => '/path/to/yaml/file.yaml',
+#     kube_entry    => {
+#      'Yaml' => '/path/to/yaml/file.yaml',
 #     },
-#     install_entry   => {
+#     install_entry => {
 #       'WantedBy' => 'default.target'
 #     },
-#     active          => true,
+#     active        => true,
 #   }
 #
 # @example Run a CentOS user Container specifying home dir
-#   quadlets::quadlet{'centos.container':
+#   quadlets::quadlet{ 'centos.container':
 #     ensure          => present,
-#     user            => {
-#      'name'    => 'containers',
-#      'homedir' => '/nfs/home/containers',
+#     user            => 'containers',
+#     homedir         => '/nfs/home/containers',
+#     unit_entry      => {
+#       'Description' => 'Trivial Container that will be very lazy',
 #     },
-#     unit_entry     => {
-#      'Description' => 'Trivial Container that will be very lazy',
-#     },
-#     service_entry       => {
+#     service_entry   => {
 #       'TimeoutStartSec' => '900',
 #     },
 #     container_entry => {
-#       'Image' => 'quay.io/centos/centos:latest',
-#       'Exec'  => 'sh -c "sleep inf"'
+#      'Image' => 'quay.io/centos/centos:latest',
+#      'Exec'  => 'sh -c "sleep inf"'
 #     },
 #     install_entry   => {
-#       'WantedBy' => 'default.target'
+#       'WantedBy' => 'default.target',
 #     },
 #     active          => true,
 #   }
@@ -78,16 +78,11 @@
 # @example Run a CentOS user Container without managing the aspects of the user
 #   quadlets::quadlet{'centos.container':
 #     ensure          => present,
-#     user            =>
-#      'name'          => 'containers',
-#      'create_dir'    => false,
-#      'manage_user'   => false,
-#      'manage_linger' => false,
+#     user            => 'containers',
+#     unit_entry      => {
+#       'Description' => 'Trivial Container that will be very lazy',
 #     },
-#     unit_entry     => {
-#      'Description' => 'Trivial Container that will be very lazy',
-#     },
-#     service_entry       => {
+#     service_entry   => {
 #       'TimeoutStartSec' => '900',
 #     },
 #     container_entry => {
@@ -106,7 +101,9 @@ define quadlets::quadlet (
   Boolean $validate_quadlet = true,
   Stdlib::Filemode $mode = '0444',
   Optional[Boolean] $active = undef,
-  Optional[Quadlets::Quadlet_user] $user = undef,
+  Optional[String[1]] $user = undef,
+  Optional[String[1]] $group = undef,
+  Optional[Stdlib::Unixpath] $homedir = undef,
   Optional[Systemd::Unit::Install] $install_entry = undef,
   Optional[Quadlets::Unit::Unit] $unit_entry = undef,
   Optional[Systemd::Unit::Service] $service_entry = undef,
@@ -120,6 +117,7 @@ define quadlets::quadlet (
   $_split = $quadlet.split('[.]')
   $_name = $_split[0]
   $_type = $_split[1]
+
   # Validate the input
   case $_type {
     'container': {
@@ -144,7 +142,7 @@ define quadlets::quadlet (
     }
     'kube': {
       if $volume_entry or $pod_entry or $container_entry or $image_entry or $network_entry {
-        fail('A container_entry, pod_entry, volume_entry, network_entry  or image_entry makes no sense on a kube quadlet')
+        fail('A container_entry, pod_entry, volume_entry, network_entry or image_entry makes no sense on a kube quadlet')
       }
     }
     'image': {
@@ -165,34 +163,37 @@ define quadlets::quadlet (
   include quadlets
 
   if $user {
-    $username = $user['name']
-    $file_group = pick($user['group'], $user['name'])
-    $user_homedir = pick($user['homedir'], "/home/${user['name']}")
-    $_quadlet_dir = "${user_homedir}/${quadlets::quadlet_user_dir}"
+    $_username = $user
+    $_file_group = pick($group, $user)
+    $_user_homedir = pick($homedir, "/home/${user}")
+    $_quadlet_dir = "${_user_homedir}/${quadlets::quadlet_user_dir}"
   } else {
     $_quadlet_dir = $quadlets::quadlet_dir
-    $username = 'root'
-    $file_group = 'root'
+    $_username = 'root'
+    $_file_group = 'root'
   }
   $_quadlet_file = "${_quadlet_dir}/${quadlet}"
 
-  # We can only validate a directory of quadlet files and the file extension of the new
-  # quadlet must be correct so we cannot test % directly :-(
+  # We can only validate a directory of quadlet files and the file extension of the new quadlet
+  # must be correct so we cannot test % directly :-(
   #
   # Create a new tmp directory and copy the new quadlet to validate it.
   $_validate_cmd = $validate_quadlet ? {
     true    => epp('quadlets/validate_cmd.epp', {
       'quadlet' => $quadlet,
-      'is_user' => $user ? { undef => false, default => true },
-      'dest'    => $_quadlet_dir,
+      'is_user' => $user ? {
+        undef   => false,
+        default => true
+      },
+      'dest' => $_quadlet_dir,
     }),
     default => undef,
   }
 
   file { $_quadlet_file:
     ensure       => $ensure,
-    owner        => $username,
-    group        => $file_group,
+    owner        => $_username,
+    group        => $_file_group,
     mode         => $mode,
     validate_cmd => $_validate_cmd,
     content      => epp('quadlets/quadlet_file.epp', {
@@ -208,7 +209,7 @@ define quadlets::quadlet (
     }),
   }
 
-  ensure_resource('systemd::daemon_reload', $quadlet, { 'user' => $user.dig('name') })
+  ensure_resource('systemd::daemon_reload', $quadlet, { 'user' => $user })
   File[$_quadlet_file] ~> Systemd::Daemon_reload[$quadlet]
 
   if $active != undef {
@@ -216,7 +217,7 @@ define quadlets::quadlet (
       systemd::user_service { $_service:
         ensure => $active,
         enable => $active,
-        user   => $user['name'],
+        user   => $user,
       }
 
       if $ensure == 'absent' {
