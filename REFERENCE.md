@@ -517,7 +517,7 @@ Default value: `true`
 
 Data type: `Boolean`
 
-If true the user will be created.
+If true the user and group will be created.
 
 Default value: `true`
 
