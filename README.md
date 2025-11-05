@@ -123,6 +123,17 @@ quadlets::quadlet{ 'my.pod':
 
 The end result is identical.
 
+## Quadlets Fact
+
+The podman version can be accessed via the `quadlets` fact.
+
+```
+facter quadlets
+{
+  podman_version => "5.4.0"
+}
+```
+
 ## Reference
 
 The reference of the quadlet module see [REFERENCE.md](REFERENCE.md)
