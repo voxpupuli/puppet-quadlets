@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v3.0.0](https://github.com/voxpupuli/puppet-quadlets/tree/v3.0.0) (2025-11-06)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v2.2.1...v3.0.0)
+
+**Breaking changes:**
+
+- Redefine how quadlet users are setup [\#76](https://github.com/voxpupuli/puppet-quadlets/pull/76) ([traylenator](https://github.com/traylenator))
+
+**Implemented enhancements:**
+
+- Addition of quadlets.podman\_version fact [\#77](https://github.com/voxpupuli/puppet-quadlets/pull/77) ([traylenator](https://github.com/traylenator))
+- Support setting subuid and subgid entries [\#75](https://github.com/voxpupuli/puppet-quadlets/pull/75) ([traylenator](https://github.com/traylenator))
+- Declare puppet-systemd \<= 9 support [\#74](https://github.com/voxpupuli/puppet-quadlets/pull/74) ([traylenator](https://github.com/traylenator))
+- Add Debian 13 support [\#73](https://github.com/voxpupuli/puppet-quadlets/pull/73) ([traylenator](https://github.com/traylenator))
+- Use search path for quadlets during validation [\#72](https://github.com/voxpupuli/puppet-quadlets/pull/72) ([traylenator](https://github.com/traylenator))
+
+**Fixed bugs:**
+
+- Explicitly create the group of quadlet user [\#70](https://github.com/voxpupuli/puppet-quadlets/pull/70) ([traylenator](https://github.com/traylenator))
+- Validate new quadlet with existing quadlets [\#61](https://github.com/voxpupuli/puppet-quadlets/pull/61) ([traylenator](https://github.com/traylenator))
+
+**Merged pull requests:**
+
+- Add tests for `quadlet::user` [\#68](https://github.com/voxpupuli/puppet-quadlets/pull/68) ([traylenator](https://github.com/traylenator))
+
 ## [v2.2.1](https://github.com/voxpupuli/puppet-quadlets/tree/v2.2.1) (2025-10-24)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v2.2.0...v2.2.1)
