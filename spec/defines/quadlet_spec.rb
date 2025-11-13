@@ -77,6 +77,24 @@ describe 'quadlets::quadlet' do
 
           it { is_expected.to contain_file('/etc/containers/systemd/centos.container').without_validate_cmd }
         end
+
+        context 'with AddDevice using Container Device Interface' do
+          let(:params) do
+            base = super()
+            base.merge(
+              container_entry: base[:container_entry].merge(
+                'AddDevice' => ['nvidia.com/gpu=all']
+              )
+            )
+          end
+
+          it { is_expected.to compile.with_all_deps }
+
+          it 'adds AddDevice=nvidia.com/gpu=all to the quadlet file' do
+            is_expected.to contain_file('/etc/containers/systemd/centos.container').
+              with_content(%r{^AddDevice=nvidia\.com/gpu=all$})
+          end
+        end
       end
 
       context 'with a kube quadlet' do
