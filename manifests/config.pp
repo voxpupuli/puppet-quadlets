@@ -18,7 +18,7 @@ class quadlets::config (
     }
   }
   if $facts['os']['selinux']['enabled'] and $selinux_container_manage_cgroup {
-    selboolean { 'container_manage_group':
+    selboolean { 'container_manage_cgroup':
       persistent => true,
       value      => on,
     }
