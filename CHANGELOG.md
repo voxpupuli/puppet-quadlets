@@ -4,7 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v3.0.0](https://github.com/voxpupuli/puppet-quadlets/tree/v3.0.0) (2025-11-06)
+## [v3.1.0](https://github.com/voxpupuli/puppet-quadlets/tree/v3.1.0) (2025-11-15)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v3.0.0...v3.1.0)
+
+**Implemented enhancements:**
+
+- allow for broader AddDevice type spec to include CDI devices [\#80](https://github.com/voxpupuli/puppet-quadlets/pull/80) ([edrude](https://github.com/edrude))
+
+**Fixed bugs:**
+
+- the correct selbool ends in \_cgroup, not \_group [\#81](https://github.com/voxpupuli/puppet-quadlets/pull/81) ([edrude](https://github.com/edrude))
+
+## [v3.0.0](https://github.com/voxpupuli/puppet-quadlets/tree/v3.0.0) (2025-11-07)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v2.2.1...v3.0.0)
 
