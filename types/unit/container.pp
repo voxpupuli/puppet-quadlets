@@ -2,7 +2,7 @@
 # @see https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
 type Quadlets::Unit::Container = Struct[
   Optional['AddCapability'] => Array[String[1],1],
-  Optional['AddDevice'] => Array[Stdlib::Absolutepath,1],
+  Optional['AddDevice'] => Array[String[1],1],
   Optional['AddHost'] => Array[String[1],1],
   Optional['Annotation'] => Array[String[1],1],
   Optional['AutoUpdate']  => Enum['registry','local'],
