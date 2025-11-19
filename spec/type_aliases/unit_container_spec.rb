@@ -15,4 +15,8 @@ describe 'Quadlets::Unit::Container' do
   it { is_expected.to allow_value({ 'Exec'  => './entrypoint.sh' }) }
   it { is_expected.to allow_value({ 'HostName' => ['foo.example.net'] }) }
   it { is_expected.to allow_value({ 'HostName' => 'foo.example.net' }) }
+  it { is_expected.to allow_value({ 'Pod' => 'foo1234.pod' }) }
+  it { is_expected.to allow_value({ 'Pod' => 'foo-bar.pod' }) }
+  it { is_expected.to allow_value({ 'Pod' => 'foo_bar.pod' }) }
+  it { is_expected.not_to allow_value({ 'Pod' => 'foo' }) }
 end
