@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v3.2.0](https://github.com/voxpupuli/puppet-quadlets/tree/v3.2.0) (2025-11-19)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v3.1.0...v3.2.0)
+
+**Implemented enhancements:**
+
+- Support more Health container parameters [\#84](https://github.com/voxpupuli/puppet-quadlets/pull/84) ([traylenator](https://github.com/traylenator))
+- Allow Pod names with numbers \> 0 in Quadlets::Unit::Container type alias [\#83](https://github.com/voxpupuli/puppet-quadlets/pull/83) ([stdietrich](https://github.com/stdietrich))
+
 ## [v3.1.0](https://github.com/voxpupuli/puppet-quadlets/tree/v3.1.0) (2025-11-15)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v3.0.0...v3.1.0)
