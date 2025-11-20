@@ -3,7 +3,8 @@
 # @param user Specify username
 # @param group Specify group ownership of quadlet directories, if `undef` it will be set equal to the username.
 # @param homedir Home directory, if `undef` `/home/$user` will be used.
-# @param create_dir If true the directory for containers will be created at `$homedir/.config/containers/systemd`.
+# @param create_dir If true the directory for podlets will be created at `$homedir/.config/containers/systemd`.
+# @param create_system_dir If true the directory `/etc/containers/systemd/user/$user` will be created.
 # @param manage_user If true the user and group will be created.
 # @param manage_linger If true `systemd --user` will be started for user.
 # @param subuid If defined as a pair of integers the user will have a subordintate user ID and a subordinate user ID count specified in `/etc/subuid`. Only one range per user is supported,
@@ -49,6 +50,7 @@ define quadlets::user (
   Optional[String[1]] $group = undef,
   Optional[Stdlib::Unixpath] $homedir = undef,
   Boolean $create_dir = true,
+  Boolean $create_system_dir = true,
   Boolean $manage_user = true,
   Boolean $manage_linger = true,
   Optional[Tuple[Integer[1],Integer[1]]] $subuid = undef,
@@ -58,6 +60,14 @@ define quadlets::user (
 
   $_group = pick($group, $user)
   $_user_homedir = pick($homedir, "/home/${user}")
+
+  if $create_system_dir {
+    file { "${quadlets::quadlet_system_user_dir}/${user}":
+      ensure => directory,
+      owner  => root,
+      group  => root,
+    }
+  }
 
   if $create_dir {
     $components = split($quadlets::quadlet_user_dir, '/')
