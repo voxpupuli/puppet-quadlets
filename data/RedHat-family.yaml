@@ -1,3 +1,2 @@
 ---
-quadlets::create_quadlet_dir: true
 quadlets::create_quadlet_users_dir: true

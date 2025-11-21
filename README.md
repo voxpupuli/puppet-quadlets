@@ -39,6 +39,8 @@ quadlets::quadlet { 'centos.container':
 
 ### Simple `rootless` `centos.service` Running a Container
 
+The quadlet file will be maintained at `/home/santa/.config/containers/systemd/centos.container`
+
 
 ```puppet
 quadlets::user { 'santa':
@@ -65,6 +67,38 @@ quadlets::quadlet { "centos.container":
    require         => Quadlets::User['santa'],
  }
 ```
+
+### Simple `rootless` `centos.service` Running a Container
+
+The quadlet file will be maintained at `/etc/containers/systemd/users/santa/centos.container`
+
+```puppet
+quadlets::user { 'santa':
+  create_dir    => true,
+  manage_user   => true,
+  manage_linger => true,
+  homedir       => "/home/santa",
+
+}
+quadlets::quadlet { "centos.container":
+   ensure          => present,
+   location        => 'system',
+   user            => 'santa',
+   unit_entry      => {
+     'Description' => 'Trivial Container that will be very lazy',
+   },
+   container_entry => {
+     'Image' => 'quay.io/centos/centos:latest',
+     'Exec'  => 'sh -c "sleep inf"',
+   },
+   install_entry   => {
+     'WantedBy' => 'default.target',
+   },
+   active          => true,
+   require         => Quadlets::User['santa'],
+ }
+```
+
 
 ## Migrating from version 2 to version 3
 

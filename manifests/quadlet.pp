@@ -10,6 +10,7 @@
 # @param user Specify which user to run as. If `undef` the quadlet will run rootful.
 # @param group Specify which group should own the quadlets. If it is `undef` the `$user` parameter will be used.
 # @param homedir Specify home directory. If it `undef` then `/home/$user` will be used.
+# @param location Specifies the location to create the quadlet in. If `home` then `$home/.config/containers/systemd` will be used. If `system` then `/etc/containers/systemd/users/$user` will be used.
 # @param unit_entry The `[Unit]` section definition.
 # @param install_entry The `[Install]` section definition.
 # @param service_entry The `[Service]` section definition.
@@ -75,6 +76,27 @@
 #     active          => true,
 #   }
 #
+# @example Run a CentOS user Container from System User Directory
+#   quadlets::quadlet{ 'centos.container':
+#     ensure          => present,
+#     user            => 'containers',
+#     location        => 'system',
+#     unit_entry      => {
+#       'Description' => 'Trivial Container that will be very lazy',
+#     },
+#     service_entry   => {
+#       'TimeoutStartSec' => '900',
+#     },
+#     container_entry => {
+#      'Image' => 'quay.io/centos/centos:latest',
+#      'Exec'  => 'sh -c "sleep inf"'
+#     },
+#     install_entry   => {
+#       'WantedBy' => 'default.target',
+#     },
+#     active          => true,
+#   }
+#
 # @example Run a CentOS user Container without managing the aspects of the user
 #   quadlets::quadlet{'centos.container':
 #     ensure          => present,
@@ -104,6 +126,7 @@ define quadlets::quadlet (
   Optional[String[1]] $user = undef,
   Optional[String[1]] $group = undef,
   Optional[Stdlib::Unixpath] $homedir = undef,
+  Enum['system','home'] $location = 'home',
   Optional[Systemd::Unit::Install] $install_entry = undef,
   Optional[Quadlets::Unit::Unit] $unit_entry = undef,
   Optional[Systemd::Unit::Service] $service_entry = undef,
@@ -162,14 +185,20 @@ define quadlets::quadlet (
 
   include quadlets
 
-  if $user {
-    $_username = $user
-    $_file_group = pick($group, $user)
-    $_user_homedir = pick($homedir, "/home/${user}")
-    $_quadlet_dir = "${_user_homedir}/${quadlets::quadlet_user_dir}"
-  } else {
+  if $user { # rootless container
+    if $location == 'system' {
+      $_quadlet_dir = "${quadlets::quadlet_system_user_dir}/${user}"
+      $_file_user = 'root'
+      $_file_group = 'root'
+    } else { # home
+      $_file_user = $user
+      $_file_group = pick($group, $user)
+      $_user_homedir = pick($homedir, "/home/${user}")
+      $_quadlet_dir = "${_user_homedir}/${quadlets::quadlet_user_dir}"
+    }
+  } else { # rootfull container
     $_quadlet_dir = $quadlets::quadlet_dir
-    $_username = 'root'
+    $_file_user = 'root'
     $_file_group = 'root'
   }
   $_quadlet_file = "${_quadlet_dir}/${quadlet}"
@@ -192,7 +221,7 @@ define quadlets::quadlet (
 
   file { $_quadlet_file:
     ensure       => $ensure,
-    owner        => $_username,
+    owner        => $_file_user,
     group        => $_file_group,
     mode         => $mode,
     validate_cmd => $_validate_cmd,

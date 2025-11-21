@@ -42,12 +42,13 @@ describe 'quadlets::user' do
         }
 
         quadlets::user{ 'charm':
-          name          => 'charm',
-          manage_linger => false,
-          manage_user   => false,
-          create_dir    => false,
-          subuid        => [5000,6000],
-          subgid        => [7000,8000],
+          name              => 'charm',
+          manage_linger     => false,
+          manage_user       => false,
+          create_dir        => false,
+          create_system_dir => false,
+          subuid            => [5000,6000],
+          subgid            => [7000,8000],
         }
 
         PUPPET
@@ -63,6 +64,12 @@ describe 'quadlets::user' do
       it { is_expected.to be_directory }
       it { is_expected.to be_owned_by 'simple' }
       it { is_expected.to be_grouped_into 'simple' }
+    end
+
+    describe file('/etc/containers/systemd/users/simple') do
+      it { is_expected.to be_directory }
+      it { is_expected.to be_owned_by 'root' }
+      it { is_expected.to be_grouped_into 'root' }
     end
 
     describe user('grpuser') do

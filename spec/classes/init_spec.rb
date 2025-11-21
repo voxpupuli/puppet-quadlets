@@ -20,6 +20,13 @@ describe 'quadlets' do
           it { is_expected.not_to contain_file('/etc/containers/systemd') }
         end
 
+        case os_facts['os']['family']
+        when 'Archlinux', 'RedHat'
+          it { is_expected.to contain_file('/etc/containers/systemd/users').with_ensure('directory') }
+        else
+          it { is_expected.not_to contain_file('/etc/containers/systemd/users') }
+        end
+
         context 'with manage_package enabled' do
           let(:params) do
             { manage_package: true }
@@ -106,9 +113,16 @@ describe 'quadlets' do
         end
 
         context 'with purge_quadlet_dir param' do
+          let(:params) do
+            {
+              create_quadlet_dir: true,
+              create_quadlet_users_dir: true,
+            }
+          end
+
           context 'with true' do
             let(:params) do
-              { create_quadlet_dir: true, purge_quadlet_dir: true }
+              super().merge(purge_quadlet_dir: true)
             end
 
             it do
@@ -118,15 +132,31 @@ describe 'quadlets' do
                 recurse: true
               )
             end
+
+            it do
+              is_expected.to contain_file('/etc/containers/systemd/users').with(
+                purge: true,
+                force: true,
+                recurse: true
+              )
+            end
           end
 
           context 'with false' do
             let(:params) do
-              { create_quadlet_dir: true, purge_quadlet_dir: false }
+              super().merge(purge_quadlet_dir: false)
             end
 
             it do
               is_expected.to contain_file('/etc/containers/systemd').with(
+                purge: false,
+                force: false,
+                recurse: false
+              )
+            end
+
+            it do
+              is_expected.to contain_file('/etc/containers/systemd/users').with(
                 purge: false,
                 force: false,
                 recurse: false

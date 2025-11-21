@@ -25,6 +25,16 @@ describe 'quadlets::user' do
             }
           )
         }
+
+        it {
+          is_expected.to contain_file('/etc/containers/systemd/users/nano').with(
+            {
+              ensure: 'directory',
+              owner: 'root',
+              group: 'root',
+            }
+          )
+        }
       end
 
       context 'with a simple user and group' do
@@ -59,6 +69,7 @@ describe 'quadlets::user' do
             manage_linger: false,
             manage_user: false,
             create_dir: false,
+            create_system_dir: false,
           }
         end
 
@@ -66,6 +77,7 @@ describe 'quadlets::user' do
         it { is_expected.not_to contain_user('micro') }
         it { is_expected.not_to contain_loginctl_user('micro') }
         it { is_expected.not_to contain_file('/home/mirco/.config/containers/systemd') }
+        it { is_expected.not_to contain_file('/etc/containers/systemd/users/micro') }
       end
 
       context 'with a subuid and subgid set' do

@@ -9,7 +9,9 @@
 # @param autoupdate_timer_ensure Should podman-auto-update.timer be active?
 # @param autoupdate_timer_enable Should podman-auto-update.timer be enabled?
 # @param autoupdate_timer_name Name of the auto update timer. This is usually podman-auto-update.timer.
-# @param create_quadlet_dir Should the directory for storing quadlet files be created.
+# @param create_quadlet_dir Should the directory `/etc/containers/systemd` for storing quadlet files be created. Defaults are in hiera data.
+# @param create_quadlet_users_dir
+#   Should the directory `/etc/containers/systemd/users` for storing quadlet user files be created. Defaults are in hiera data.
 #
 # @param selinux_container_manage_cgroup
 #   If SELinux is enabled and this is true, set SELinux boolean
@@ -22,7 +24,6 @@
 #   unless create_quadlet_dir is set to true.
 #
 # @param quadlets_hash a `Hash` of quadlets to deploy
-#
 #
 # @example Set up Podman for quadlets
 #   include quadlets
@@ -40,10 +41,12 @@ class quadlets (
   Boolean $autoupdate_timer_enable = true,
   String  $autoupdate_timer_name = 'podman-auto-update.timer',
   Boolean $create_quadlet_dir = false,
+  Boolean $create_quadlet_users_dir = false,
   Boolean $purge_quadlet_dir = false,
   Stdlib::CreateResources $quadlets_hash = {},
 ) {
   $quadlet_dir = '/etc/containers/systemd'
+  $quadlet_system_user_dir = '/etc/containers/systemd/users'
   $quadlet_user_dir = '.config/containers/systemd'
 
   contain quadlets::install

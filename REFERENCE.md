@@ -64,6 +64,7 @@ The following parameters are available in the `quadlets` class:
 * [`autoupdate_timer_enable`](#-quadlets--autoupdate_timer_enable)
 * [`autoupdate_timer_name`](#-quadlets--autoupdate_timer_name)
 * [`create_quadlet_dir`](#-quadlets--create_quadlet_dir)
+* [`create_quadlet_users_dir`](#-quadlets--create_quadlet_users_dir)
 * [`selinux_container_manage_cgroup`](#-quadlets--selinux_container_manage_cgroup)
 * [`purge_quadlet_dir`](#-quadlets--purge_quadlet_dir)
 * [`quadlets_hash`](#-quadlets--quadlets_hash)
@@ -144,7 +145,15 @@ Default value: `'podman-auto-update.timer'`
 
 Data type: `Boolean`
 
-Should the directory for storing quadlet files be created.
+Should the directory `/etc/containers/systemd` for storing quadlet files be created. Defaults are in hiera data.
+
+Default value: `false`
+
+##### <a name="-quadlets--create_quadlet_users_dir"></a>`create_quadlet_users_dir`
+
+Data type: `Boolean`
+
+Should the directory `/etc/containers/systemd/users` for storing quadlet user files be created. Defaults are in hiera data.
 
 Default value: `false`
 
@@ -252,6 +261,30 @@ quadlets::quadlet{ 'centos.container':
 }
 ```
 
+##### Run a CentOS user Container from System User Directory
+
+```puppet
+quadlets::quadlet{ 'centos.container':
+  ensure          => present,
+  user            => 'containers',
+  location        => 'system',
+  unit_entry      => {
+    'Description' => 'Trivial Container that will be very lazy',
+  },
+  service_entry   => {
+    'TimeoutStartSec' => '900',
+  },
+  container_entry => {
+   'Image' => 'quay.io/centos/centos:latest',
+   'Exec'  => 'sh -c "sleep inf"'
+  },
+  install_entry   => {
+    'WantedBy' => 'default.target',
+  },
+  active          => true,
+}
+```
+
 ##### Run a CentOS user Container without managing the aspects of the user
 
 ```puppet
@@ -287,6 +320,7 @@ The following parameters are available in the `quadlets::quadlet` defined type:
 * [`user`](#-quadlets--quadlet--user)
 * [`group`](#-quadlets--quadlet--group)
 * [`homedir`](#-quadlets--quadlet--homedir)
+* [`location`](#-quadlets--quadlet--location)
 * [`unit_entry`](#-quadlets--quadlet--unit_entry)
 * [`install_entry`](#-quadlets--quadlet--install_entry)
 * [`service_entry`](#-quadlets--quadlet--service_entry)
@@ -360,6 +394,14 @@ Data type: `Optional[Stdlib::Unixpath]`
 Specify home directory. If it `undef` then `/home/$user` will be used.
 
 Default value: `undef`
+
+##### <a name="-quadlets--quadlet--location"></a>`location`
+
+Data type: `Enum['system','home']`
+
+Specifies the location to create the quadlet in. If `home` then `$home/.config/containers/systemd` will be used. If `system` then `/etc/containers/systemd/users/$user` will be used.
+
+Default value: `'home'`
 
 ##### <a name="-quadlets--quadlet--unit_entry"></a>`unit_entry`
 
@@ -488,6 +530,7 @@ The following parameters are available in the `quadlets::user` defined type:
 * [`group`](#-quadlets--user--group)
 * [`homedir`](#-quadlets--user--homedir)
 * [`create_dir`](#-quadlets--user--create_dir)
+* [`create_system_dir`](#-quadlets--user--create_system_dir)
 * [`manage_user`](#-quadlets--user--manage_user)
 * [`manage_linger`](#-quadlets--user--manage_linger)
 * [`subuid`](#-quadlets--user--subuid)
@@ -521,7 +564,15 @@ Default value: `undef`
 
 Data type: `Boolean`
 
-If true the directory for containers will be created at `$homedir/.config/containers/systemd`.
+If true the directory for podlets will be created at `$homedir/.config/containers/systemd`.
+
+Default value: `true`
+
+##### <a name="-quadlets--user--create_system_dir"></a>`create_system_dir`
+
+Data type: `Boolean`
+
+If true the directory `/etc/containers/systemd/user/$user` will be created.
 
 Default value: `true`
 
