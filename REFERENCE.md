@@ -23,6 +23,7 @@
 
 ### Data types
 
+* [`Quadlets::Auth`](#Quadlets--Auth): custom datatype to specify username and password
 * [`Quadlets::Quadlet_name`](#Quadlets--Quadlet_name): custom datatype that validates different filenames for quadlet units
 * [`Quadlets::Unit::Container`](#Quadlets--Unit--Container): custom datatype for container entries of podman container quadlet
 * [`Quadlets::Unit::Image`](#Quadlets--Unit--Image): custom datatype for Image entries of podman image quadlet
@@ -535,6 +536,7 @@ The following parameters are available in the `quadlets::user` defined type:
 * [`manage_linger`](#-quadlets--user--manage_linger)
 * [`subuid`](#-quadlets--user--subuid)
 * [`subgid`](#-quadlets--user--subgid)
+* [`authentications`](#-quadlets--user--authentications)
 
 ##### <a name="-quadlets--user--user"></a>`user`
 
@@ -608,7 +610,28 @@ If defined as a pair of integers the user's group will have a subordintate group
 
 Default value: `undef`
 
+##### <a name="-quadlets--user--authentications"></a>`authentications`
+
+Data type: `Optional[Hash[String[1],Quadlets::Auth]]`
+
+if defined, a file ~/.config/containers/auth.json is created with the specified authentications (the directory has to exist, eg. use create_dir => true)
+
+Default value: `undef`
+
 ## Data types
+
+### <a name="Quadlets--Auth"></a>`Quadlets::Auth`
+
+custom datatype to specify username and password
+
+Alias of
+
+```puppet
+Struct[{
+  'username' => String[1],
+  'password' => Variant[String[1],Sensitive[String[1]]],
+}]
+```
 
 ### <a name="Quadlets--Quadlet_name"></a>`Quadlets::Quadlet_name`
 

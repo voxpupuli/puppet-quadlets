@@ -35,6 +35,8 @@ describe 'quadlets::user' do
             }
           )
         }
+
+        it { is_expected.not_to contain_file('/home/charm/.config/containers/auth.json') }
       end
 
       context 'with a simple user and group' do
@@ -157,6 +159,25 @@ describe 'quadlets::user' do
         it { is_expected.not_to contain_user('charm') }
         it { is_expected.to contain_augeas('subuid_charm') }
         it { is_expected.to contain_augeas('subgid_charm') }
+      end
+
+      context 'with authentication set' do
+        let(:title) { 'charm' }
+        let(:params) do
+          {
+            'authentications' => { 'myregistry.com': { username: 'test', password: '*secret*' } },
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+
+        it {
+          is_expected.to contain_file('/home/charm/.config/containers/auth.json').
+            with_ensure('file').
+            with_owner('charm').
+            with_group('charm').
+            with_mode('0600')
+        }
       end
     end
   end
