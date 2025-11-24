@@ -8,7 +8,11 @@ describe 'quadlets::user' do
       let(:manifest) do
         <<-PUPPET
         quadlets::user{'simple':
-          manage_linger => false,
+          manage_linger   => false,
+          authentications => { 'myregistry.com' => {
+            'username' => 'test',
+            'password' => '*secret*'
+          } },
         }
 
         quadlets::user{'grpuser':
@@ -20,6 +24,7 @@ describe 'quadlets::user' do
           home       => '/opt/nomanage',
           managehome => true,
         }
+
         quadlets::user{ 'nomanage':
           manage_user   => false,
           homedir       => '/opt/nomanage',
@@ -64,6 +69,11 @@ describe 'quadlets::user' do
       it { is_expected.to be_directory }
       it { is_expected.to be_owned_by 'simple' }
       it { is_expected.to be_grouped_into 'simple' }
+    end
+
+    describe file('/home/simple/.config/containers/auth.json') do
+      it { is_expected.to be_file }
+      it { is_expected.to be_owned_by 'simple' }
     end
 
     describe file('/etc/containers/systemd/users/simple') do

@@ -9,6 +9,7 @@
 # @param manage_linger If true `systemd --user` will be started for user.
 # @param subuid If defined as a pair of integers the user will have a subordintate user ID and a subordinate user ID count specified in `/etc/subuid`. Only one range per user is supported,
 # @param subgid If defined as a pair of integers the user's group will have a subordintate group ID and a subordinate group ID count specified in `/etc/subgid`. Only one range per group is supported,
+# @param authentications if defined, a file ~/.config/containers/auth.json is created with the specified authentications (the directory has to exist, eg. use create_dir => true)
 #
 # @example Run a CentOS user Container maning user, specifying home dir
 #   quadlets::user { 'steve':
@@ -55,6 +56,7 @@ define quadlets::user (
   Boolean $manage_linger = true,
   Optional[Tuple[Integer[1],Integer[1]]] $subuid = undef,
   Optional[Tuple[Integer[1],Integer[1]]] $subgid = undef,
+  Optional[Hash[String[1],Quadlets::Auth]] $authentications = undef,
 ) {
   include quadlets
 
@@ -135,6 +137,23 @@ define quadlets::user (
     }
     if $manage_user {
       Group[$_group] -> Augeas["subgid_${_group}"]
+    }
+  }
+
+  #
+  # Manage authentications:
+  #
+  if $authentications {
+    $_authentications = $authentications.reduce({}) | Hash $memo, Tuple[String[1],Quadlets::Auth] $v | {
+      $memo + { $v[0] => { 'auth' => String(Binary("${v[1]['username']}:${v[1]['password']}",'%s')) } }
+    }
+
+    file { "${_user_homedir}/.config/containers/auth.json":
+      ensure  => 'file',
+      owner   => $user,
+      group   => $_group,
+      mode    => '0600',
+      content => stdlib::to_json({ 'auths' => $_authentications }),
     }
   }
 }
