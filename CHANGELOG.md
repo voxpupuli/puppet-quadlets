@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v3.3.0](https://github.com/voxpupuli/puppet-quadlets/tree/v3.3.0) (2025-11-24)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v3.2.0...v3.3.0)
+
+**Implemented enhancements:**
+
+- add generation of auth.json file for users \(on request\) [\#88](https://github.com/voxpupuli/puppet-quadlets/pull/88) ([trefzer](https://github.com/trefzer))
+- Quadlet creation in `/etc/containers/systemd/users/<user>` [\#87](https://github.com/voxpupuli/puppet-quadlets/pull/87) ([traylenator](https://github.com/traylenator))
+
 ## [v3.2.0](https://github.com/voxpupuli/puppet-quadlets/tree/v3.2.0) (2025-11-19)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v3.1.0...v3.2.0)
