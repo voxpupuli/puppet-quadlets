@@ -146,6 +146,40 @@ describe 'quadlets::quadlet' do
         it { is_expected.to contain_class('quadlets') }
         it { is_expected.to have_quadlet__user_resource_count(0) }
         it { is_expected.to contain_file('/home/mouse/.config/containers/systemd/centos.container') }
+
+        context 'with location system' do
+          let(:params) do
+            super().merge(location: 'system')
+          end
+
+          it {
+            is_expected.to contain_file('/etc/containers/systemd/users/mouse/centos.container').with(
+              {
+                owner: 'root',
+                group: 'root',
+              }
+            )
+          }
+
+          it { is_expected.not_to contain_file('/home/mouse/.config/containers/systemd/centos.container') }
+        end
+
+        context 'with location home' do
+          let(:params) do
+            super().merge(location: 'home')
+          end
+
+          it {
+            is_expected.to contain_file('/home/mouse/.config/containers/systemd/centos.container').with(
+              {
+                owner: 'mouse',
+                group: 'mouse',
+              }
+            )
+          }
+
+          it { is_expected.not_to contain_file('/etc/containers/systemd/users/mouse/centos.container') }
+        end
       end
     end
   end
