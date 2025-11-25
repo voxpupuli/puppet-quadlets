@@ -7,7 +7,7 @@ describe 'Quadlets::Unit::Kube' do
   it { is_expected.to allow_value({ 'PublishPort' => ['1234-12346'] }) }
   it { is_expected.to allow_value({ 'PublishPort' => [1234, '123.111.1.1:23:56'] }) }
   it { is_expected.to allow_value({ 'PublishPort' => ['1234:5678'] }) }
-  it { is_expected.not_to allow_value({ 'PublishPort' => '1234:5678' }) }
+  it { is_expected.to allow_value({ 'PublishPort' => '1234:5678' }) }
   it { is_expected.to allow_value({ 'ConfigMap' => ['/path/to/configmap.yaml'] }) }
   it { is_expected.to allow_value({ 'Network' => ['host'] }) }
   it { is_expected.to allow_value({ 'KubeDownForce' => true }) }
