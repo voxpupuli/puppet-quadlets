@@ -69,6 +69,7 @@ The following parameters are available in the `quadlets` class:
 * [`selinux_container_manage_cgroup`](#-quadlets--selinux_container_manage_cgroup)
 * [`purge_quadlet_dir`](#-quadlets--purge_quadlet_dir)
 * [`quadlets_hash`](#-quadlets--quadlets_hash)
+* [`users_hash`](#-quadlets--users_hash)
 
 ##### <a name="-quadlets--manage_package"></a>`manage_package`
 
@@ -182,7 +183,15 @@ Default value: `false`
 
 Data type: `Stdlib::CreateResources`
 
-a `Hash` of quadlets to deploy
+a `Hash` of `quadlets::quadlet` to deploy
+
+Default value: `{}`
+
+##### <a name="-quadlets--users_hash"></a>`users_hash`
+
+Data type: `Stdlib::CreateResources`
+
+a `Hash` of `quadlets::users` to deploy
 
 Default value: `{}`
 
