@@ -68,9 +68,9 @@ quadlets::quadlet { "centos.container":
  }
 ```
 
-### Simple `rootless` `centos.service` Running a Container
+### Simple `rootless` `centos.service` Running a Container with a Network
 
-The quadlet file will be maintained at `/etc/containers/systemd/users/santa/centos.container`
+The quadlet files will be maintained in `/etc/containers/systemd/users/santa`
 
 ```puppet
 quadlets::user { 'santa':
@@ -80,25 +80,75 @@ quadlets::user { 'santa':
   homedir       => "/home/santa",
 
 }
+
+# Set defaults for all the quadlets belonging to "santa".
+Quadlets::Quadlet {
+  ensure   => 'present',
+  location => 'system',
+  user     => 'santa',
+  active   => 'true',
+}
+
 quadlets::quadlet { "centos.container":
-   ensure          => present,
-   location        => 'system',
-   user            => 'santa',
-   unit_entry      => {
-     'Description' => 'Trivial Container that will be very lazy',
-   },
-   container_entry => {
-     'Image' => 'quay.io/centos/centos:latest',
-     'Exec'  => 'sh -c "sleep inf"',
-   },
-   install_entry   => {
-     'WantedBy' => 'default.target',
-   },
-   active          => true,
-   require         => Quadlets::User['santa'],
- }
+  unit_entry      => {
+    'Description' => 'Trivial Container that will be very lazy',
+  },
+  container_entry => {
+    'Image'   => 'quay.io/centos/centos:latest',
+    'Exec'    => 'sh -c "sleep inf"',
+    'Network' => 'centos.network',
+  },
+  install_entry   => {
+    'WantedBy' => 'default.target',
+  },
+  require         => Quadlets::Quadlet['centos.network'],
+}
+
+quadlets::quadlet { "centos.network":
+  unit_entry      => {
+    'Description' => 'Trivial Network',
+  },
+  network_entry => {
+    'Subnet'  => '192.168.30.0/24',
+    'Gateway' => '192.168.30.1',
+  },
+  install_entry   => {
+    'WantedBy' => 'default.target',
+  },
+}
 ```
 
+### Hiera Representation Of User setup and Quadlet deployment
+
+```yaml
+quadlets::users_hash:
+  charlie: {}
+  lucy:
+    homedir: '/opt/lucy'
+
+quadlets::quadlets_hash:
+  centos.container:
+    user: 'charlie'
+    location: 'system'
+    container_entry:
+      Image: 'quay.io/centos/centos:latest'
+      Exec: 'sh -c "sleep inf"'
+      Network: 'centos.network'
+    require: 'Quadlets::Quadlet[centos.network]'
+  centos.network:
+    user: 'charlie'
+    location: 'system'
+    network_entry:
+      Subnet: '192.168.30.0/24'
+      Gateway: '192.168.30.1'
+  busybox.image:
+    user: 'lucy'
+    homedir: '/opt/lucy'
+    unit_entry:
+      Description: 'Busybox Image'
+    image_entry:
+      Image: 'docker.io/busybox'
+```
 
 ## Migrating from version 2 to version 3
 

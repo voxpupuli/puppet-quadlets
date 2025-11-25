@@ -213,6 +213,29 @@ describe 'quadlets' do
             it { is_expected.to have_quadlets__quadlet_resource_count(2) }
           end
         end
+
+        context 'with users_hash as default' do
+          it { is_expected.to have_quadlets__user_resource_count(0) }
+        end
+
+        context 'with quadlet_users defined' do
+          let(:params) do
+            { users_hash: {
+              macron: {
+                group: 'leyen',
+                create_dir: true,
+              },
+              starmer: {
+                manage_user: true,
+                homedir: '/tmp/starmer',
+              },
+            } }
+          end
+
+          it { is_expected.to contain_quadlets__user('macron').with_group('leyen') }
+          it { is_expected.to contain_quadlets__user('starmer').with_manage_user(true) }
+          it { is_expected.to have_quadlets__user_resource_count(2) }
+        end
       end
     end
   end
