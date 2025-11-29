@@ -630,7 +630,7 @@ Default value: `undef`
 
 ##### <a name="-quadlets--user--user_additional_params"></a>`user_additional_params`
 
-Data type: `Hash[String[1],Any]`
+Data type: `Hash[Pattern[/\A(?!ensure$|gid$|home$|managehome$)[a-z_]+\z/],Any]`
 
 Define additional parameters to be used to create the user.
 

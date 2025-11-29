@@ -184,14 +184,14 @@ describe 'quadlets::user' do
         let(:title) { 'additional' }
         let(:params) do
           {
-            'user_additional_params' => { managehome: false, home: '/tmp/overwrite', system: true },
+            'user_additional_params' => { system: true },
           }
         end
 
         it { is_expected.to compile.with_all_deps }
 
         it {
-          is_expected.not_to contain_user('additional').
+          is_expected.to contain_user('additional').
             with_ensure('present').
             with_system(true).
             with_managehome(true).

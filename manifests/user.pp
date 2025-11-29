@@ -58,7 +58,7 @@ define quadlets::user (
   Optional[Tuple[Integer[1],Integer[1]]] $subuid = undef,
   Optional[Tuple[Integer[1],Integer[1]]] $subgid = undef,
   Optional[Hash[String[1],Quadlets::Auth]] $authentications = undef,
-  Hash[String[1],Any] $user_additional_params = {},
+  Hash[Pattern[/\A(?!ensure$|gid$|home$|managehome$)[a-z_]+\z/],Any] $user_additional_params = {},
 ) {
   include quadlets
 
