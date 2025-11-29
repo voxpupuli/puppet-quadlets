@@ -546,6 +546,7 @@ The following parameters are available in the `quadlets::user` defined type:
 * [`subuid`](#-quadlets--user--subuid)
 * [`subgid`](#-quadlets--user--subgid)
 * [`authentications`](#-quadlets--user--authentications)
+* [`user_additional_params`](#-quadlets--user--user_additional_params)
 
 ##### <a name="-quadlets--user--user"></a>`user`
 
@@ -626,6 +627,14 @@ Data type: `Optional[Hash[String[1],Quadlets::Auth]]`
 if defined, a file ~/.config/containers/auth.json is created with the specified authentications (the directory has to exist, eg. use create_dir => true)
 
 Default value: `undef`
+
+##### <a name="-quadlets--user--user_additional_params"></a>`user_additional_params`
+
+Data type: `Hash[Pattern[/\A(?!ensure$|gid$|home$|managehome$)[a-z_]+\z/],Any]`
+
+Define additional parameters to be used to create the user.
+
+Default value: `{}`
 
 ## Data types
 

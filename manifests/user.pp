@@ -10,6 +10,7 @@
 # @param subuid If defined as a pair of integers the user will have a subordintate user ID and a subordinate user ID count specified in `/etc/subuid`. Only one range per user is supported,
 # @param subgid If defined as a pair of integers the user's group will have a subordintate group ID and a subordinate group ID count specified in `/etc/subgid`. Only one range per group is supported,
 # @param authentications if defined, a file ~/.config/containers/auth.json is created with the specified authentications (the directory has to exist, eg. use create_dir => true)
+# @param user_additional_params Define additional parameters to be used to create the user.
 #
 # @example Run a CentOS user Container maning user, specifying home dir
 #   quadlets::user { 'steve':
@@ -57,6 +58,7 @@ define quadlets::user (
   Optional[Tuple[Integer[1],Integer[1]]] $subuid = undef,
   Optional[Tuple[Integer[1],Integer[1]]] $subgid = undef,
   Optional[Hash[String[1],Quadlets::Auth]] $authentications = undef,
+  Hash[Pattern[/\A(?!ensure$|gid$|home$|managehome$)[a-z_]+\z/],Any] $user_additional_params = {},
 ) {
   include quadlets
 
@@ -90,10 +92,12 @@ define quadlets::user (
     group { $_group: }
 
     user { $user:
-      ensure     => present,
-      gid        => $_group,
-      home       => $_user_homedir,
-      managehome => true,
+      * => {
+        ensure     => present,
+        gid        => $_group,
+        home       => $_user_homedir,
+        managehome => true,
+      } + $user_additional_params,
     }
   }
   if $manage_linger {

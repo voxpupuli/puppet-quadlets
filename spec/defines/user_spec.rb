@@ -179,6 +179,25 @@ describe 'quadlets::user' do
             with_mode('0600')
         }
       end
+
+      context 'with user_additional_params set' do
+        let(:title) { 'additional' }
+        let(:params) do
+          {
+            'user_additional_params' => { system: true },
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+
+        it {
+          is_expected.to contain_user('additional').
+            with_ensure('present').
+            with_system(true).
+            with_managehome(true).
+            with_home('/home/additional')
+        }
+      end
     end
   end
 end
