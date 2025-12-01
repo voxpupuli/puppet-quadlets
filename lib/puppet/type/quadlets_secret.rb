@@ -71,6 +71,10 @@ Puppet::Type.newtype(:quadlets_secret) do
     [self[:name].split(':')[0]]
   end
 
+  autorequire(:loginctl_user) do
+    [self[:name].split(':')[0]]
+  end
+
   autorequire(:package) do
     ['podman']
   end

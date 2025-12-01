@@ -33,8 +33,6 @@ Puppet::Type.type(:quadlets_secret).provide(:podman) do
 
   def run_podman(args, env = {})
     user_info = Etc.getpwnam(should_user)
-    # sysenv = { 'HOME' => user_info.dir, 'XDG_RUNTIME_DIR' => "/run/user/#{user_info.uid}" }
-    # sysenv = { 'HOME' => user_info.dir, 'XDG_RUNTIME_DIR' => "/run/user/#{user_info.uid}" }
     runenv = {
       cwd: user_info.dir,
       failonfail: true,
@@ -43,6 +41,8 @@ Puppet::Type.type(:quadlets_secret).provide(:podman) do
       combine: false,
       custom_environment: env.merge({ 'HOME' => user_info.dir, 'XDG_RUNTIME_DIR' => "/run/user/#{user_info.uid}" })
     }
+    # test if user is logged in or lingering:
+    raise Puppet::Error, "user #{should_user} is not logged in, consider enable linger." unless File.directory?("/run/user/#{user_info.uid}")
 
     execute([command('podman')] + args, runenv)
   end

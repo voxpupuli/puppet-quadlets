@@ -3,7 +3,7 @@
 require 'spec_helper_acceptance'
 
 describe 'quadlets_secret' do
-  context 'with a selection of users' do
+  context 'with a selection of secrets for root and auser' do
     it_behaves_like 'an idempotent resource' do
       let(:manifest) do
         <<-PUPPET
@@ -34,14 +34,19 @@ describe 'quadlets_secret' do
           doptions => {
             path => '/tmp/othersecret',
           },
+        }
 
-        user{ 'auser':
-          home       => '/tmp/auser',
-          managehome => true,
+        quadlets::user{ 'auser':
+          homedir => '/tmp/auser',
         }
 
         PUPPET
       end
+    end
+
+    it 'whoami that runs a command' do
+      result = command('id')
+      expect(result.stdout.strip).to eq('root or something else ;)')
     end
 
     it 'root:asecret exists' do
@@ -50,7 +55,7 @@ describe 'quadlets_secret' do
     end
 
     it 'root:anothersecret has labels' do
-      result = command('podman secret inspect anotersecret --format "{{.Spec.Labels}}"')
+      result = command('podman secret inspect anothersecret --format "{{.Spec.Labels}}"')
       expect(result.stdout.strip).to eq('map[label1:one label2:two]')
     end
 
