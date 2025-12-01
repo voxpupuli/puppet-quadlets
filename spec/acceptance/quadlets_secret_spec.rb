@@ -58,28 +58,36 @@ describe 'quadlets_secret' do
       it { is_expected.to exist }
     end
 
-    describe file('/tmp/auser/.local/share/containers/containers/storage/secrets') do
-      it { is_expected.to be_directory }
-      it { is_expected.to be_owned_by 'auser' }
-      it { is_expected.to be_grouped_into 'auser' }
+    describe 'directory for auser secrets' do
+      file('/tmp/auser/.local/share/containers/containers/storage/secrets') do
+        it { is_expected.to be_directory }
+        it { is_expected.to be_owned_by 'auser' }
+        it { is_expected.to be_grouped_into 'auser' }
+      end
     end
 
-    describe file('/tmp/auser/.local/share/containers/containers/storage/secrets/secrets.json') do
-      it { is_expected.to be_file }
-      it { is_expected.to be_owned_by 'auser' }
-      it { is_expected.to be_grouped_into 'auser' }
+    describe 'files for auser secrets' do
+      describe file('/tmp/auser/.local/share/containers/containers/storage/secrets/secrets.json') do
+        it { is_expected.to be_file }
+        it { is_expected.to be_owned_by 'auser' }
+        it { is_expected.to be_grouped_into 'auser' }
+      end
     end
 
-    describe file('/tmp/othersecret') do
-      it { is_expected.to be_directory }
-      it { is_expected.to be_owned_by 'auser' }
-      it { is_expected.to be_grouped_into 'auser' }
+    describe 'directories for secret with path set' do
+      describe file('/tmp/othersecret') do
+        it { is_expected.to be_directory }
+        it { is_expected.to be_owned_by 'auser' }
+        it { is_expected.to be_grouped_into 'auser' }
+      end
     end
 
-    describe file('/tmp/othersecret/secretsdata.json') do
-      it { is_expected.to be_file }
-      it { is_expected.to be_owned_by 'auser' }
-      it { is_expected.to be_grouped_into 'auser' }
+    describe 'file for secret with path set' do
+      describe file('/tmp/othersecret/secretsdata.json') do
+        it { is_expected.to be_file }
+        it { is_expected.to be_owned_by 'auser' }
+        it { is_expected.to be_grouped_into 'auser' }
+      end
     end
   end
 end

@@ -681,6 +681,8 @@ Default value: `present`
 
 secret labels to set
 
+Default value: `{}`
+
 ##### `secret`
 
 the secret himself
@@ -697,6 +699,8 @@ The following parameters are available in the `quadlets_secret` type.
 ##### <a name="-quadlets_secret--doptions"></a>`doptions`
 
 driver options used for secret creation
+
+Default value: `{}`
 
 ##### <a name="-quadlets_secret--driver"></a>`driver`
 

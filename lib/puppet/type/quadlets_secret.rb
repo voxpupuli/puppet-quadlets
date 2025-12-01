@@ -25,7 +25,7 @@ Puppet::Type.newtype(:quadlets_secret) do
 
   newparam(:doptions) do
     desc 'driver options used for secret creation'
-    defaultto {}
+    defaultto({})
 
     validate do |value|
       raise ArgumentError, 'needs to be a Hash' unless value.is_a?(Hash)
@@ -34,7 +34,7 @@ Puppet::Type.newtype(:quadlets_secret) do
 
   newproperty(:labels) do
     desc 'secret labels to set'
-    defaultto {}
+    defaultto({})
 
     validate do |value|
       raise ArgumentError, 'needs to be a Hash' unless value.is_a?(Hash)
