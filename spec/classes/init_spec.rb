@@ -236,6 +236,18 @@ describe 'quadlets' do
           it { is_expected.to contain_quadlets__user('starmer').with_manage_user(true) }
           it { is_expected.to have_quadlets__user_resource_count(2) }
         end
+
+        context 'with secrets defined' do
+          let(:params) do
+            { secrets_hash: {
+              'root:secret1': {
+                secret: '** hidden **',
+              }
+            } }
+          end
+
+          it { is_expected.to contain_quadlets_secret('root:secret1').with_secret('** hidden **') }
+        end
       end
     end
   end
