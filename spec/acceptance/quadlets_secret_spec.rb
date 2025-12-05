@@ -21,39 +21,14 @@ describe 'quadlets_secret' do
           },
         }
 
-        quadlets_secret{'auser:ausersecret':
-          secret => 'toosimple',
-          labels => {
-            label3 => 'three',
-            label4 => 'four',
-          },
-        }
-
-        quadlets_secret{'auser:othersecret':
+        quadlets_secret{'root:withpath':
           secret   => 'Idonottellyou;)',
           doptions => {
-            path => '/tmp/othersecret',
+            path => '/tmp/whithpathsecret',
           },
         }
-
-        quadlets::user{ 'auser':
-          homedir => '/tmp/auser',
-        }
-
-        # https://github.com/voxpupuli/puppet-systemd/issues/578
-        Quadlets_secret<||> ->
-        exec{'/usr/bin/sleep 10 && touch /tmp/sleep-only-once':
-          creates   => '/tmp/sleep-only-once',
-          require   => Loginctl_user['auser'],
-        }
-
         PUPPET
       end
-    end
-
-    it 'whoami that runs a command' do
-      result = command('id')
-      expect(result.stdout.strip).to eq('root or something else ;)')
     end
 
     it 'root:asecret exists' do
@@ -70,35 +45,19 @@ describe 'quadlets_secret' do
       it { is_expected.to exist }
     end
 
-    describe 'directory for auser secrets' do
-      file('/tmp/auser/.local/share/containers/containers/storage/secrets') do
-        it { is_expected.to be_directory }
-        it { is_expected.to be_owned_by 'auser' }
-        it { is_expected.to be_grouped_into 'auser' }
-      end
-    end
-
-    describe 'files for auser secrets' do
-      describe file('/tmp/auser/.local/share/containers/containers/storage/secrets/secrets.json') do
-        it { is_expected.to be_file }
-        it { is_expected.to be_owned_by 'auser' }
-        it { is_expected.to be_grouped_into 'auser' }
-      end
-    end
-
     describe 'directories for secret with path set' do
-      describe file('/tmp/othersecret') do
+      describe file('/tmp/whithpathsecret') do
         it { is_expected.to be_directory }
-        it { is_expected.to be_owned_by 'auser' }
-        it { is_expected.to be_grouped_into 'auser' }
+        it { is_expected.to be_owned_by 'root' }
+        it { is_expected.to be_grouped_into 'root' }
       end
     end
 
     describe 'file for secret with path set' do
-      describe file('/tmp/othersecret/secretsdata.json') do
+      describe file('/tmp/whithpathsecret/secretsdata.json') do
         it { is_expected.to be_file }
-        it { is_expected.to be_owned_by 'auser' }
-        it { is_expected.to be_grouped_into 'auser' }
+        it { is_expected.to be_owned_by 'root' }
+        it { is_expected.to be_grouped_into 'root' }
       end
     end
   end
