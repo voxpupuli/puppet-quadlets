@@ -40,6 +40,13 @@ describe 'quadlets_secret' do
           homedir => '/tmp/auser',
         }
 
+        # https://github.com/voxpupuli/puppet-systemd/issues/578
+        Quadlets_secret<||> ->
+        exec{'/usr/bin/sleep 10 && touch /tmp/sleep-only-once':
+          creates   => '/tmp/sleep-only-once',
+          require   => Loginctl_user['auser'],
+        }
+
         PUPPET
       end
     end
