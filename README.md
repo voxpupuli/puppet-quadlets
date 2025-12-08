@@ -118,6 +118,26 @@ quadlets::quadlet { "centos.network":
 }
 ```
 
+### Manage podman secrets with puppet
+The expected format for the title is 'username:secretname'. This allows manage the same secret for multiple
+users. To manage secrets for non root users, they need to have an active session (either enable linger or being logged in !).
+```puppet
+# a secret for the root user:
+quadlets_secret{ 'root:secretname':
+  secret => 'donotforget!',
+}
+# a secret for the xyz user, with labels:
+quadlets_secret{ 'xyz:secretname':
+  secret => 'ensuretorember',
+  labels => { 'label1' => 'one', 'label2' => 'two' },
+}
+
+# ensure to remove a secret:
+quadlets_secret{ 'root:secretname':
+  ensure => 'absent'
+}
+```
+
 ### Hiera Representation Of User setup and Quadlet deployment
 
 ```yaml
