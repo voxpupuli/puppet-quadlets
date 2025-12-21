@@ -79,7 +79,7 @@ define quadlets::user (
       $accum + [$accum ? {
           []      => "${_user_homedir}/${part}",
           default => "${accum[-1]}/${part}"
-        }
+        },
       ]
     }
     file { $dirs:
