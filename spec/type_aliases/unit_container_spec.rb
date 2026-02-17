@@ -20,7 +20,8 @@ describe 'Quadlets::Unit::Container' do
   it { is_expected.to allow_value({ 'Entrypoint' => 'python3' }) }
   it { is_expected.to allow_value({ 'Entrypoint' => '["/usr/bin/sleep", "inf"]' }) }
   it { is_expected.to allow_value({ 'Environment' => 'FOO=bar' }) }
-  it { is_expected.to allow_value({ 'Environment' => ['FOO=bar', 'BAZ=qux'] }) }
+  it { is_expected.to allow_value({ 'Environment' => RSpec::Puppet::Sensitive.new('SECRET=pass') }) }
+  it { is_expected.to allow_value({ 'Environment' => ['FOO=bar', 'BAZ=qux', RSpec::Puppet::Sensitive.new('SECRET=pass')] }) }
   it { is_expected.to allow_value({ 'EnvironmentFile' => '/etc/myenv.conf' }) }
   it { is_expected.to allow_value({ 'EnvironmentFile' => ['/etc/myenv.conf', '/opt/app/env.list'] }) }
   it { is_expected.to allow_value({ 'EnvironmentHost' => 'HOME' }) }
