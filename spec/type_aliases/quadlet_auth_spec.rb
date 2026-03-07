@@ -5,7 +5,7 @@ require 'spec_helper'
 describe 'Quadlets::Auth' do
   context 'with a permitted unit name' do
     [
-      { username: 'test', password: '***secret***' }
+      { username: 'test', password: '***secret***' },
     ].each do |unit|
       it { is_expected.to allow_value(unit) }
     end

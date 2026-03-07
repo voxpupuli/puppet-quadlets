@@ -22,7 +22,7 @@ describe 'quadlets::user' do
               ensure: 'directory',
               owner: 'nano',
               group: 'nano',
-            }
+            },
           )
         }
 
@@ -32,7 +32,7 @@ describe 'quadlets::user' do
               ensure: 'directory',
               owner: 'root',
               group: 'root',
-            }
+            },
           )
         }
 
@@ -55,7 +55,7 @@ describe 'quadlets::user' do
               ensure: 'directory',
               owner: 'pico',
               group: 'giga',
-            }
+            },
           )
         }
 
@@ -103,7 +103,7 @@ describe 'quadlets::user' do
               lens: 'Subids.lns',
               incl: '/etc/subuid',
               context: '/files/etc/subuid',
-            }
+            },
           )
         }
 
@@ -112,12 +112,12 @@ describe 'quadlets::user' do
             {
               changes: [
                 'set quark/start 1000', 'set quark/count 2000',
-                'rm quark[2]', 'rm quark[2]', 'rm quark[2]'
+                'rm quark[2]', 'rm quark[2]', 'rm quark[2]',
               ],
               lens: 'Subids.lns',
               incl: '/etc/subgid',
               context: '/files/etc/subgid',
-            }
+            },
           )
         }
 
@@ -133,12 +133,12 @@ describe 'quadlets::user' do
               {
                 changes: [
                   'set top/start 1000', 'set top/count 2000',
-                  'rm top[2]', 'rm top[2]', 'rm top[2]'
+                  'rm top[2]', 'rm top[2]', 'rm top[2]',
                 ],
                 lens: 'Subids.lns',
                 incl: '/etc/subgid',
                 context: '/files/etc/subgid',
-              }
+              },
             )
           }
         end
@@ -172,11 +172,11 @@ describe 'quadlets::user' do
         it { is_expected.to compile.with_all_deps }
 
         it {
-          is_expected.to contain_file('/home/charm/.config/containers/auth.json').
-            with_ensure('file').
-            with_owner('charm').
-            with_group('charm').
-            with_mode('0600')
+          is_expected.to contain_file('/home/charm/.config/containers/auth.json')
+            .with_ensure('file')
+            .with_owner('charm')
+            .with_group('charm')
+            .with_mode('0600')
         }
       end
 
@@ -191,11 +191,11 @@ describe 'quadlets::user' do
         it { is_expected.to compile.with_all_deps }
 
         it {
-          is_expected.to contain_user('additional').
-            with_ensure('present').
-            with_system(true).
-            with_managehome(true).
-            with_home('/home/additional')
+          is_expected.to contain_user('additional')
+            .with_ensure('present')
+            .with_system(true)
+            .with_managehome(true)
+            .with_home('/home/additional')
         }
       end
     end
