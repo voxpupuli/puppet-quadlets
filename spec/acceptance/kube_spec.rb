@@ -58,7 +58,21 @@ describe 'quadlets::quadlet' do
       end
     end
 
+    describe command('systemctl cat kubeycentos.service') do
+      it 'generates a service file' do
+        puts subject.stdout
+        expect(subject.exit_status).to eq(0)
+      end
+    end
+
     describe service('kubeycentos.service') do
+      after do |example|
+        if example.exception
+          puts command('systemctl status kubeycentos.service --no-pager -l').stdout
+          puts command('journalctl -u kubeycentos.service --no-pager -n 200').stdout
+        end
+      end
+
       it { is_expected.to be_running }
       it { is_expected.to be_enabled }
     end
