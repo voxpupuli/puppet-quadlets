@@ -31,22 +31,22 @@ describe 'quadlets::quadlet' do
         it { is_expected.to contain_class('quadlets') }
 
         it {
-          is_expected.to contain_file('/etc/containers/systemd/centos.container').
-            with_ensure('present').
-            with_owner('root').
-            with_group('root').
-            with_mode('0444').
-            with_content(%r{^\[Unit\]$}).
-            with_content(%r{^Description=Simple centos container$}).
-            with_content(%r{^Requires=another.container$}).
-            with_content(%r{^\[Service\]$}).
-            with_content(%r{^TimeoutStartSec=900}).
-            with_content(%r{^\[Container\]$}).
-            with_content(%r{^Image=quay.io/centos/centos:latest$}).
-            with_content(%r{^PublishPort=1234$}).
-            with_content(%r{^PublishPort=123.1.1.1:100:102$}).
-            with_content(%r{^Exec=sh -c "sleep inf"$}).
-            with_validate_cmd(%r{quad=\$d/centos.container})
+          is_expected.to contain_file('/etc/containers/systemd/centos.container')
+            .with_ensure('present')
+            .with_owner('root')
+            .with_group('root')
+            .with_mode('0444')
+            .with_content(%r{^\[Unit\]$})
+            .with_content(%r{^Description=Simple centos container$})
+            .with_content(%r{^Requires=another.container$})
+            .with_content(%r{^\[Service\]$})
+            .with_content(%r{^TimeoutStartSec=900})
+            .with_content(%r{^\[Container\]$})
+            .with_content(%r{^Image=quay.io/centos/centos:latest$})
+            .with_content(%r{^PublishPort=1234$})
+            .with_content(%r{^PublishPort=123.1.1.1:100:102$})
+            .with_content(%r{^Exec=sh -c "sleep inf"$})
+            .with_validate_cmd(%r{quad=\$d/centos.container})
         }
 
         it { is_expected.to contain_systemd__daemon_reload('centos.container') }
@@ -83,16 +83,16 @@ describe 'quadlets::quadlet' do
             base = super()
             base.merge(
               container_entry: base[:container_entry].merge(
-                'AddDevice' => ['nvidia.com/gpu=all']
-              )
+                'AddDevice' => ['nvidia.com/gpu=all'],
+              ),
             )
           end
 
           it { is_expected.to compile.with_all_deps }
 
           it 'adds AddDevice=nvidia.com/gpu=all to the quadlet file' do
-            is_expected.to contain_file('/etc/containers/systemd/centos.container').
-              with_content(%r{^AddDevice=nvidia\.com/gpu=all$})
+            is_expected.to contain_file('/etc/containers/systemd/centos.container')
+              .with_content(%r{^AddDevice=nvidia\.com/gpu=all$})
           end
         end
       end
@@ -157,7 +157,7 @@ describe 'quadlets::quadlet' do
               {
                 owner: 'root',
                 group: 'root',
-              }
+              },
             )
           }
 
@@ -174,7 +174,7 @@ describe 'quadlets::quadlet' do
               {
                 owner: 'mouse',
                 group: 'mouse',
-              }
+              },
             )
           }
 

@@ -129,7 +129,7 @@ describe 'quadlets' do
               is_expected.to contain_file('/etc/containers/systemd').with(
                 purge: true,
                 force: true,
-                recurse: true
+                recurse: true,
               )
             end
 
@@ -137,7 +137,7 @@ describe 'quadlets' do
               is_expected.to contain_file('/etc/containers/systemd/users').with(
                 purge: true,
                 force: true,
-                recurse: true
+                recurse: true,
               )
             end
           end
@@ -151,7 +151,7 @@ describe 'quadlets' do
               is_expected.to contain_file('/etc/containers/systemd').with(
                 purge: false,
                 force: false,
-                recurse: false
+                recurse: false,
               )
             end
 
@@ -159,7 +159,7 @@ describe 'quadlets' do
               is_expected.to contain_file('/etc/containers/systemd/users').with(
                 purge: false,
                 force: false,
-                recurse: false
+                recurse: false,
               )
             end
           end
