@@ -59,6 +59,18 @@ describe 'quadlets::quadlet' do
           end
 
           it { is_expected.to contain_service('centos.service').with_ensure(true) }
+
+          it 'notifies daemon_reload and service on file change' do
+            is_expected.to contain_file('/etc/containers/systemd/centos.container')
+              .that_notifies('Systemd::Daemon_reload[centos.container]')
+            is_expected.to contain_file('/etc/containers/systemd/centos.container')
+              .that_notifies('Service[centos.service]')
+          end
+
+          it 'orders daemon_reload before service restart' do
+            is_expected.to contain_systemd__daemon_reload('centos.container')
+              .that_comes_before('Service[centos.service]')
+          end
         end
 
         context 'with the container absent' do
