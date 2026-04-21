@@ -26,8 +26,14 @@ describe 'Quadlets::Unit::Container' do
   it { is_expected.to allow_value({ 'EnvironmentFile' => ['/etc/myenv.conf', '/opt/app/env.list'] }) }
   it { is_expected.to allow_value({ 'EnvironmentHost' => 'HOME' }) }
   it { is_expected.to allow_value({ 'EnvironmentHost' => %w[HOME PATH] }) }
-  it { is_expected.to allow_value({ 'Exec'  => '/bin/bash' }) }
-  it { is_expected.to allow_value({ 'Exec'  => './entrypoint.sh' }) }
+  it { is_expected.to allow_value({ 'Exec' => '/bin/bash' }) }
+  it { is_expected.to allow_value({ 'Exec' => './entrypoint.sh' }) }
+  it { is_expected.to allow_value({ 'Exec' => '--path.procfs=/host/proc --path.sysfs=/host/sys --path.rootfs=/host' }) }
+  it { is_expected.to allow_value({ 'Exec' => ['/bin/bash'] }) }
+  it { is_expected.to allow_value({ 'Exec' => ['sh', '-c', 'sleep inf'] }) }
+  it { is_expected.to allow_value({ 'Exec' => ['--path.procfs=/host/proc', '--path.sysfs=/host/sys', '--path.rootfs=/host'] }) }
+  it { is_expected.not_to allow_value({ 'Exec' => [] }) }
+  it { is_expected.not_to allow_value({ 'Exec' => ['--flag', 123] }) }
   it { is_expected.to allow_value({ 'ExposeHostPort' => 8080 }) }
   it { is_expected.to allow_value({ 'ExposeHostPort' => [8080, 8443] }) }
   it { is_expected.to allow_value({ 'GIDMap' => '0:100000:65536' }) }

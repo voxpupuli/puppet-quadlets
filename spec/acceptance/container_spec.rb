@@ -41,4 +41,67 @@ describe 'quadlets::quadlet' do
       it { is_expected.to be_enabled }
     end
   end
+
+  context 'with Exec as an array equivalent to the string form' do
+    it_behaves_like 'an idempotent resource' do
+      let(:manifest) do
+        <<-PUPPET
+
+        package{'fuse-overlayfs':
+          ensure => present,
+          before => Quadlets::Quadlet['node-exporter.container'],
+        }
+        quadlets::quadlet{'node-exporter.container':
+          ensure          => present,
+          unit_entry      => {
+            'Description' => 'Prometheus node-exporter (string Exec)',
+          },
+          container_entry => {
+            'Image' => 'quay.io/prometheus/node-exporter:latest',
+            'Exec'  => '--path.procfs=/host/proc --path.sysfs=/host/sys --path.rootfs=/host --web.listen-address=[::]:9100',
+          },
+          install_entry   => {
+            'WantedBy' => 'default.target',
+          },
+        }
+        PUPPET
+      end
+    end
+
+    it_behaves_like 'an idempotent resource' do
+      let(:manifest) do
+        <<-PUPPET
+
+        package{'fuse-overlayfs':
+          ensure => present,
+          before => Quadlets::Quadlet['node-exporter-array.container'],
+        }
+        quadlets::quadlet{'node-exporter-array.container':
+          ensure          => present,
+          unit_entry      => {
+            'Description' => 'Prometheus node-exporter (array Exec)',
+          },
+          container_entry => {
+            'Image' => 'quay.io/prometheus/node-exporter:latest',
+            'Exec'  => [
+              '--path.procfs=/host/proc',
+              '--path.sysfs=/host/sys',
+              '--path.rootfs=/host',
+              '--web.listen-address=[::]:9100',
+            ],
+          },
+          install_entry   => {
+            'WantedBy' => 'default.target',
+          },
+        }
+        PUPPET
+      end
+    end
+
+    it 'produces identical Exec= lines from string and array forms' do
+      string_exec = file('/etc/containers/systemd/node-exporter.container').content.match(%r{^Exec=.+$})
+      array_exec  = file('/etc/containers/systemd/node-exporter-array.container').content.match(%r{^Exec=.+$})
+      expect(string_exec).to eq(array_exec)
+    end
+  end
 end

@@ -38,9 +38,19 @@ $_unit_sections.each | $_section | {
 [<%= $_section %>]
 <%-
     $_values.each | $_key, $_value | {
-      Array($_value, true).each | $_subvalue | { -%>
+      if $_key == 'Exec' {
+        if $_value =~ Array {
+          $_exec = join($_value, ' ')
+        } else {
+          $_exec = $_value
+        } -%>
+<%= $_key %>=<%= $_exec %>
+<%-
+      } else {
+        Array($_value, true).each | $_subvalue | { -%>
 <%= $_key %>=<%= $_subvalue %>
 <%-
+        }
       }
     }
   }

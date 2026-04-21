@@ -78,6 +78,65 @@ describe 'quadlets::quadlet' do
           it { is_expected.to contain_file('/etc/containers/systemd/centos.container').without_validate_cmd }
         end
 
+        context 'with Exec as an array equivalent to the string form' do
+          let(:params) do
+            super().merge(
+              container_entry: {
+                'Image' => 'quay.io/centos/centos:latest',
+                'Exec'  => ['sh', '-c', '"sleep inf"'],
+              },
+            )
+          end
+
+          it { is_expected.to compile.with_all_deps }
+
+          it 'renders Exec as a single space-joined line, identical to the string form' do
+            is_expected.to contain_file('/etc/containers/systemd/centos.container')
+              .with_content(%r{^Exec=sh -c "sleep inf"$})
+          end
+        end
+
+        context 'with Exec as a multi-flag string (prometheus node-exporter style)' do
+          let(:params) do
+            super().merge(
+              container_entry: {
+                'Image' => 'prom/node-exporter:latest',
+                'Exec'  => '--path.procfs=/host/proc --path.sysfs=/host/sys --path.rootfs=/host --web.listen-address=[::]:9100',
+              },
+            )
+          end
+
+          it { is_expected.to compile.with_all_deps }
+
+          it 'renders Exec as-is on a single line' do
+            is_expected.to contain_file('/etc/containers/systemd/centos.container')
+              .with_content(%r{^Exec=--path\.procfs=/host/proc --path\.sysfs=/host/sys --path\.rootfs=/host --web\.listen-address=\[::\]:9100$})
+          end
+        end
+
+        context 'with Exec as a multi-flag array equivalent to the multi-flag string' do
+          let(:params) do
+            super().merge(
+              container_entry: {
+                'Image' => 'prom/node-exporter:latest',
+                'Exec'  => [
+                  '--path.procfs=/host/proc',
+                  '--path.sysfs=/host/sys',
+                  '--path.rootfs=/host',
+                  '--web.listen-address=[::]:9100',
+                ],
+              },
+            )
+          end
+
+          it { is_expected.to compile.with_all_deps }
+
+          it 'renders Exec as a single space-joined line, identical to the multi-flag string form' do
+            is_expected.to contain_file('/etc/containers/systemd/centos.container')
+              .with_content(%r{^Exec=--path\.procfs=/host/proc --path\.sysfs=/host/sys --path\.rootfs=/host --web\.listen-address=\[::\]:9100$})
+          end
+        end
+
         context 'with AddDevice using Container Device Interface' do
           let(:params) do
             base = super()
