@@ -111,6 +111,7 @@ describe 'quadlets::quadlet' do
 
         it { is_expected.to contain_file('/etc/containers/systemd/magic.kube') }
         it { is_expected.to contain_service('magic.service').with_ensure(true) }
+        it { is_expected.to contain_systemd__daemon_reload('magic.kube') }
       end
 
       context 'with an image quadlet' do
@@ -127,6 +128,7 @@ describe 'quadlets::quadlet' do
 
         it { is_expected.to contain_file('/etc/containers/systemd/busybox.image') }
         it { is_expected.to contain_service('busybox-image.service').with_ensure(true) }
+        it { is_expected.to contain_systemd__daemon_reload('busybox.image') }
       end
 
       context 'with a rootless quadlet' do
