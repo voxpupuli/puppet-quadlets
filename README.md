@@ -118,6 +118,35 @@ quadlets::quadlet { "centos.network":
 }
 ```
 
+### Build a Local Image and Run It as a Container
+
+The `.build` quadlet type builds a container image from a local `Containerfile`
+and makes it available to other quadlet units.  The build service runs once and
+subsequent restarts are fast due to image layer caching.
+
+```puppet
+quadlets::quadlet { 'myapp.build':
+  ensure      => present,
+  build_entry => {
+    'ImageTag'            => 'localhost/myapp:latest',
+    'SetWorkingDirectory' => 'unit',
+  },
+}
+
+quadlets::quadlet { 'myapp.container':
+  ensure          => present,
+  container_entry => {
+    'Image' => 'myapp.build',
+    'Exec'  => '/usr/bin/myapp',
+  },
+  install_entry   => {
+    'WantedBy' => 'default.target',
+  },
+  active          => true,
+  require         => Quadlets::Quadlet['myapp.build'],
+}
+```
+
 ### Hiera Representation Of User setup and Quadlet deployment
 
 ```yaml

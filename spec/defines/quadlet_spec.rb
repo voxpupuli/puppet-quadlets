@@ -129,6 +129,41 @@ describe 'quadlets::quadlet' do
         it { is_expected.to contain_service('busybox-image.service').with_ensure(true) }
       end
 
+      context 'with a build quadlet' do
+        let(:title) { 'myapp.build' }
+        let(:params) do
+          {
+            ensure: 'present',
+            build_entry: {
+              'ImageTag'            => 'localhost/myapp:latest',
+              'SetWorkingDirectory' => 'unit',
+            },
+            active: true,
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_file('/etc/containers/systemd/myapp.build') }
+        it { is_expected.to contain_service('myapp-build.service').with_ensure(true) }
+
+        it {
+          is_expected.to contain_file('/etc/containers/systemd/myapp.build')
+            .with_content(%r{^\[Build\]$})
+            .with_content(%r{^ImageTag=localhost/myapp:latest$})
+            .with_content(%r{^SetWorkingDirectory=unit$})
+        }
+
+        context 'with a container_entry on a build quadlet' do
+          let(:params) do
+            super().merge(
+              container_entry: { 'Image' => 'quay.io/centos/centos:latest' },
+            )
+          end
+
+          it { is_expected.to compile.and_raise_error(%r{container_entry}) }
+        end
+      end
+
       context 'with a rootless quadlet' do
         let(:title) { 'centos.container' }
         let(:params) do
