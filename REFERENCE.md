@@ -25,11 +25,12 @@
 
 * [`Quadlets::Auth`](#Quadlets--Auth): custom datatype to specify username and password
 * [`Quadlets::Quadlet_name`](#Quadlets--Quadlet_name): custom datatype that validates different filenames for quadlet units
+* [`Quadlets::Unit::Build`](#Quadlets--Unit--Build): custom datatype for Build entries of podman build quadlet
 * [`Quadlets::Unit::Container`](#Quadlets--Unit--Container): custom datatype for container entries of podman container quadlet
 * [`Quadlets::Unit::Image`](#Quadlets--Unit--Image): custom datatype for Image entries of podman image quadlet
 * [`Quadlets::Unit::Kube`](#Quadlets--Unit--Kube): custom datatype for Kube entries of podman kube quadlet
 * [`Quadlets::Unit::Network`](#Quadlets--Unit--Network): custom datatype for Network entries of podman container quadlet
-* [`Quadlets::Unit::Pod`](#Quadlets--Unit--Pod): custom datatype for Volume entries of podman container quadlet
+* [`Quadlets::Unit::Pod`](#Quadlets--Unit--Pod): custom datatype for Pod entries of podman pod quadlet
 * [`Quadlets::Unit::Unit`](#Quadlets--Unit--Unit): Possible keys for the [Unit] section of a quadlet file
 * [`Quadlets::Unit::Volume`](#Quadlets--Unit--Volume): custom datatype for Volume entries of podman container quadlet
 
@@ -295,6 +296,28 @@ quadlets::quadlet{ 'centos.container':
 }
 ```
 
+##### Build a local container image and run it
+
+```puppet
+quadlets::quadlet{ 'myapp.build':
+  ensure      => present,
+  build_entry => {
+    'ImageTag'            => 'localhost/myapp:latest',
+    'SetWorkingDirectory' => 'unit',
+  },
+}
+quadlets::quadlet{ 'myapp.container':
+  ensure          => present,
+  container_entry => {
+    'Image' => 'myapp.build',
+    'Exec'  => '/usr/bin/myapp',
+  },
+  install_entry   => {
+    'WantedBy' => 'default.target',
+  },
+}
+```
+
 ##### Run a CentOS user Container without managing the aspects of the user
 
 ```puppet
@@ -340,6 +363,7 @@ The following parameters are available in the `quadlets::quadlet` defined type:
 * [`network_entry`](#-quadlets--quadlet--network_entry)
 * [`kube_entry`](#-quadlets--quadlet--kube_entry)
 * [`image_entry`](#-quadlets--quadlet--image_entry)
+* [`build_entry`](#-quadlets--quadlet--build_entry)
 
 ##### <a name="-quadlets--quadlet--quadlet"></a>`quadlet`
 
@@ -482,6 +506,14 @@ Default value: `undef`
 Data type: `Optional[Quadlets::Unit::Image]`
 
 The `[Image]` section defintion.
+
+Default value: `undef`
+
+##### <a name="-quadlets--quadlet--build_entry"></a>`build_entry`
+
+Data type: `Optional[Quadlets::Unit::Build]`
+
+The `[Build]` section defintion.
 
 Default value: `undef`
 
@@ -658,7 +690,46 @@ custom datatype that validates different filenames for quadlet units
 * **See also**
   * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
 
-Alias of `Pattern[/^[a-zA-Z0-9:\-_.\\@%]+\.(container|volume|pod|network|kube|image)$/]`
+Alias of `Pattern[/^[a-zA-Z0-9:\-_.\\@%]+\.(build|container|volume|pod|network|kube|image)$/]`
+
+### <a name="Quadlets--Unit--Build"></a>`Quadlets::Unit::Build`
+
+custom datatype for Build entries of podman build quadlet
+
+* **See also**
+  * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+
+Alias of
+
+```puppet
+Struct[Optional['Annotation']            => Variant[Array[String[1],1], String[1]],
+  Optional['Arch']                  => String[1],
+  Optional['AuthFile']              => Stdlib::Unixpath,
+  Optional['BuildArg']              => Variant[Array[String[1],1], String[1]],
+  Optional['ContainersConfModule']  => Variant[Array[String[1],1], String[1]],
+  Optional['DNS']                   => Variant[Array[Stdlib::IP::Address,1], Stdlib::IP::Address],
+  Optional['DNSOption']             => Variant[Array[String[1],1], String[1]],
+  Optional['DNSSearch']             => Variant[Array[Stdlib::Fqdn,1], Stdlib::Fqdn],
+  Optional['Environment']           => Variant[Array[String[1],1], String[1]],
+  Optional['File']                  => String[1],
+  Optional['ForceRM']               => Boolean,
+  Optional['GlobalArgs']            => Variant[Array[String[1],1], String[1]],
+  Optional['GroupAdd']              => Variant[Array[String[1],1], String[1]],
+  Optional['IgnoreFile']            => Stdlib::Unixpath,
+  Optional['ImageTag']              => Variant[Array[String], String],
+  Optional['Label']                 => Variant[Array[String[1],1], String[1]],
+  Optional['Network']               => Variant[Array[String[1],1], String[1]],
+  Optional['PodmanArgs']            => Variant[Array[String[1],1], String[1]],
+  Optional['Pull']                  => Enum['always','missing','never','newer'],
+  Optional['Retry']                 => Integer[0],
+  Optional['RetryDelay']            => String[1],
+  Optional['Secret']                => Variant[Array[String[1],1], String[1]],
+  Optional['SetWorkingDirectory']   => String[1],
+  Optional['Target']                => String[1],
+  Optional['TLSVerify']             => Boolean,
+  Optional['Variant']               => String[1],
+  Optional['Volume']                => Variant[Array[String[1],1], String[1]]]
+```
 
 ### <a name="Quadlets--Unit--Container"></a>`Quadlets::Unit::Container`
 
@@ -674,6 +745,7 @@ Struct[Optional['AddCapability'] => Variant[Array[String[1],1], String[1]],
   Optional['AddDevice'] => Variant[Array[String[1],1], String[1]],
   Optional['AddHost'] => Variant[Array[String[1],1], String[1]],
   Optional['Annotation'] => Variant[Array[String[1],1], String[1]],
+  Optional['AppArmor'] => String[1],
   Optional['AutoUpdate']  => Enum['registry','local'],
   Optional['CgroupsMode'] => Enum['enabled','disabled','no-conmon','split'],
   Optional['ContainerName'] => String[1],
@@ -702,14 +774,18 @@ Struct[Optional['AddCapability'] => Variant[Array[String[1],1], String[1]],
   Optional['HealthStartPeriod'] => Variant[String[1],Integer[0]],
   Optional['HealthStartupCmd'] => String[1],
   Optional['HealthStartupInterval'] => Variant[Enum['disable'],Integer[0]],
+  Optional['HealthStartupRetries'] => Integer[0],
+  Optional['HealthStartupSuccess'] => Integer[1],
   Optional['HealthStartupTimeout'] => Variant[String[1],Integer[0]],
   Optional['HealthTimeout'] => String[1],
   Optional['HostName'] => Variant[String[1],Array[String[1],1]],
+  Optional['HttpProxy'] => Boolean,
   Optional['Image'] => String[1],
   Optional['IP'] => Stdlib::IP::Address::V4,
   Optional['IP6'] => Stdlib::IP::Address::V6,
   Optional['Label'] => Variant[String[1],Array[String[1],1]],
   Optional['LogDriver'] => Enum['k8s-file','journald','none','passthrough'],
+  Optional['LogOpt'] => Variant[Array[String[1],0], String[1]],
   Optional['Mask'] => String[1],
   Optional['Memory'] => String[1],
   Optional['Mount'] => Variant[Array[String[1],0], String[1]],
@@ -717,7 +793,7 @@ Struct[Optional['AddCapability'] => Variant[Array[String[1],1], String[1]],
   Optional['NetworkAlias'] => Variant[Array[String[1],0], String[1]],
   Optional['NoNewPrivileges'] => Boolean,
   Optional['Notify'] => Boolean,
-  Optional['PidsLimits'] => Integer[-1],
+  Optional['PidsLimit'] => Integer[-1],
   Optional['Pod'] => Pattern[/^[a-zA-Z0-9_-]+\.pod$/],
   Optional['PodmanArgs'] => Variant[Array[String[1],0], String[1]],
   Optional['PublishPort'] => Variant[Array[Variant[Stdlib::Port,String[1]],1], Variant[Stdlib::Port,String[1]]],
@@ -727,13 +803,16 @@ Struct[Optional['AddCapability'] => Variant[Array[String[1],1], String[1]],
   Optional['ReloadCmd'] => String[1],
   Optional['ReloadSignal'] => String[1],
   Optional['Retry'] => Integer[-1],
+  Optional['RetryDelay'] => String[1],
   Optional['Rootfs'] => String[1],
   Optional['RunInit'] => Boolean,
   Optional['SeccompProfile'] => String[1],
   Optional['Secret'] => Variant[Array[String[1],0], String[1]],
   Optional['SecurityLabelDisable'] => Boolean,
   Optional['SecurityLabelFileType'] => String[1],
+  Optional['SecurityLabelLevel'] => String[1],
   Optional['SecurityLabelNested'] => Boolean,
+  Optional['SecurityLabelType'] => String[1],
   Optional['ShmSize'] => String[1],
   Optional['StartWithPod'] => Boolean,
   Optional['StopSignal'] => String[1],
@@ -836,7 +915,7 @@ Struct[Optional['ContainersConfModule'] => Variant[Stdlib::Unixpath,Array[Stdlib
 
 ### <a name="Quadlets--Unit--Pod"></a>`Quadlets::Unit::Pod`
 
-custom datatype for Volume entries of podman container quadlet
+custom datatype for Pod entries of podman pod quadlet
 
 * **See also**
   * https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
@@ -844,16 +923,31 @@ custom datatype for Volume entries of podman container quadlet
 Alias of
 
 ```puppet
-Struct[Optional['ContainersConfModule'] => Variant[Stdlib::Unixpath,Array[Stdlib::Unixpath,1]],
+Struct[Optional['AddHost']              => Variant[String[1],Array[String[1],1]],
+  Optional['ContainersConfModule'] => Variant[Stdlib::Unixpath,Array[Stdlib::Unixpath,1]],
+  Optional['DNS']                  => Variant[Stdlib::IP::Address,Array[Stdlib::IP::Address,1]],
+  Optional['DNSOption']            => Variant[String[1],Array[String[1],1]],
+  Optional['DNSSearch']            => Variant[Stdlib::Fqdn,Array[Stdlib::Fqdn,1]],
+  Optional['ExitPolicy']           => Enum['continue','stop'],
+  Optional['GIDMap']               => Variant[String[1],Array[String[1],1]],
   Optional['GlobalArgs']           => Variant[String[1],Array[String[1],1]],
-  Optional['Network']              => String[1],
+  Optional['HostName']             => Variant[String[1],Array[String[1],1]],
+  Optional['IP']                   => Stdlib::IP::Address::V4,
+  Optional['IP6']                  => Stdlib::IP::Address::V6,
+  Optional['Label']                => Variant[String[1],Array[String[1],1]],
+  Optional['Network']              => Variant[String[1],Array[String[1],1]],
+  Optional['NetworkAlias']         => Variant[String[1],Array[String[1],1]],
   Optional['PodmanArgs']           => Variant[String[1],Array[String[1]]],
   Optional['PodName']              => String[1],
   Optional['PublishPort']          => Array[Variant[Stdlib::Port,String[1]],1],
+  Optional['ServiceName']          => String[1],
+  Optional['ShmSize']              => String[1],
+  Optional['StopTimeout']          => Integer[1],
+  Optional['SubGIDMap']            => String[1],
+  Optional['SubUIDMap']            => String[1],
+  Optional['UIDMap']               => Variant[String[1],Array[String[1],1]],
   Optional['UserNS']               => String[1],
-  Optional['Volume']               => Variant[String[1],Array[String[1],]],
-  Optional['HostName']             => Variant[String[1],Array[String[1],1]],
-  Optional['Label']                => Variant[String[1],Array[String[1],1]]]
+  Optional['Volume']               => Variant[String[1],Array[String[1],]]]
 ```
 
 ### <a name="Quadlets--Unit--Unit"></a>`Quadlets::Unit::Unit`

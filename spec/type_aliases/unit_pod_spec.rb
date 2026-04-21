@@ -29,9 +29,9 @@ describe 'Quadlets::Unit::Pod' do
   it { is_expected.to allow_value({ 'Label' => %w[abc xyz] }) }
   it { is_expected.to allow_value({ 'Label' => 'xyz' }) }
   it { is_expected.to allow_value({ 'Network' => 'host' }) }
-  it { is_expected.to allow_value({ 'Network' => ['mynet', 'mynet2'] }) }
+  it { is_expected.to allow_value({ 'Network' => %w[mynet mynet2] }) }
   it { is_expected.to allow_value({ 'NetworkAlias' => 'mypod' }) }
-  it { is_expected.to allow_value({ 'NetworkAlias' => ['mypod', 'mypod-alias'] }) }
+  it { is_expected.to allow_value({ 'NetworkAlias' => %w[mypod mypod-alias] }) }
   it { is_expected.to allow_value({ 'PodmanArgs' => '--exit-policy=continue' }) }
   it { is_expected.to allow_value({ 'PodmanArgs' => ['--exit-policy=continue', '--log-level=debug'] }) }
   it { is_expected.to allow_value({ 'PodName' => 'special' }) }

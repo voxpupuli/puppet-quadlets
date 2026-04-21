@@ -26,10 +26,11 @@ describe 'Quadlets::Unit::Build' do
   it { is_expected.to allow_value({ 'GlobalArgs' => '--log-level=debug' }) }
   it { is_expected.to allow_value({ 'GlobalArgs' => ['--log-level=debug', '--cgroup-manager=systemd'] }) }
   it { is_expected.to allow_value({ 'GroupAdd' => 'keep-groups' }) }
-  it { is_expected.to allow_value({ 'GroupAdd' => ['wheel', 'keep-groups'] }) }
+  it { is_expected.to allow_value({ 'GroupAdd' => %w[wheel keep-groups] }) }
   it { is_expected.to allow_value({ 'IgnoreFile' => '/path/to/.customignore' }) }
   it { is_expected.to allow_value({ 'ImageTag' => 'localhost/imagename' }) }
-  it { is_expected.to allow_value({ 'ImageTag' => ['localhost/imagename', 'localhost/imagename:latest'] }) }
+  it { is_expected.to allow_value({ 'ImageTag' => '' }) }
+  it { is_expected.to allow_value({ 'ImageTag' => ['', 'localhost/imagename', 'localhost/imagename:latest'] }) }
   it { is_expected.to allow_value({ 'Label' => 'label=value' }) }
   it { is_expected.to allow_value({ 'Label' => ['label=value', 'another=value'] }) }
   it { is_expected.to allow_value({ 'Network' => 'host' }) }

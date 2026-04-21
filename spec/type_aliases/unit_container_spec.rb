@@ -99,7 +99,7 @@ describe 'Quadlets::Unit::Container' do
   it { is_expected.to allow_value({ 'Mount' => '/data:/mnt/data:rw' }) }
   it { is_expected.to allow_value({ 'Mount' => ['/data:/mnt/data:rw', '/etc/ssl:/ssl:ro'] }) }
   it { is_expected.to allow_value({ 'Network' => 'host' }) }
-  it { is_expected.to allow_value({ 'Network' => ['mynet', 'mynet2'] }) }
+  it { is_expected.to allow_value({ 'Network' => %w[mynet mynet2] }) }
   it { is_expected.to allow_value({ 'NetworkAlias' => 'webapp' }) }
   it { is_expected.to allow_value({ 'NetworkAlias' => %w[webapp api backend] }) }
   it { is_expected.to allow_value({ 'NoNewPrivileges' => true }) }
