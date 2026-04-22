@@ -254,7 +254,7 @@ define quadlets::quadlet (
         File[$_quadlet_file] ~> Systemd::Daemon_reload[$quadlet]
       } else {
         File[$_quadlet_file] ~> Systemd::User_service[$_service]
-        Systemd::Daemon_reload[$quadlet] ~> Systemd::User_service[$_service]
+        Systemd::Daemon_reload[$quadlet] -> Systemd::User_service[$_service]
       }
     } else {
       service { $_service:
@@ -266,7 +266,7 @@ define quadlets::quadlet (
         File[$_quadlet_file] ~> Systemd::Daemon_reload[$quadlet]
       } else {
         File[$_quadlet_file] ~> Service[$_service]
-        Systemd::Daemon_reload[$quadlet] ~> Service[$_service]
+        Systemd::Daemon_reload[$quadlet] -> Service[$_service]
       }
     }
   }
