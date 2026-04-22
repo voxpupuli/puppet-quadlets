@@ -10,6 +10,9 @@ describe 'quadlets' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to create_class('quadlets') }
+        it { is_expected.to contain_class('quadlets::install') }
+        it { is_expected.to contain_class('quadlets::config') }
+        it { is_expected.to contain_class('quadlets::service') }
         it { is_expected.to contain_service('podman.socket').with_ensure(true).with_enable(true) }
         it { is_expected.not_to contain_service('podman-auto-update.timer') }
 
@@ -211,6 +214,18 @@ describe 'quadlets' do
             end
 
             it { is_expected.to have_quadlets__quadlet_resource_count(2) }
+            it { is_expected.to contain_quadlets__quadlet('almalinux.container').with_ensure('present') }
+
+            it {
+              is_expected.to contain_file('/etc/containers/systemd/almalinux.container')
+                .with_ensure('present')
+                .with_content(%r{^Description=Second Trivial Container$})
+                .with_content(%r{^Image=quay.io/almalinux/almalinux:latest$})
+            }
+
+            it { is_expected.to contain_systemd__daemon_reload('almalinux.container') }
+            # active is false for almalinux.container
+            it { is_expected.to contain_service('almalinux.service').with_ensure(false) }
           end
         end
 
@@ -235,6 +250,80 @@ describe 'quadlets' do
           it { is_expected.to contain_quadlets__user('macron').with_group('leyen') }
           it { is_expected.to contain_quadlets__user('starmer').with_manage_user(true) }
           it { is_expected.to have_quadlets__user_resource_count(2) }
+
+          # macron: group => leyen, create_dir => true (homedir defaults to /home/macron)
+          it { is_expected.to contain_user('macron').with_gid('leyen') }
+          it { is_expected.to contain_group('leyen') }
+          it { is_expected.to contain_loginctl_user('macron').with_linger('enabled') }
+
+          it {
+            is_expected.to contain_file('/home/macron/.config').with(
+              ensure: 'directory',
+              owner: 'macron',
+              group: 'leyen',
+            )
+          }
+
+          it {
+            is_expected.to contain_file('/home/macron/.config/containers').with(
+              ensure: 'directory',
+              owner: 'macron',
+              group: 'leyen',
+            )
+          }
+
+          it {
+            is_expected.to contain_file('/home/macron/.config/containers/systemd').with(
+              ensure: 'directory',
+              owner: 'macron',
+              group: 'leyen',
+            )
+          }
+
+          it {
+            is_expected.to contain_file('/etc/containers/systemd/users/macron').with(
+              ensure: 'directory',
+              owner: 'root',
+              group: 'root',
+            )
+          }
+
+          # starmer: manage_user => true, homedir => /tmp/starmer
+          it { is_expected.to contain_user('starmer').with_home('/tmp/starmer') }
+          it { is_expected.to contain_group('starmer') }
+          it { is_expected.to contain_loginctl_user('starmer').with_linger('enabled') }
+
+          it {
+            is_expected.to contain_file('/tmp/starmer/.config').with(
+              ensure: 'directory',
+              owner: 'starmer',
+              group: 'starmer',
+            )
+          }
+
+          it {
+            is_expected.to contain_file('/tmp/starmer/.config/containers').with(
+              ensure: 'directory',
+              owner: 'starmer',
+              group: 'starmer',
+            )
+          }
+
+          it {
+            is_expected.to contain_file('/tmp/starmer/.config/containers/systemd').with(
+              ensure: 'directory',
+              owner: 'starmer',
+              group: 'starmer',
+            )
+          }
+
+          it {
+            is_expected.to contain_file('/etc/containers/systemd/users/starmer').with(
+              ensure: 'directory',
+              owner: 'root',
+              group: 'root',
+            )
+          }
         end
       end
     end

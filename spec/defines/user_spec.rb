@@ -14,7 +14,28 @@ describe 'quadlets::user' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_user('nano') }
+        it { is_expected.to contain_group('nano') }
         it { is_expected.to contain_loginctl_user('nano').with_linger('enabled') }
+
+        it {
+          is_expected.to contain_file('/home/nano/.config').with(
+            {
+              ensure: 'directory',
+              owner: 'nano',
+              group: 'nano',
+            },
+          )
+        }
+
+        it {
+          is_expected.to contain_file('/home/nano/.config/containers').with(
+            {
+              ensure: 'directory',
+              owner: 'nano',
+              group: 'nano',
+            },
+          )
+        }
 
         it {
           is_expected.to contain_file('/home/nano/.config/containers/systemd').with(
@@ -47,7 +68,28 @@ describe 'quadlets::user' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_user('pico').with_gid('giga') }
+        it { is_expected.to contain_group('giga') }
         it { is_expected.to contain_loginctl_user('pico').with_linger('enabled') }
+
+        it {
+          is_expected.to contain_file('/home/pico/.config').with(
+            {
+              ensure: 'directory',
+              owner: 'pico',
+              group: 'giga',
+            },
+          )
+        }
+
+        it {
+          is_expected.to contain_file('/home/pico/.config/containers').with(
+            {
+              ensure: 'directory',
+              owner: 'pico',
+              group: 'giga',
+            },
+          )
+        }
 
         it {
           is_expected.to contain_file('/home/pico/.config/containers/systemd').with(
@@ -92,6 +134,41 @@ describe 'quadlets::user' do
         end
 
         it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_user('quark') }
+        it { is_expected.to contain_group('quark') }
+        it { is_expected.to contain_loginctl_user('quark').with_linger('enabled') }
+
+        it {
+          is_expected.to contain_file('/home/quark/.config').with(
+            ensure: 'directory',
+            owner: 'quark',
+            group: 'quark',
+          )
+        }
+
+        it {
+          is_expected.to contain_file('/home/quark/.config/containers').with(
+            ensure: 'directory',
+            owner: 'quark',
+            group: 'quark',
+          )
+        }
+
+        it {
+          is_expected.to contain_file('/home/quark/.config/containers/systemd').with(
+            ensure: 'directory',
+            owner: 'quark',
+            group: 'quark',
+          )
+        }
+
+        it {
+          is_expected.to contain_file('/etc/containers/systemd/users/quark').with(
+            ensure: 'directory',
+            owner: 'root',
+            group: 'root',
+          )
+        }
 
         it {
           is_expected.to contain_augeas('subuid_quark').with(
@@ -127,6 +204,8 @@ describe 'quadlets::user' do
           end
 
           it { is_expected.to contain_augeas('subuid_quark') }
+          it { is_expected.to contain_group('top') }
+          it { is_expected.to contain_user('quark').with_gid('top') }
 
           it {
             is_expected.to contain_augeas('subgid_top').with(
@@ -170,6 +249,41 @@ describe 'quadlets::user' do
         end
 
         it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_user('charm') }
+        it { is_expected.to contain_group('charm') }
+        it { is_expected.to contain_loginctl_user('charm').with_linger('enabled') }
+
+        it {
+          is_expected.to contain_file('/home/charm/.config').with(
+            ensure: 'directory',
+            owner: 'charm',
+            group: 'charm',
+          )
+        }
+
+        it {
+          is_expected.to contain_file('/home/charm/.config/containers').with(
+            ensure: 'directory',
+            owner: 'charm',
+            group: 'charm',
+          )
+        }
+
+        it {
+          is_expected.to contain_file('/home/charm/.config/containers/systemd').with(
+            ensure: 'directory',
+            owner: 'charm',
+            group: 'charm',
+          )
+        }
+
+        it {
+          is_expected.to contain_file('/etc/containers/systemd/users/charm').with(
+            ensure: 'directory',
+            owner: 'root',
+            group: 'root',
+          )
+        }
 
         it {
           is_expected.to contain_file('/home/charm/.config/containers/auth.json')
@@ -189,6 +303,8 @@ describe 'quadlets::user' do
         end
 
         it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_group('additional') }
+        it { is_expected.to contain_loginctl_user('additional').with_linger('enabled') }
 
         it {
           is_expected.to contain_user('additional')
@@ -196,6 +312,38 @@ describe 'quadlets::user' do
             .with_system(true)
             .with_managehome(true)
             .with_home('/home/additional')
+        }
+
+        it {
+          is_expected.to contain_file('/home/additional/.config').with(
+            ensure: 'directory',
+            owner: 'additional',
+            group: 'additional',
+          )
+        }
+
+        it {
+          is_expected.to contain_file('/home/additional/.config/containers').with(
+            ensure: 'directory',
+            owner: 'additional',
+            group: 'additional',
+          )
+        }
+
+        it {
+          is_expected.to contain_file('/home/additional/.config/containers/systemd').with(
+            ensure: 'directory',
+            owner: 'additional',
+            group: 'additional',
+          )
+        }
+
+        it {
+          is_expected.to contain_file('/etc/containers/systemd/users/additional').with(
+            ensure: 'directory',
+            owner: 'root',
+            group: 'root',
+          )
         }
       end
     end
