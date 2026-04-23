@@ -325,6 +325,18 @@ describe 'quadlets' do
             )
           }
         end
+
+        context 'with secrets defined' do
+          let(:params) do
+            { secrets_hash: {
+              'root:secret1': {
+                secret: '** hidden **',
+              }
+            } }
+          end
+
+          it { is_expected.to contain_quadlets_secret('root:secret1').with_secret('** hidden **') }
+        end
       end
     end
   end

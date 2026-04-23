@@ -21,6 +21,10 @@
 * [`quadlets::quadlet`](#quadlets--quadlet): Generate and manage podman quadlet definitions (podman > 4.4.0)
 * [`quadlets::user`](#quadlets--user): Generate and manage podman quadlet user
 
+### Resource types
+
+* [`quadlets_secret`](#quadlets_secret): Type for managing podman secrets (per user)
+
 ### Data types
 
 * [`Quadlets::Auth`](#Quadlets--Auth): custom datatype to specify username and password
@@ -70,6 +74,7 @@ The following parameters are available in the `quadlets` class:
 * [`purge_quadlet_dir`](#-quadlets--purge_quadlet_dir)
 * [`quadlets_hash`](#-quadlets--quadlets_hash)
 * [`users_hash`](#-quadlets--users_hash)
+* [`secrets_hash`](#-quadlets--secrets_hash)
 
 ##### <a name="-quadlets--manage_package"></a>`manage_package`
 
@@ -192,6 +197,14 @@ Default value: `{}`
 Data type: `Stdlib::CreateResources`
 
 a `Hash` of `quadlets::users` to deploy
+
+Default value: `{}`
+
+##### <a name="-quadlets--secrets_hash"></a>`secrets_hash`
+
+Data type: `Stdlib::CreateResources`
+
+a `Hash` of `quadlets_secrets` to deploy
 
 Default value: `{}`
 
@@ -635,6 +648,78 @@ Data type: `Hash[Pattern[/\A(?!ensure$|gid$|home$|managehome$)[a-z_]+\z/],Any]`
 Define additional parameters to be used to create the user.
 
 Default value: `{}`
+
+## Resource types
+
+### <a name="quadlets_secret"></a>`quadlets_secret`
+
+Type for managing podman secrets (per user)
+
+#### Examples
+
+##### Define a secret mysecret for user blah
+
+```puppet
+quadlets_secret{ 'blah:mysecret':
+  secret => '***secret***',
+}
+```
+
+#### Properties
+
+The following properties are available in the `quadlets_secret` type.
+
+##### `ensure`
+
+Valid values: `present`, `absent`
+
+The basic property that the resource should be in.
+
+Default value: `present`
+
+##### `labels`
+
+secret labels to set
+
+Default value: `{}`
+
+##### `secret`
+
+the secret himself
+
+#### Parameters
+
+The following parameters are available in the `quadlets_secret` type.
+
+* [`doptions`](#-quadlets_secret--doptions)
+* [`driver`](#-quadlets_secret--driver)
+* [`name`](#-quadlets_secret--name)
+* [`provider`](#-quadlets_secret--provider)
+
+##### <a name="-quadlets_secret--doptions"></a>`doptions`
+
+driver options used for secret creation
+
+Default value: `{}`
+
+##### <a name="-quadlets_secret--driver"></a>`driver`
+
+driver to be used for secret creation
+
+Default value: `file`
+
+##### <a name="-quadlets_secret--name"></a>`name`
+
+Valid values: `%r{^\S+:\S+}`
+
+namevar
+
+combination of user:secretname of the secret to administrate
+
+##### <a name="-quadlets_secret--provider"></a>`provider`
+
+The specific backend to use for this `quadlets_secret` resource. You will seldom need to specify this --- Puppet will
+usually discover the appropriate provider for your platform.
 
 ## Data types
 
