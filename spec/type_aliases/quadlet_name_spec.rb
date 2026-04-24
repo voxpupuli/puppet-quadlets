@@ -11,6 +11,7 @@ describe 'Quadlets::Quadlet_name' do
       'masive.pod',
       'special.kube',
       'impressive.image',
+      'myapp.build',
     ].each do |unit|
       it { is_expected.to allow_value(unit) }
     end

@@ -20,6 +20,7 @@
 # @param network_entry The `[Network]` section defintion.
 # @param kube_entry The `[Kube]` section defintion.
 # @param image_entry The `[Image]` section defintion.
+# @param build_entry The `[Build]` section defintion.
 #
 # @example Run a CentOS Container
 #   quadlets::quadlet{ 'centos.container':
@@ -97,6 +98,25 @@
 #     active          => true,
 #   }
 #
+# @example Build a local container image and run it
+#   quadlets::quadlet{ 'myapp.build':
+#     ensure      => present,
+#     build_entry => {
+#       'ImageTag'            => 'localhost/myapp:latest',
+#       'SetWorkingDirectory' => 'unit',
+#     },
+#   }
+#   quadlets::quadlet{ 'myapp.container':
+#     ensure          => present,
+#     container_entry => {
+#       'Image' => 'myapp.build',
+#       'Exec'  => '/usr/bin/myapp',
+#     },
+#     install_entry   => {
+#       'WantedBy' => 'default.target',
+#     },
+#   }
+#
 # @example Run a CentOS user Container without managing the aspects of the user
 #   quadlets::quadlet{'centos.container':
 #     ensure          => present,
@@ -136,49 +156,40 @@ define quadlets::quadlet (
   Optional[Quadlets::Unit::Pod] $pod_entry = undef,
   Optional[Quadlets::Unit::Kube] $kube_entry = undef,
   Optional[Quadlets::Unit::Image] $image_entry = undef,
+  Optional[Quadlets::Unit::Build] $build_entry = undef,
 ) {
   $_split = $quadlet.split('[.]')
   $_name = $_split[0]
   $_type = $_split[1]
 
-  # Validate the input
-  case $_type {
-    'container': {
-      if $volume_entry or $pod_entry or $image_entry or $network_entry {
-        fail('A volume_entry, pod_entry, image_entry or network_entry makes no sense on a container quadlet')
-      }
-    }
-    'volume': {
-      if $container_entry or $pod_entry or $kube_entry or $image_entry or $network_entry {
-        fail('A container_entry, pod_entry, kube_entry, network_entry or image_entry makes no sense on a volume quadlet')
-      }
-    }
-    'network': {
-      if $container_entry or $pod_entry or $kube_entry or $image_entry or $volume_entry {
-        fail('A container_entry, pod_entry, volume_entry, image_entry or kube_entry makes no sense on a network quadlet')
-      }
-    }
-    'pod': {
-      if $container_entry or $volume_entry or $kube_entry or $image_entry or $network_entry {
-        fail('A container_entry, volume_entry, kube_entry, network_entry or image_entry makes no sense on a pod quadlet')
-      }
-    }
-    'kube': {
-      if $volume_entry or $pod_entry or $container_entry or $image_entry or $network_entry {
-        fail('A container_entry, pod_entry, volume_entry, network_entry or image_entry makes no sense on a kube quadlet')
-      }
-    }
-    'image': {
-      if $volume_entry or $pod_entry or $container_entry or $kube_entry or $network_entry {
-        fail('A container_entry, pod_entry, volume_entry, network_entry or kube_entry makes no sense on an image quadlet')
-      }
-    }
-    default: {
-      fail('Should never be here due to typing on quadlet')
-    }
+  # Map each quadlet type to its one permitted section entry variable.
+  # Every other entry variable must be undef for that type.
+  $_type_entry_map = {
+    'container' => 'container_entry',
+    'volume'    => 'volume_entry',
+    'network'   => 'network_entry',
+    'pod'       => 'pod_entry',
+    'kube'      => 'kube_entry',
+    'image'     => 'image_entry',
+    'build'     => 'build_entry',
   }
 
-  $_service = $_type in ['container','kube'] ? {
+  $_all_entries = ['container_entry', 'volume_entry', 'network_entry',
+  'pod_entry', 'kube_entry', 'image_entry', 'build_entry']
+
+  $_allowed_entry = $_type_entry_map[$_type]
+
+  if $_allowed_entry == undef {
+    fail("Should never be here due to typing on quadlet (unknown type: ${_type})")
+  }
+
+  $_invalid_entries = $_all_entries.filter |$e| { $e != $_allowed_entry and getvar($e) != undef }
+
+  unless $_invalid_entries.empty {
+    fail("Only ${_allowed_entry} makes sense on a ${_type} quadlet; unexpected: ${_invalid_entries.join(', ')}")
+  }
+
+  $_service = $_type in ['container', 'kube'] ? {
     true    => "${_name}.service",
     default => "${_name}-${_type}.service",
   }
@@ -235,6 +246,7 @@ define quadlets::quadlet (
       'pod_entry'       => $pod_entry,
       'kube_entry'      => $kube_entry,
       'image_entry'     => $image_entry,
+      'build_entry'     => $build_entry,
     }),
   }
 

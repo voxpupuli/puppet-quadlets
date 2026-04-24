@@ -1,14 +1,29 @@
-# @summary custom datatype for Volume entries of podman container quadlet
+# @summary custom datatype for Pod entries of podman pod quadlet
 # @see https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
 type Quadlets::Unit::Pod = Struct[
+  Optional['AddHost']              => Variant[String[1],Array[String[1],1]],
   Optional['ContainersConfModule'] => Variant[Stdlib::Unixpath,Array[Stdlib::Unixpath,1]],
+  Optional['DNS']                  => Variant[Stdlib::IP::Address,Array[Stdlib::IP::Address,1]],
+  Optional['DNSOption']            => Variant[String[1],Array[String[1],1]],
+  Optional['DNSSearch']            => Variant[Stdlib::Fqdn,Array[Stdlib::Fqdn,1]],
+  Optional['ExitPolicy']           => Enum['continue','stop'],
+  Optional['GIDMap']               => Variant[String[1],Array[String[1],1]],
   Optional['GlobalArgs']           => Variant[String[1],Array[String[1],1]],
-  Optional['Network']              => String[1],
+  Optional['HostName']             => Variant[String[1],Array[String[1],1]],
+  Optional['IP']                   => Stdlib::IP::Address::V4,
+  Optional['IP6']                  => Stdlib::IP::Address::V6,
+  Optional['Label']                => Variant[String[1],Array[String[1],1]],
+  Optional['Network']              => Variant[String[1],Array[String[1],1]],
+  Optional['NetworkAlias']         => Variant[String[1],Array[String[1],1]],
   Optional['PodmanArgs']           => Variant[String[1],Array[String[1]]],
   Optional['PodName']              => String[1],
   Optional['PublishPort']          => Array[Variant[Stdlib::Port,String[1]],1],
+  Optional['ServiceName']          => String[1],
+  Optional['ShmSize']              => String[1],
+  Optional['StopTimeout']          => Integer[1],
+  Optional['SubGIDMap']            => String[1],
+  Optional['SubUIDMap']            => String[1],
+  Optional['UIDMap']               => Variant[String[1],Array[String[1],1]],
   Optional['UserNS']               => String[1],
   Optional['Volume']               => Variant[String[1],Array[String[1],]],
-  Optional['HostName']             => Variant[String[1],Array[String[1],1]],
-  Optional['Label']                => Variant[String[1],Array[String[1],1]],
 ]
