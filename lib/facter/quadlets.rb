@@ -5,7 +5,7 @@
 # podman version 5.4.2
 
 Facter.add(:quadlets) do
-  @podman_cmd = Facter::Util::Resolution.which('podman')
+  @podman_cmd = Facter::Core::Execution.which('podman')
   confine { @podman_cmd }
 
   setcode do
