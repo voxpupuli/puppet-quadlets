@@ -5,7 +5,7 @@ require 'spec_helper'
 describe 'quadlets' do
   before do
     Facter.clear
-    allow(Facter::Util::Resolution).to receive(:which).with('podman').and_return('/usr/bin/podman')
+    allow(Facter::Core::Execution).to receive(:which).with('podman').and_return('/usr/bin/podman')
     allow(Facter::Core::Execution).to receive(:execute).with('/usr/bin/podman --version').and_return(podman_version_result)
   end
 
