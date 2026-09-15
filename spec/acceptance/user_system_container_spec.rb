@@ -60,6 +60,7 @@ describe 'quadlets::quadlet' do
           container_entry => {
             'Image'  => 'quay.io/centos/centos:latest',
             'Exec'   => 'sh -c "sleep inf"',
+            'Network' => 'host',
           },
           install_entry   => {
             'WantedBy' => 'default.target',
