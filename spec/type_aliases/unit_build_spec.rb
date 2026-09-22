@@ -46,6 +46,7 @@ describe 'Quadlets::Unit::Build' do
   it { is_expected.to allow_value({ 'RetryDelay' => '10s' }) }
   it { is_expected.to allow_value({ 'Secret' => 'mysecret' }) }
   it { is_expected.to allow_value({ 'Secret' => ['mysecret', 'id=other,src=/path'] }) }
+  it { is_expected.to allow_value({ 'ServiceName' => 'my-build' }) }
   it { is_expected.to allow_value({ 'SetWorkingDirectory' => 'unit' }) }
   it { is_expected.to allow_value({ 'SetWorkingDirectory' => 'file' }) }
   it { is_expected.to allow_value({ 'SetWorkingDirectory' => '/path/to/context' }) }

@@ -40,10 +40,14 @@ describe 'Quadlets::Unit::Container' do
   it { is_expected.to allow_value({ 'EnvironmentFile' => ['/etc/myenv.conf', '/opt/app/env.list'] }) }
   it { is_expected.to allow_value({ 'EnvironmentHost' => 'HOME' }) }
   it { is_expected.to allow_value({ 'EnvironmentHost' => %w[HOME PATH] }) }
+  it { is_expected.to allow_value({ 'EnvironmentHost' => true }) }
+  it { is_expected.to allow_value({ 'EnvironmentHost' => false }) }
   it { is_expected.to allow_value({ 'Exec'  => '/bin/bash' }) }
   it { is_expected.to allow_value({ 'Exec'  => './entrypoint.sh' }) }
   it { is_expected.to allow_value({ 'ExposeHostPort' => 8080 }) }
   it { is_expected.to allow_value({ 'ExposeHostPort' => [8080, 8443] }) }
+  it { is_expected.to allow_value({ 'ExposeHostPort' => '50-59' }) }
+  it { is_expected.to allow_value({ 'ExposeHostPort' => [8080, '50-59'] }) }
   it { is_expected.to allow_value({ 'GIDMap' => '0:100000:65536' }) }
   it { is_expected.to allow_value({ 'GIDMap' => ['0:100000:65536', '65536:200000:65536'] }) }
   it { is_expected.to allow_value({ 'GlobalArgs' => '--log-level=debug' }) }
@@ -51,6 +55,7 @@ describe 'Quadlets::Unit::Container' do
   it { is_expected.to allow_value({ 'Group' => 'appgroup' }) }
   it { is_expected.to allow_value({ 'Group' => 1000 }) }
   it { is_expected.to allow_value({ 'GroupAdd' => 'wheel' }) }
+  it { is_expected.to allow_value({ 'GroupAdd' => %w[wheel keep-groups] }) }
   it { is_expected.to allow_value({ 'HealthCmd' => '/usr/bin/checkme --verywell' }) }
   it { is_expected.to allow_value({ 'HealthCmd' => '["/usr/bin/checkme --verywell","/bin/can-be-json-string-also-allow"]' }) }
   it { is_expected.to allow_value({ 'HealthInterval' => 30 }) }
@@ -58,6 +63,7 @@ describe 'Quadlets::Unit::Container' do
   it { is_expected.not_to allow_value({ 'HealthLogDestination' => 'random-string' }) }
   it { is_expected.to allow_value({ 'HealthLogDestination' => 'events_logger' }) }
   it { is_expected.to allow_value({ 'HealthLogDestination' => 'local' }) }
+  it { is_expected.to allow_value({ 'HealthLogDestination' => 'directory' }) }
   it { is_expected.to allow_value({ 'HealthLogDestination' => '/var/log/health.log' }) }
   it { is_expected.to allow_value({ 'HealthMaxLogCount' => 10 }) }
   it { is_expected.to allow_value({ 'HealthMaxLogSize' => 3000 }) }
@@ -104,6 +110,8 @@ describe 'Quadlets::Unit::Container' do
   it { is_expected.to allow_value({ 'NetworkAlias' => %w[webapp api backend] }) }
   it { is_expected.to allow_value({ 'NoNewPrivileges' => true }) }
   it { is_expected.to allow_value({ 'Notify' => false }) }
+  it { is_expected.to allow_value({ 'Notify' => true }) }
+  it { is_expected.to allow_value({ 'Notify' => 'healthy' }) }
   it { is_expected.to allow_value({ 'PidsLimit' => 100 }) }
   it { is_expected.to allow_value({ 'PidsLimit' => -1 }) }
   it { is_expected.not_to allow_value({ 'Pod' => 'foo' }) }
@@ -139,6 +147,7 @@ describe 'Quadlets::Unit::Container' do
   it { is_expected.to allow_value({ 'SecurityLabelLevel' => 's0:c123,c456' }) }
   it { is_expected.to allow_value({ 'SecurityLabelNested' => true }) }
   it { is_expected.to allow_value({ 'SecurityLabelType' => 'spc_t' }) }
+  it { is_expected.to allow_value({ 'ServiceName' => 'my-container' }) }
   it { is_expected.to allow_value({ 'ShmSize' => '100m' }) }
   it { is_expected.to allow_value({ 'StartWithPod' => true }) }
   it { is_expected.to allow_value({ 'StopSignal' => 'SIGTERM' }) }
@@ -153,6 +162,8 @@ describe 'Quadlets::Unit::Container' do
   it { is_expected.to allow_value({ 'UIDMap' => '0:100000:65536' }) }
   it { is_expected.to allow_value({ 'UIDMap' => ['0:100000:65536', '65536:200000:65536'] }) }
   it { is_expected.to allow_value({ 'Ulimit' => 'nofile=1024:1024' }) }
+  it { is_expected.to allow_value({ 'Ulimit' => ['nofile=1024:1024', 'nproc=2048:2048'] }) }
+  it { is_expected.to allow_value({ 'Umask' => '0077' }) }
   it { is_expected.to allow_value({ 'Unmask' => '/proc/sys/foo' }) }
   it { is_expected.to allow_value({ 'User' => 'appuser' }) }
   it { is_expected.to allow_value({ 'User' => 1000 }) }

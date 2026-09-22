@@ -14,6 +14,7 @@ type Quadlets::Unit::Image = Struct[
   Optional['OS'] => String[1],
   Optional['PodmanArgs'] => Variant[Array[String[1], 0], String[1]],
   Optional['Policy'] => Enum['always','missing','never','newer'],
+  Optional['ServiceName'] => String[1],
   Optional['Retry'] => Integer[1],
   Optional['RetryDelay'] => String[1],
   Optional['TLSVerify'] => Boolean,

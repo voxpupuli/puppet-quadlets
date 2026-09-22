@@ -36,7 +36,8 @@ describe 'Quadlets::Unit::Pod' do
   it { is_expected.to allow_value({ 'PodmanArgs' => ['--exit-policy=continue', '--log-level=debug'] }) }
   it { is_expected.to allow_value({ 'PodName' => 'special' }) }
   it { is_expected.to allow_value({ 'PublishPort' => ['1234:5678'] }) }
-  it { is_expected.not_to allow_value({ 'PublishPort' => '1234:5678' }) }
+  it { is_expected.to allow_value({ 'PublishPort' => '1234:5678' }) }
+  it { is_expected.to allow_value({ 'PublishPort' => 8080 }) }
   it { is_expected.to allow_value({ 'ServiceName' => 'my-pod' }) }
   it { is_expected.to allow_value({ 'ShmSize' => '64m' }) }
   it { is_expected.to allow_value({ 'StopTimeout' => 30 }) }
