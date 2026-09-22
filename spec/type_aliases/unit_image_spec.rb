@@ -19,6 +19,7 @@ describe 'Quadlets::Unit::Image' do
   it { is_expected.to allow_value({ 'PodmanArgs' => ['--os=linux'] }) }
   it { is_expected.to allow_value({ 'PodmanArgs' => '--os=linux' }) }
   it { is_expected.to allow_value({ 'Policy' => 'always' }) }
+  it { is_expected.to allow_value({ 'ServiceName' => 'my-image' }) }
   it { is_expected.to allow_value({ 'Retry' => 5 }) }
   it { is_expected.to allow_value({ 'RetryDelay' => '10s' }) }
   it { is_expected.to allow_value({ 'TLSVerify' => false }) }

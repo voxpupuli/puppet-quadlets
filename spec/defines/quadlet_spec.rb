@@ -159,6 +159,7 @@ describe 'quadlets::quadlet' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_file('/etc/containers/systemd/myapp.build') }
         it { is_expected.to contain_service('myapp-build.service').with_ensure(true) }
+        it { is_expected.to contain_systemd__daemon_reload('myapp.build') }
 
         it {
           is_expected.to contain_file('/etc/containers/systemd/myapp.build')

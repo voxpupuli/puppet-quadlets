@@ -11,7 +11,8 @@ type Quadlets::Unit::Kube = Struct[
   Optional['Network'] => Variant[Array[String[1], 1], String[1]],
   Optional['PodmanArgs'] => Variant[Array[String[1], 0], String[1]],
   Optional['PublishPort'] => Variant[Array[Variant[Stdlib::Port,String[1]],1], Variant[Stdlib::Port,String[1]]],
+  Optional['ServiceName'] => String[1],
   Optional['SetWorkingDirectory'] => Enum['yaml', 'unit'],
   Optional['UserNS'] => String[1],
-  Optional['Yaml'] => Stdlib::Unixpath,
+  Optional['Yaml'] => Variant[Stdlib::Unixpath, Array[Stdlib::Unixpath,1]],
 ]

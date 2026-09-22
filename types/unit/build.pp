@@ -23,6 +23,7 @@ type Quadlets::Unit::Build = Struct[
   Optional['Retry']                 => Integer[0],
   Optional['RetryDelay']            => String[1],
   Optional['Secret']                => Variant[Array[String[1],1], String[1]],
+  Optional['ServiceName']           => String[1],
   Optional['SetWorkingDirectory']   => String[1],
   Optional['Target']                => String[1],
   Optional['TLSVerify']             => Boolean,

@@ -25,9 +25,11 @@ describe 'Quadlets::Unit::Kube' do
   it { is_expected.to allow_value({ 'PublishPort' => ['1234-12346'] }) }
   it { is_expected.to allow_value({ 'PublishPort' => '1234:5678' }) }
   it { is_expected.to allow_value({ 'PublishPort' => ['1234:5678'] }) }
+  it { is_expected.to allow_value({ 'ServiceName' => 'my-kube' }) }
   it { is_expected.not_to allow_value({ 'SetWorkingDirectory' => 'random' }) }
   it { is_expected.to allow_value({ 'SetWorkingDirectory' => 'yaml' }) }
   it { is_expected.to allow_value({ 'SetWorkingDirectory' => 'unit' }) }
   it { is_expected.to allow_value({ 'UserNS' => 'auto' }) }
   it { is_expected.to allow_value({ 'Yaml' => '/path/to/yaml/file' }) }
+  it { is_expected.to allow_value({ 'Yaml' => ['/path/to/yaml/file', '/path/to/second.yaml'] }) }
 end
