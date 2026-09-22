@@ -101,6 +101,16 @@ describe 'quadlets::user' do
           )
         }
 
+        it {
+          is_expected.to contain_file('/etc/containers/systemd/users/pico').with(
+            {
+              ensure: 'directory',
+              owner: 'root',
+              group: 'root',
+            },
+          )
+        }
+
         it { is_expected.not_to contain_augeas('subuid_nano') }
         it { is_expected.not_to contain_augeas('subgid_nano') }
       end
