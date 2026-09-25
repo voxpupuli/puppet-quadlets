@@ -13,6 +13,7 @@ describe 'quadlets' do
         it { is_expected.to contain_class('quadlets::install') }
         it { is_expected.to contain_class('quadlets::config') }
         it { is_expected.to contain_class('quadlets::service') }
+        it { is_expected.to contain_file('/var/lib/quadlets-users-fact.d').with_ensure('directory') }
         it { is_expected.to contain_service('podman.socket').with_ensure(true).with_enable(true) }
         it { is_expected.not_to contain_service('podman-auto-update.timer') }
 
@@ -280,14 +281,6 @@ describe 'quadlets' do
             )
           }
 
-          it {
-            is_expected.to contain_file('/etc/containers/systemd/users/macron').with(
-              ensure: 'directory',
-              owner: 'root',
-              group: 'root',
-            )
-          }
-
           # starmer: manage_user => true, homedir => /tmp/starmer
           it { is_expected.to contain_user('starmer').with_home('/tmp/starmer') }
           it { is_expected.to contain_group('starmer') }
@@ -314,14 +307,6 @@ describe 'quadlets' do
               ensure: 'directory',
               owner: 'starmer',
               group: 'starmer',
-            )
-          }
-
-          it {
-            is_expected.to contain_file('/etc/containers/systemd/users/starmer').with(
-              ensure: 'directory',
-              owner: 'root',
-              group: 'root',
             )
           }
         end

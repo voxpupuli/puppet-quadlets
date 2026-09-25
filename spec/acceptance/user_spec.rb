@@ -4,9 +4,8 @@ require 'spec_helper_acceptance'
 
 describe 'quadlets::user' do
   context 'with a selection of users' do
-    it_behaves_like 'an idempotent resource' do
-      let(:manifest) do
-        <<-PUPPET
+    let(:manifest) do
+      <<-PUPPET
         quadlets::user{'simple':
           manage_linger   => false,
           authentications => { 'myregistry.com' => {
@@ -56,8 +55,15 @@ describe 'quadlets::user' do
           subgid            => [7000,8000],
         }
 
-        PUPPET
-      end
+      PUPPET
+    end
+
+    it 'converges on the second run once the quadlets fact knows the simple uid' do
+      2.times { apply_manifest(manifest, catch_failures: true) }
+    end
+
+    it 'is idempotent on the third run' do
+      apply_manifest(manifest, catch_changes: true)
     end
 
     describe user('simple') do
@@ -76,7 +82,11 @@ describe 'quadlets::user' do
       it { is_expected.to be_owned_by 'simple' }
     end
 
-    describe file('/etc/containers/systemd/users/simple') do
+    describe 'The users system path' do
+      subject { file("/etc/containers/systemd/users/#{simple_uid}") }
+
+      let(:simple_uid) { command('id -u simple').stdout.strip }
+
       it { is_expected.to be_directory }
       it { is_expected.to be_owned_by 'root' }
       it { is_expected.to be_grouped_into 'root' }

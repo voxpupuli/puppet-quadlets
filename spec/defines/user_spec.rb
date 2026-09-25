@@ -16,6 +16,7 @@ describe 'quadlets::user' do
         it { is_expected.to contain_user('nano') }
         it { is_expected.to contain_group('nano') }
         it { is_expected.to contain_loginctl_user('nano').with_linger('enabled') }
+        it { is_expected.to contain_quadlets__user_fact_conf('nano') }
 
         it {
           is_expected.to contain_file('/home/nano/.config').with(
@@ -48,14 +49,40 @@ describe 'quadlets::user' do
         }
 
         it {
-          is_expected.to contain_file('/etc/containers/systemd/users/nano').with(
-            {
-              ensure: 'directory',
-              owner: 'root',
-              group: 'root',
-            },
-          )
+          is_expected.not_to contain_file('/etc/containers/systemd/users/nano')
         }
+
+        context 'with nano uid fact populated' do
+          let(:facts) do
+            super().merge(
+              {
+                quadlets: {
+                  users: {
+                    nano: { uid: 12_345 },
+                  },
+                },
+              },
+            )
+          end
+
+          it {
+            is_expected.to contain_file('/etc/containers/systemd/users/nano').with(
+              {
+                ensure: 'absent',
+              },
+            )
+          }
+
+          it {
+            is_expected.to contain_file('/etc/containers/systemd/users/12345').with(
+              {
+                ensure: 'directory',
+                owner: 'root',
+                group: 'root',
+              },
+            )
+          }
+        end
 
         it { is_expected.not_to contain_file('/home/charm/.config/containers/auth.json') }
       end
@@ -102,14 +129,40 @@ describe 'quadlets::user' do
         }
 
         it {
-          is_expected.to contain_file('/etc/containers/systemd/users/pico').with(
-            {
-              ensure: 'directory',
-              owner: 'root',
-              group: 'root',
-            },
-          )
+          is_expected.not_to contain_file('/etc/containers/systemd/users/pico')
         }
+
+        context 'with pico uid fact populated' do
+          let(:facts) do
+            super().merge(
+              {
+                quadlets: {
+                  users: {
+                    pico: { uid: 54_321 },
+                  },
+                },
+              },
+            )
+          end
+
+          it {
+            is_expected.to contain_file('/etc/containers/systemd/users/54321').with(
+              {
+                ensure: 'directory',
+                owner: 'root',
+                group: 'root',
+              },
+            )
+          }
+
+          it {
+            is_expected.to contain_file('/etc/containers/systemd/users/pico').with(
+              {
+                ensure: 'absent',
+              },
+            )
+          }
+        end
 
         it { is_expected.not_to contain_augeas('subuid_nano') }
         it { is_expected.not_to contain_augeas('subgid_nano') }
@@ -132,6 +185,7 @@ describe 'quadlets::user' do
         it { is_expected.not_to contain_loginctl_user('micro') }
         it { is_expected.not_to contain_file('/home/mirco/.config/containers/systemd') }
         it { is_expected.not_to contain_file('/etc/containers/systemd/users/micro') }
+        it { is_expected.not_to contain_quadlets__user_fact_conf('micro') }
       end
 
       context 'with a subuid and subgid set' do
@@ -173,12 +227,36 @@ describe 'quadlets::user' do
         }
 
         it {
-          is_expected.to contain_file('/etc/containers/systemd/users/quark').with(
-            ensure: 'directory',
-            owner: 'root',
-            group: 'root',
-          )
+          is_expected.not_to contain_file('/etc/containers/systemd/users/quark')
         }
+
+        context 'with quark uid fact populated' do
+          let(:facts) do
+            super().merge(
+              {
+                quadlets: {
+                  users: {
+                    quark: { uid: 999 },
+                  },
+                },
+              },
+            )
+          end
+
+          it {
+            is_expected.to contain_file('/etc/containers/systemd/users/999').with(
+              ensure: 'directory',
+              owner: 'root',
+              group: 'root',
+            )
+          }
+
+          it {
+            is_expected.to contain_file('/etc/containers/systemd/users/quark').with(
+              ensure: 'absent',
+            )
+          }
+        end
 
         it {
           is_expected.to contain_augeas('subuid_quark').with(
@@ -288,12 +366,36 @@ describe 'quadlets::user' do
         }
 
         it {
-          is_expected.to contain_file('/etc/containers/systemd/users/charm').with(
-            ensure: 'directory',
-            owner: 'root',
-            group: 'root',
-          )
+          is_expected.not_to contain_file('/etc/containers/systemd/users/charm')
         }
+
+        context 'with charm uid fact populated' do
+          let(:facts) do
+            super().merge(
+              {
+                quadlets: {
+                  users: {
+                    charm: { uid: 888 },
+                  },
+                },
+              },
+            )
+          end
+
+          it {
+            is_expected.to contain_file('/etc/containers/systemd/users/888').with(
+              ensure: 'directory',
+              owner: 'root',
+              group: 'root',
+            )
+          }
+
+          it {
+            is_expected.to contain_file('/etc/containers/systemd/users/charm').with(
+              ensure: 'absent',
+            )
+          }
+        end
 
         it {
           is_expected.to contain_file('/home/charm/.config/containers/auth.json')
@@ -348,13 +450,33 @@ describe 'quadlets::user' do
           )
         }
 
-        it {
-          is_expected.to contain_file('/etc/containers/systemd/users/additional').with(
-            ensure: 'directory',
-            owner: 'root',
-            group: 'root',
-          )
-        }
+        context 'with additional uid fact populated' do
+          let(:facts) do
+            super().merge(
+              {
+                quadlets: {
+                  users: {
+                    additional: { uid: 777 },
+                  },
+                },
+              },
+            )
+          end
+
+          it {
+            is_expected.to contain_file('/etc/containers/systemd/users/777').with(
+              ensure: 'directory',
+              owner: 'root',
+              group: 'root',
+            )
+          }
+
+          it {
+            is_expected.to contain_file('/etc/containers/systemd/users/additional').with(
+              ensure: 'absent',
+            )
+          }
+        end
       end
     end
   end

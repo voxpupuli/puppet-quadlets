@@ -20,6 +20,7 @@
 
 * [`quadlets::quadlet`](#quadlets--quadlet): Generate and manage podman quadlet definitions (podman > 4.4.0)
 * [`quadlets::user`](#quadlets--user): Generate and manage podman quadlet user
+* [`quadlets::user_fact_conf`](#quadlets--user_fact_conf): Creates a file per user as input to the quadlets fact
 
 ### Data types
 
@@ -272,7 +273,7 @@ quadlets::quadlet{ 'centos.container':
 }
 ```
 
-##### Run a CentOS user Container from System User Directory
+##### Run a CentOS user Container from System User Directory ( 2 puppet runs required)
 
 ```puppet
 quadlets::quadlet{ 'centos.container':
@@ -433,7 +434,7 @@ Default value: `undef`
 
 Data type: `Enum['system','home']`
 
-Specifies the location to create the quadlet in. If `home` then `$home/.config/containers/systemd` will be used. If `system` then `/etc/containers/systemd/users/$user` will be used.
+Specifies the location to create the quadlet in. If `home` then `$home/.config/containers/systemd` will be used. If `system` then `/etc/containers/systemd/users/<UID>` will be used. Since the <UID> is obtained from a fact two puppet runs will be required.
 
 Default value: `'home'`
 
@@ -667,6 +668,24 @@ Data type: `Hash[Pattern[/\A(?!ensure$|gid$|home$|managehome$)[a-z_]+\z/],Any]`
 Define additional parameters to be used to create the user.
 
 Default value: `{}`
+
+### <a name="quadlets--user_fact_conf"></a>`quadlets::user_fact_conf`
+
+Creates a file per user as input to the quadlets fact
+
+#### Parameters
+
+The following parameters are available in the `quadlets::user_fact_conf` defined type:
+
+* [`user`](#-quadlets--user_fact_conf--user)
+
+##### <a name="-quadlets--user_fact_conf--user"></a>`user`
+
+Data type: `String[1]`
+
+Username to configure quadlets fact for
+
+Default value: `$title`
 
 ## Data types
 

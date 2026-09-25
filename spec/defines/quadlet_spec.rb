@@ -202,14 +202,28 @@ describe 'quadlets::quadlet' do
             super().merge(location: 'system')
           end
 
-          it {
-            is_expected.to contain_file('/etc/containers/systemd/users/mouse/centos.container').with(
-              {
-                owner: 'root',
-                group: 'root',
-              },
-            )
-          }
+          context 'with mouse uid fact populated' do
+            let(:facts) do
+              super().merge(
+                {
+                  quadlets: {
+                    users: {
+                      mouse: { uid: 1234 },
+                    },
+                  },
+                },
+              )
+            end
+
+            it {
+              is_expected.to contain_file('/etc/containers/systemd/users/1234/centos.container').with(
+                {
+                  owner: 'root',
+                  group: 'root',
+                },
+              )
+            }
+          end
 
           it { is_expected.not_to contain_file('/home/mouse/.config/containers/systemd/centos.container') }
         end
