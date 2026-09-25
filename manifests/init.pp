@@ -26,6 +26,9 @@
 # @param quadlets_hash a `Hash` of `quadlets::quadlet` to deploy
 # @param users_hash a `Hash` of `quadlets::users` to deploy
 #
+# @param secrets_hash
+#   a `Hash` of `quadlets_secrets` to deploy
+#
 # @example Set up Podman for quadlets
 #   include quadlets
 #
@@ -46,6 +49,7 @@ class quadlets (
   Boolean $purge_quadlet_dir = false,
   Stdlib::CreateResources $quadlets_hash = {},
   Stdlib::CreateResources $users_hash = {},
+  Stdlib::CreateResources $secrets_hash = {},
 ) {
   $quadlet_dir = '/etc/containers/systemd'
   $quadlet_system_user_dir = '/etc/containers/systemd/users'
@@ -65,6 +69,12 @@ class quadlets (
 
   $users_hash.each |$_n, $_v| {
     quadlets::user { $_n:
+      * => $_v,
+    }
+  }
+
+  $secrets_hash.each |$_n, $_v| {
+    quadlets_secret { $_n:
       * => $_v,
     }
   }
