@@ -4,16 +4,39 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v3.3.0](https://github.com/voxpupuli/puppet-quadlets/tree/v3.3.0) (2025-12-29)
+## [v3.4.0](https://github.com/voxpupuli/puppet-quadlets/tree/v3.4.0) (2026-09-23)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v3.3.0...v3.4.0)
+
+**Implemented enhancements:**
+
+- Support pl-stdlib v10 and p-systemd v10 [\#114](https://github.com/voxpupuli/puppet-quadlets/pull/114) ([traylenator](https://github.com/traylenator))
+- Sync type aliases with latest podman [\#113](https://github.com/voxpupuli/puppet-quadlets/pull/113) ([jcpunk](https://github.com/jcpunk))
+- Support Fedora 44 [\#111](https://github.com/voxpupuli/puppet-quadlets/pull/111) ([traylenator](https://github.com/traylenator))
+- Replace deprecated calls with Facter::Core::Execution [\#110](https://github.com/voxpupuli/puppet-quadlets/pull/110) ([corporate-gadfly](https://github.com/corporate-gadfly))
+- Support Ubuntu 26.06 [\#108](https://github.com/voxpupuli/puppet-quadlets/pull/108) ([traylenator](https://github.com/traylenator))
+- Permit build type, add missing quadlet arguments [\#103](https://github.com/voxpupuli/puppet-quadlets/pull/103) ([jcpunk](https://github.com/jcpunk))
+- Add support for Sensitive type in Environment [\#98](https://github.com/voxpupuli/puppet-quadlets/pull/98) ([gmenuel](https://github.com/gmenuel))
+
+**Fixed bugs:**
+
+- Fix service restart racing ahead of daemon-reload on .container file [\#104](https://github.com/voxpupuli/puppet-quadlets/pull/104) ([jcpunk](https://github.com/jcpunk))
+
+**Merged pull requests:**
+
+- Bump up test resource coverage [\#107](https://github.com/voxpupuli/puppet-quadlets/pull/107) ([jcpunk](https://github.com/jcpunk))
+- Additional debug logs to kube acceptance test. [\#100](https://github.com/voxpupuli/puppet-quadlets/pull/100) ([traylenator](https://github.com/traylenator))
+
+## [v3.3.0](https://github.com/voxpupuli/puppet-quadlets/tree/v3.3.0) (2026-01-05)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v3.2.0...v3.3.0)
 
 **Implemented enhancements:**
 
-- allow additional parameters for user creation [\#92](https://github.com/voxpupuli/puppet-quadlets/pull/92) ([trefzer](https://github.com/trefzer))
+- Allow additional parameters for user creation [\#92](https://github.com/voxpupuli/puppet-quadlets/pull/92) ([trefzer](https://github.com/trefzer))
 - Add `quadlets::users_hash` for hiera deploy [\#91](https://github.com/voxpupuli/puppet-quadlets/pull/91) ([traylenator](https://github.com/traylenator))
 - allow scaler or array instead of requiring array [\#90](https://github.com/voxpupuli/puppet-quadlets/pull/90) ([edrude](https://github.com/edrude))
-- add generation of auth.json file for users \(on request\) [\#88](https://github.com/voxpupuli/puppet-quadlets/pull/88) ([trefzer](https://github.com/trefzer))
+- Add generation of auth.json file for users \(on request\) [\#88](https://github.com/voxpupuli/puppet-quadlets/pull/88) ([trefzer](https://github.com/trefzer))
 - Quadlet creation in `/etc/containers/systemd/users/<user>` [\#87](https://github.com/voxpupuli/puppet-quadlets/pull/87) ([traylenator](https://github.com/traylenator))
 
 ## [v3.2.0](https://github.com/voxpupuli/puppet-quadlets/tree/v3.2.0) (2025-11-19)
