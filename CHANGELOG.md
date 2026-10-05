@@ -4,7 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v3.4.0](https://github.com/voxpupuli/puppet-quadlets/tree/v3.4.0) (2026-09-23)
+## [v4.0.0](https://github.com/voxpupuli/puppet-quadlets/tree/v4.0.0) (2026-10-05)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v3.4.0...v4.0.0)
+
+**Breaking changes:**
+
+- Store rootless quadlets in \<UID\> system path [\#116](https://github.com/voxpupuli/puppet-quadlets/pull/116) ([traylenator](https://github.com/traylenator))
+
+**Implemented enhancements:**
+
+- Update requirements to allow OpenVox 9 [\#118](https://github.com/voxpupuli/puppet-quadlets/pull/118) ([sebastianrakel](https://github.com/sebastianrakel))
+
+## [v3.4.0](https://github.com/voxpupuli/puppet-quadlets/tree/v3.4.0) (2026-09-25)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v3.3.0...v3.4.0)
 
