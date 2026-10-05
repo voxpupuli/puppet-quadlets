@@ -89,7 +89,7 @@ Quadlets::Quadlet {
   ensure   => 'present',
   location => 'system',
   user     => 'santa',
-  active   => 'true',
+  active   => true,
 }
 
 quadlets::quadlet { "centos.container":
