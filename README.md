@@ -182,6 +182,32 @@ quadlets::quadlets_hash:
       Image: 'docker.io/busybox'
 ```
 
+
+## Migrating from version 3 to version 4
+
+Version 4 fixes a bug https://github.com/voxpupuli/puppet-quadlets/issues/112 that may require some manual cleanup.
+
+Only rootless quadlets located in the system location may be affected e.g.
+
+```puppet
+quadlets::quadlet {'alice.container:
+  ensure          => 'present',
+  location        => 'system',
+  user            => 'santa',
+  active          => 'true',
+  container_entry => {
+    'Image' => 'myapp.build',
+    'Exec'  => '/usr/bin/myapp',
+  },
+}
+```
+
+In version 3 the quadlet file was created in `/etc/containers/systemd/users/santa` which will have generated a container for **ALL** users with a `systemd --user` process.
+
+In version 4 the quadlet will be correctly located in `/etc/containers/systemd/users/<uid of santa>` and only be generated for user `santa` as was requested.
+
+After update to v4 verify that no undesirable containers are running. A system reboot is a reliable way to ensure correctness as all container start-up files will be generated correctly from nothing.
+
 ## Migrating from version 2 to version 3
 
 With version 3 the method for defining rootless containers has changed in a completely backwards incompatible way.
