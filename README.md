@@ -70,7 +70,10 @@ quadlets::quadlet { "centos.container":
 
 ### Simple `rootless` `centos.service` Running a Container with a Network
 
-The quadlet files will be maintained in `/etc/containers/systemd/users/santa`
+The quadlet files will be maintained in `/etc/containers/systemd/users/<uid of santa>`
+
+This particular case of a `system` located quadlet path will require up to two puppet runs.
+The first run will populate the configuration of `quadlets.users` fact for the particular user.
 
 ```puppet
 quadlets::user { 'santa':
@@ -244,8 +247,19 @@ The podman version can be accessed via the `quadlets` fact.
 facter quadlets
 {
   podman_version => "5.4.0"
+  users => {
+    alice => {
+      uid => 1234,
+    },
+    bob => {
+      uid => 1234,
+    },
+
+  }
 }
 ```
+
+The `users` tree is only populated for any user for which a `quadlets::user` or a rootless `quadlets::quadlet` has been defined. The tree will only be populated on the 2nd run of puppet. Deploying a rootless `quadlets:quadlet` in the system path will require two puppet runs.
 
 ## Reference
 

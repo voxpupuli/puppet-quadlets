@@ -4,9 +4,8 @@ require 'spec_helper_acceptance'
 
 describe 'quadlets::quadlet' do
   context 'with a simple CentOS user container running' do
-    it_behaves_like 'an idempotent resource' do
-      let(:manifest) do
-        <<-PUPPET
+    let(:manifest) do
+      <<-PUPPET
 
         # We might want to fall back on fuse-overlayfs
         # rather than rely on overlay working.
@@ -67,11 +66,22 @@ describe 'quadlets::quadlet' do
           },
           active          => true,
         }
-        PUPPET
-      end
+      PUPPET
     end
 
-    describe file('/etc/containers/systemd/users/robot/centos-system-user.container') do
+    it 'converges on the second run once the quadlets fact knows the robot uid' do
+      2.times { apply_manifest(manifest, catch_failures: true) }
+    end
+
+    it 'is idempotent on the third run' do
+      apply_manifest(manifest, catch_changes: true)
+    end
+
+    describe 'the quadlet file' do
+      subject { file("/etc/containers/systemd/users/#{robot_uid}/centos-system-user.container") }
+
+      let(:robot_uid) { command('id -u robot').stdout.strip }
+
       it { is_expected.to be_file }
       it { is_expected.to be_owned_by 'root' }
       it { is_expected.to be_grouped_into 'root' }

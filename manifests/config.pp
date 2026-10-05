@@ -37,4 +37,13 @@ class quadlets::config (
       value      => on,
     }
   }
+
+  file { '/var/lib/quadlets-users-fact.d':
+    ensure  => directory,
+    owner   => root,
+    group   => root,
+    purge   => true,
+    recurse => true,
+    mode    => '0755',
+  }
 }

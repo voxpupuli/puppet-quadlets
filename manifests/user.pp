@@ -66,10 +66,27 @@ define quadlets::user (
   $_user_homedir = pick($homedir, "/home/${user}")
 
   if $create_system_dir {
-    file { "${quadlets::quadlet_system_user_dir}/${user}":
-      ensure => directory,
-      owner  => root,
-      group  => root,
+    ensure_resource('quadlets::user_fact_conf', $user)
+
+    # Followingthe fix of:
+    # https://github.com/voxpupuli/puppet-quadlets/issues/112
+    # the old directory of rootless system location quadlets should be purged
+    # We do not do that till the uid fact is defind and we are ready to write
+    # the new quadlets locatied in the <UID> directory.
+    #
+    # This can be deleted at some future date, today is 20261025.
+    #
+    if $facts.dig('quadlets', 'users', $user, 'uid') {
+      file { "${quadlets::quadlet_system_user_dir}/${user}":
+        ensure => absent,
+        force  => true,
+        group  => recurse,
+      }
+      file { "${quadlets::quadlet_system_user_dir}/${facts['quadlets']['users'][$user]['uid']}":
+        ensure => directory,
+        owner  => root,
+        group  => root,
+      }
     }
   }
 
