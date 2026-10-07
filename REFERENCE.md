@@ -1064,4 +1064,3 @@ Struct[Optional['ContainersConfModule'] => Variant[Stdlib::Unixpath,Array[Stdlib
   Optional['User']                 => String[1],
   Optional['VolumeName']           => String[1]]
 ```
-

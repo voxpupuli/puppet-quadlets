@@ -79,6 +79,7 @@ describe 'quadlets::user' do
                 ensure: 'directory',
                 owner: 'root',
                 group: 'root',
+                mode: '0755',
               },
             )
           }
@@ -151,6 +152,7 @@ describe 'quadlets::user' do
                 ensure: 'directory',
                 owner: 'root',
                 group: 'root',
+                mode: '0755',
               },
             )
           }
