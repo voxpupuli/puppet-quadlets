@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v4.1.0](https://github.com/voxpupuli/puppet-quadlets/tree/v4.1.0) (2026-10-28)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v4.0.0...v4.1.0)
+
+**Implemented enhancements:**
+
+- puppet/systemd: Allow 11.x [\#124](https://github.com/voxpupuli/puppet-quadlets/pull/124) ([bastelfreak](https://github.com/bastelfreak))
+
+**Fixed bugs:**
+
+- Explicitly set mode of directories created [\#123](https://github.com/voxpupuli/puppet-quadlets/pull/123) ([traylenator](https://github.com/traylenator))
+
+**Closed issues:**
+
+- Rootless container directories in system directory need to be world readable [\#121](https://github.com/voxpupuli/puppet-quadlets/issues/121)
+
+**Merged pull requests:**
+
+- Correct syntax error in README [\#120](https://github.com/voxpupuli/puppet-quadlets/pull/120) ([traylenator](https://github.com/traylenator))
+
 ## [v4.0.0](https://github.com/voxpupuli/puppet-quadlets/tree/v4.0.0) (2026-10-05)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-quadlets/compare/v3.4.0...v4.0.0)
